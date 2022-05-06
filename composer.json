@@ -22,5 +22,6 @@
                 "AlperenErsoy\\FilamentExport\\FilamentExportServiceProvider"
             ]
         }
-    }
+    },
+    "license": "MIT"
 }
