@@ -17,6 +17,7 @@ use AlperenErsoy\FilamentExport\Actions\Concerns\HasFileNameField;
 use AlperenErsoy\FilamentExport\Actions\Concerns\HasFormatField;
 use AlperenErsoy\FilamentExport\Actions\Concerns\HasPageOrientationField;
 use AlperenErsoy\FilamentExport\Actions\Concerns\HasTimeFormat;
+use AlperenErsoy\FilamentExport\Actions\Concerns\HasUniqueActionId;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -36,10 +37,13 @@ class FilamentExportBulkAction extends \Filament\Tables\Actions\BulkAction
     use HasFormatField;
     use HasPageOrientationField;
     use HasTimeFormat;
+    use HasUniqueActionId;
 
     protected function setUp(): void
     {
         parent::setUp();
+
+        $this->uniqueActionId('bulk-action');
 
         FilamentExport::setUpFilamentExportAction($this);
 

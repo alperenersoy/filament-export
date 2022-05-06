@@ -61,7 +61,8 @@
     }
 
 </style>
-<x-filament::modal id="preview-modal" width="6xl" display-classes="block" x-init="$wire.on('open-preview-modal', () => { isOpen = true; }); $wire.on('close-preview-modal', () => { isOpen = false; })" :heading="$getPreviewModalHeading()">
+<x-filament::modal id="preview-modal" width="6xl" display-classes="block" x-init="$wire.on('open-preview-modal-{{ $getUniqueActionId() }}', () => { isOpen = true; });
+$wire.on('close-preview-modal-{{ $getUniqueActionId() }}', () => { isOpen = false; })" :heading="$getPreviewModalHeading()">
     <div class="print-table-wrapper">
         <table id="print-table">
             <tr>
@@ -98,7 +99,7 @@
             printTable.appendChild(domClone);
             window.print();
         }
-        window.Livewire.on('print-table', () => printTable());
+        window.Livewire.on('print-table-{{ $getUniqueActionId() }}', () => printTable());
     </script>
     <x-slot name="footer">
         @foreach ($getFooterActions() as $action)

@@ -4,6 +4,7 @@ namespace AlperenErsoy\FilamentExport;
 
 use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
+use AlperenErsoy\FilamentExport\Components\Concerns\HasUniqueActionId;
 use AlperenErsoy\FilamentExport\Components\TableView;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\ViewColumn;
@@ -22,7 +23,6 @@ use AlperenErsoy\FilamentExport\Concerns\HasFileName;
 use AlperenErsoy\FilamentExport\Concerns\HasFormat;
 use AlperenErsoy\FilamentExport\Concerns\HasPageOrientation;
 use AlperenErsoy\FilamentExport\Concerns\HasTable;
-use Barryvdh\Debugbar\Facades\Debugbar;
 use Barryvdh\DomPDF\PDF;
 use Carbon\Carbon;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -55,6 +55,7 @@ class FilamentExport implements FromCollection, WithHeadings, WithTitle, WithCus
     protected function setUp(): void
     {
         $this->fileName(Date::now()->toString());
+
         $this->format(config('filament-export.default_format'));
     }
 
@@ -199,6 +200,7 @@ class FilamentExport implements FromCollection, WithHeadings, WithTitle, WithCus
                         ->data($records)
                         ->table($action->getTable())
                 )
+                ->uniqueActionId($action->getUniqueActionId())
                 ->reactive()
         ];
     }

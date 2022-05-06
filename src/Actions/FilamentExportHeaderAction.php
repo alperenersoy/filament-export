@@ -16,6 +16,7 @@ use AlperenErsoy\FilamentExport\Actions\Concerns\HasFileNameField;
 use AlperenErsoy\FilamentExport\Actions\Concerns\HasFormatField;
 use AlperenErsoy\FilamentExport\Actions\Concerns\HasPageOrientationField;
 use AlperenErsoy\FilamentExport\Actions\Concerns\HasTimeFormat;
+use AlperenErsoy\FilamentExport\Actions\Concerns\HasUniqueActionId;
 use AlperenErsoy\FilamentExport\FilamentExport;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
@@ -36,12 +37,15 @@ class FilamentExportHeaderAction extends \Filament\Tables\Actions\ButtonAction
     use HasFormatField;
     use HasPageOrientationField;
     use HasTimeFormat;
+    use HasUniqueActionId;
 
     protected Collection $records;
 
     protected function setUp(): void
     {
         parent::setUp();
+
+        $this->uniqueActionId('header-action');
 
         FilamentExport::setUpFilamentExportAction($this);
 

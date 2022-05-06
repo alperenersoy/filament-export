@@ -2,6 +2,7 @@
 
 namespace AlperenErsoy\FilamentExport\Components;
 
+use AlperenErsoy\FilamentExport\Components\Concerns\HasUniqueActionId;
 use AlperenErsoy\FilamentExport\FilamentExport;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Components\Concerns\HasName;
@@ -11,6 +12,7 @@ use Illuminate\Support\Collection;
 class TableView extends Component
 {
     use HasName;
+    use HasUniqueActionId;
 
     protected FilamentExport $export;
 
@@ -104,9 +106,11 @@ class TableView extends Component
 
     public function getPrintAction(): ButtonAction
     {
+        $uniqueActionId = $this->getUniqueActionId();
+
         return ButtonAction::make('print')
             ->label(__('filament-export::table_view.print_action_label'))
-            ->action('$emit("print-table")')
+            ->action("\$emit('print-table-$uniqueActionId')")
             ->color('gray')
             ->icon(config('filament-export.print_icon'));
     }
