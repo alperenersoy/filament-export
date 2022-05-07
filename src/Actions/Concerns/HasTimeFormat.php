@@ -2,6 +2,8 @@
 
 namespace AlperenErsoy\FilamentExport\Actions\Concerns;
 
+use Carbon\Carbon;
+
 trait HasTimeFormat
 {
     protected string $timeFormat;
@@ -9,6 +11,8 @@ trait HasTimeFormat
     public function timeFormat(string $timeFormat): static
     {
         $this->timeFormat = $timeFormat;
+
+        $this->fileName(Carbon::now()->translatedFormat($this->getTimeFormat()));
 
         return $this;
     }
