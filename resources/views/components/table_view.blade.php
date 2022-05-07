@@ -1,8 +1,4 @@
 <style type="text/css" media="print">
-    * {
-        font-family: DejaVu Sans, sans-serif !important;
-    }
-
     html {
         width: 100%;
         height: 0;
@@ -26,6 +22,20 @@
         top: 0;
     }
 
+    #print-table {
+        page-break-after: auto
+    }
+
+    #print-table tr {
+        page-break-inside: avoid;
+        page-break-after: auto
+    }
+
+    #print-table td {
+        page-break-inside: avoid;
+        page-break-after: auto
+    }
+
 </style>
 <style style type="text/css" media="screen">
     #printTable {
@@ -40,6 +50,8 @@
 </style>
 <style type="text/css" media="all">
     #print-table {
+        background: white;
+        color: black;
         width: 100%;
         border-collapse: collapse;
         border-spacing: 0;
@@ -50,9 +62,10 @@
         border-color: #ededed;
         border-style: solid;
         border-width: 1px;
-        font-size: 14px;
+        font-size: 13px;
+        line-height: 2;
         overflow: hidden;
-        padding: 10px 5px;
+        padding-left: 6px;
         word-break: normal;
     }
 
@@ -61,8 +74,7 @@
     }
 
 </style>
-<x-filament::modal id="preview-modal" width="6xl" display-classes="block" x-init="$wire.on('open-preview-modal-{{ $getUniqueActionId() }}', () => { isOpen = true; });
-$wire.on('close-preview-modal-{{ $getUniqueActionId() }}', () => { isOpen = false; })" :heading="$getPreviewModalHeading()">
+<x-filament::modal id="preview-modal" width="6xl" display-classes="block" x-init="$wire.on('open-preview-modal-{{ $getUniqueActionId() }}', () => { isOpen = true; }); $wire.on('close-preview-modal-{{ $getUniqueActionId() }}', () => { isOpen = false; })" :heading="$getPreviewModalHeading()">
     <div class="print-table-wrapper">
         <table id="print-table">
             <tr>
