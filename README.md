@@ -54,6 +54,7 @@ FilamentExportBulkAction::make('export')
     ->disableAdditionalColumns() // Disable additional columns input
     ->disableColumnFilters() // Disable column filters input
     ->disableFileName() // Disable file name input
+    ->disableFileNamePrefix() // Disable file name prefix
     ->disablePreview() // Disable export preview
     ->fileNameFieldLabel('File Name') // Label for file name input
     ->formatFieldLabel('Format') // Label for format input

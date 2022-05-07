@@ -5,6 +5,7 @@ namespace AlperenErsoy\FilamentExport\Actions;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanDisableAdditionalColumns;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanDisableColumnFilters;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanDisableFileName;
+use AlperenErsoy\FilamentExport\Actions\Concerns\CanDisableFileNamePrefix;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanDisablePreview;
 use AlperenErsoy\FilamentExport\Actions\Concerns\HasAdditionalColumnsField;
 use AlperenErsoy\FilamentExport\Actions\Concerns\HasColumnFiltersField;
@@ -26,6 +27,7 @@ class FilamentExportHeaderAction extends \Filament\Tables\Actions\ButtonAction
     use CanDisableAdditionalColumns;
     use CanDisableColumnFilters;
     use CanDisableFileName;
+    use CanDisableFileNamePrefix;
     use CanDisablePreview;
     use HasAdditionalColumnsField;
     use HasColumnFiltersField;

@@ -6,6 +6,7 @@ use AlperenErsoy\FilamentExport\FilamentExport;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanDisableAdditionalColumns;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanDisableColumnFilters;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanDisableFileName;
+use AlperenErsoy\FilamentExport\Actions\Concerns\CanDisableFileNamePrefix;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanDisablePreview;
 use AlperenErsoy\FilamentExport\Actions\Concerns\HasAdditionalColumnsField;
 use AlperenErsoy\FilamentExport\Actions\Concerns\HasColumnFiltersField;
@@ -32,6 +33,7 @@ class FilamentExportBulkAction extends \Filament\Tables\Actions\BulkAction
     use HasDefaultFormat;
     use HasDefaultPageOrientation;
     use HasFileName;
+    use CanDisableFileNamePrefix;
     use HasExportModelActions;
     use HasFileNameField;
     use HasFormatField;

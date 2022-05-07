@@ -7,6 +7,7 @@ return [
     'disable_additional_columns' => false,
     'disable_column_filters' => false,
     'disable_file_name' => false,
+    'disable_file_name_prefix' => false,
     'disable_preview' => false,
     'action_icon' => 'heroicon-o-document-download',
     'preview_icon' => 'heroicon-o-eye',

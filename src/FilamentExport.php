@@ -111,6 +111,8 @@ class FilamentExport implements FromCollection, WithHeadings, WithTitle, WithCus
 
         $action->disableFileName(config('filament-export.disable_file_name'));
 
+        $action->disableFileNamePrefix(config('filament-export.disable_file_name_prefix'));
+
         $action->disablePreview(config('filament-export.disable_preview'));
 
         $action->icon(config('filament-export.action_icon'));
