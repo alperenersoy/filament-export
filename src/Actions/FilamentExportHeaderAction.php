@@ -113,7 +113,34 @@ class FilamentExportHeaderAction extends \Filament\Tables\Actions\Action
             $column->applyRelationshipAggregates($query);
         }
 
+        $this->applySortingToTableQuery($query);
+
         return $query->get();
+    }
+
+    protected function applySortingToTableQuery(Builder $query): Builder
+    {
+        $livewire = $this->getLivewire();
+
+        $columnName = $livewire->tableSortColumn;
+
+        if (!$columnName) {
+            return $query;
+        }
+
+        $direction = $livewire->tableSortDirection === 'desc' ? 'desc' : 'asc';
+
+        if ($column = $livewire->getCachedTableColumns()[$columnName]) {
+            $column->applySort($query, $direction);
+
+            return $query;
+        }
+
+        if ($columnName === $livewire->getDefaultSortColumn()) {
+            return $query->orderBy($columnName, $direction);
+        }
+
+        return $query;
     }
 
     public function getRecords(): Collection
