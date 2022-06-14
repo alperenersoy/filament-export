@@ -31,15 +31,17 @@ $table->pushBulkActions([
 ]);
 ```
 
-#### Header Action
+#### Header Action (Experimental)
 
-You can filter, search and export your table with the header action.
+You can filter, search, sort and export your table with the header action. Header action is experimental for now, bulk action is safer to use.
 
 ```php
 $table->pushHeaderActions([
     FilamentExportHeaderAction::make('export')
 ]);
 ```
+
+Since ButtonAction is deprecated you may use this action with ->button() instead.
 
 ### Full Usage
 
