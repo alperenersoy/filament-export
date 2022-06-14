@@ -1,4 +1,9 @@
 <style type="text/css" media="print">
+    * {
+        background: white;
+        color: black;
+    }
+
     html {
         width: 100%;
         height: 0;
