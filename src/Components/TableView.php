@@ -6,7 +6,7 @@ use AlperenErsoy\FilamentExport\Components\Concerns\HasUniqueActionId;
 use AlperenErsoy\FilamentExport\FilamentExport;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Components\Concerns\HasName;
-use Filament\Tables\Actions\Modal\Actions\ButtonAction;
+use Filament\Tables\Actions\Modal\Actions\Action;
 use Illuminate\Support\Collection;
 
 class TableView extends Component
@@ -96,29 +96,32 @@ class TableView extends Component
         return $this->getExport()->collection();
     }
 
-    public function getExportAction(): ButtonAction
+    public function getExportAction(): Action
     {
-        return ButtonAction::make('export')
+        return Action::make('export')
+            ->button()
             ->label(__('filament-export::table_view.export_action_label'))
             ->submit()
             ->icon(config('filament-export.export_icon'));
     }
 
-    public function getPrintAction(): ButtonAction
+    public function getPrintAction(): Action
     {
         $uniqueActionId = $this->getUniqueActionId();
 
-        return ButtonAction::make('print')
+        return Action::make('print')
+            ->button()
             ->label(__('filament-export::table_view.print_action_label'))
             ->action("\$emit('print-table-$uniqueActionId')")
             ->color('gray')
             ->icon(config('filament-export.print_icon'));
     }
 
-    public function getCancelAction(): ButtonAction
+    public function getCancelAction(): Action
     {
-        return ButtonAction::make('cancel')
-            ->label(__('tables::table.actions.modal.buttons.cancel.label'))
+        return Action::make('cancel')
+            ->button()
+            ->label(__('filament-export::export_action.cancel_action_label'))
             ->cancel()
             ->color('secondary')
             ->icon(config('filament-export.cancel_icon'));

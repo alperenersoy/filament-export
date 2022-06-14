@@ -16,6 +16,7 @@ return [
     'export_action_label' => 'Dışarı Aktar',
     'print_action_label' => 'Yazdır',
     'preview_action_label' => 'Önizleme',
+    'cancel_action_label' => 'İptal',
     'page_orientation_portrait' => 'Dikey',
     'page_orientation_landscape' => 'Yatay'
 ];

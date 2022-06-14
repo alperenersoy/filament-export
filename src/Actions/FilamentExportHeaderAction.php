@@ -22,7 +22,7 @@ use AlperenErsoy\FilamentExport\FilamentExport;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
-class FilamentExportHeaderAction extends \Filament\Tables\Actions\ButtonAction
+class FilamentExportHeaderAction extends \Filament\Tables\Actions\Action
 {
     use CanDisableAdditionalColumns;
     use CanDisableColumnFilters;
@@ -82,6 +82,8 @@ class FilamentExportHeaderAction extends \Filament\Tables\Actions\ButtonAction
 
         if (isset($livewire->ownerRecord))
             $query->whereBelongsTo($livewire->ownerRecord);
+
+        $livewire->cacheTableFilters();
 
         $query->where(function (Builder $query) use ($filterData, $livewire) {
             foreach ($livewire->getCachedTableFilters() as $filter) {
