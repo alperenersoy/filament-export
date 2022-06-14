@@ -3,6 +3,8 @@ Customizable export and print functionality for Filament Admin Panel.
 
 This package provides a bulk action and header action to export your filament tables easily.
 
+![filament-export](https://user-images.githubusercontent.com/83382417/173685755-dd2ed5e8-1c77-427f-a51d-6037469bd127.png)
+
 ## Requirements
 - PHP 8
 - [Filament 2.0](https://github.com/laravel-filament/filament)
