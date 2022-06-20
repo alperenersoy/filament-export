@@ -30,7 +30,7 @@ trait HasExportModelActions
                 Action::make('submit')
                     ->button()
                     ->label($this->getModalButtonLabel())
-                    ->submit($this->getLivewireSubmitActionName())
+                    ->submit($this->getLivewireCallActionName())
                     ->color($this->getColor() !== 'secondary' ? $this->getColor() : null)
                     ->icon(config('filament-export.export_icon')),
                 Action::make('print')
