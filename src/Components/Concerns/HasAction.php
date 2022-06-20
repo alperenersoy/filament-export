@@ -2,13 +2,14 @@
 
 namespace AlperenErsoy\FilamentExport\Components\Concerns;
 
-use AlperenErsoy\FilamentExport\Actions\FilamentExportAction;
+use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
+use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
 
 trait HasAction
 {
-    protected FilamentExportAction $action;
+    protected FilamentExportBulkAction | FilamentExportHeaderAction $action;
 
-    public function action(FilamentExportAction $action): static
+    public function action(FilamentExportBulkAction | FilamentExportHeaderAction $action): static
     {
         $this->action = $action;
 
@@ -19,7 +20,7 @@ trait HasAction
         return $this;
     }
 
-    public function getAction(): FilamentExportAction
+    public function getAction(): FilamentExportBulkAction | FilamentExportHeaderAction
     {
         return $this->action;
     }
