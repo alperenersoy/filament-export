@@ -10,8 +10,9 @@ trait HasDefaultPageOrientation
 
     public function defaultPageOrientation(string $defaultPageOrientation): static
     {
-        if (!array_key_exists($defaultPageOrientation, FilamentExport::getPageOrientations()))
+        if (!array_key_exists($defaultPageOrientation, FilamentExport::getPageOrientations())) {
             return $this;
+        }
 
         $this->defaultPageOrientation = $defaultPageOrientation;
 

@@ -80,8 +80,9 @@ class FilamentExportHeaderAction extends \Filament\Tables\Actions\Action
 
         $filterData = $livewire->tableFilters;
 
-        if (isset($livewire->ownerRecord))
+        if (isset($livewire->ownerRecord)) {
             $query->whereBelongsTo($livewire->ownerRecord);
+        }
 
         $livewire->cacheTableFilters();
 

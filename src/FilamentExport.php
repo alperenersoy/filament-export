@@ -4,7 +4,6 @@ namespace AlperenErsoy\FilamentExport;
 
 use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
-use AlperenErsoy\FilamentExport\Components\Concerns\HasUniqueActionId;
 use AlperenErsoy\FilamentExport\Components\TableView;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\ViewColumn;
@@ -63,11 +62,13 @@ class FilamentExport implements FromCollection, WithHeadings, WithTitle, WithCus
     {
         $columns = collect($this->getTable()->getColumns());
 
-        if ($this->getFilteredColumns()->isNotEmpty())
+        if ($this->getFilteredColumns()->isNotEmpty()) {
             $columns = $columns->filter(fn ($column) => $this->getFilteredColumns()->contains($column->getName()));
+        }
 
-        if ($this->getAdditionalColumns()->isNotEmpty())
+        if ($this->getAdditionalColumns()->isNotEmpty()) {
             $columns = $columns->merge($this->getAdditionalColumns());
+        }
 
         return $columns;
     }
@@ -233,11 +234,11 @@ class FilamentExport implements FromCollection, WithHeadings, WithTitle, WithCus
             foreach ($columns as $column) {
                 $column = $column->record($record);
                 $state = in_array(\Filament\Tables\Columns\Concerns\CanFormatState::class, class_uses($column)) ? $column->getFormattedState() : $column->getState();
-                if (is_array($state))
+                if (is_array($state)) {
                     $state = implode(", ", $state);
-                else if ($column instanceof ImageColumn) {
+                } elseif ($column instanceof ImageColumn) {
                     $state = $column->getImagePath();
-                } else if ($column instanceof ViewColumn) {
+                } elseif ($column instanceof ViewColumn) {
                     $state = trim(preg_replace('/\s+/', ' ', strip_tags($column->render()->render())));
                 }
                 $item[$column->getName()] = $state;
@@ -254,10 +255,11 @@ class FilamentExport implements FromCollection, WithHeadings, WithTitle, WithCus
 
         $headers = $allColumns->map(fn ($column) => $column->getLabel());
 
-        if ($this->getFilteredColumns()->isNotEmpty())
+        if ($this->getFilteredColumns()->isNotEmpty()) {
             $headers = $allColumns
                 ->filter(fn ($column) => $this->getFilteredColumns()->contains($column->getName()) || $this->getAdditionalColumns()->contains($column))
                 ->map(fn ($column) => $column->getLabel());
+        }
 
         return $headers->toArray();
     }

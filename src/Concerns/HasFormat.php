@@ -10,8 +10,9 @@ trait HasFormat
 
     public function format(string $format): static
     {
-        if (!array_key_exists($format, FilamentExport::FORMATS))
+        if (!array_key_exists($format, FilamentExport::FORMATS)) {
             return $this;
+        }
 
         $this->format = $format;
 

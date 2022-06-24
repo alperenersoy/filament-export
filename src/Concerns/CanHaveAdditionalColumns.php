@@ -11,8 +11,9 @@ trait CanHaveAdditionalColumns
 
     public function additionalColumns(array $additionalColumns): static
     {
-        if (count($additionalColumns) == 0)
+        if (count($additionalColumns) == 0) {
             return $this;
+        }
 
         $additionalColumns = collect($additionalColumns)->mapWithKeys(function ($value, $key) {
             $name = $key . "-" . uniqid();

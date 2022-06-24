@@ -16,8 +16,9 @@ trait HasFileName
 
     public function getFileName(): string
     {
-        if (!$this->isFileNamePrefixDisabled() && $this->getFileNamePrefix())
+        if (!$this->isFileNamePrefixDisabled() && $this->getFileNamePrefix()) {
             return "{$this->getFileNamePrefix()}-{$this->fileName}";
+        }
 
         return $this->fileName;
     }

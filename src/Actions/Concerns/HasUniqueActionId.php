@@ -2,7 +2,6 @@
 
 namespace AlperenErsoy\FilamentExport\Actions\Concerns;
 
-
 trait HasUniqueActionId
 {
     protected string $uniqueActionId;

@@ -58,8 +58,9 @@ class TableView extends Component
 
     public function filteredColumns(array $columns): static
     {
-        if (count($columns) == 0)
+        if (count($columns) == 0) {
             return $this;
+        }
 
         $this->getExport()->filteredColumns($columns);
 
@@ -73,8 +74,9 @@ class TableView extends Component
 
     public function additionalColumns(array $additionalColumns): static
     {
-        if (count($additionalColumns) == 0)
+        if (count($additionalColumns) == 0) {
             return $this;
+        }
 
         $this->getExport()->additionalColumns($additionalColumns);
 

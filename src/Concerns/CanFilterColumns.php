@@ -10,8 +10,9 @@ trait CanFilterColumns
 
     public function filteredColumns(array $columns): static
     {
-        if (count($columns) == 0)
+        if (count($columns) == 0) {
             return $this;
+        }
 
         $this->filteredColumns = $columns;
 
