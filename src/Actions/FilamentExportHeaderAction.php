@@ -3,12 +3,12 @@
 namespace AlperenErsoy\FilamentExport\Actions;
 
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanDisableAdditionalColumns;
-use AlperenErsoy\FilamentExport\Actions\Concerns\CanDisableColumnFilters;
+use AlperenErsoy\FilamentExport\Actions\Concerns\CanDisableFilterColumns;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanDisableFileName;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanDisableFileNamePrefix;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanDisablePreview;
 use AlperenErsoy\FilamentExport\Actions\Concerns\HasAdditionalColumnsField;
-use AlperenErsoy\FilamentExport\Actions\Concerns\HasColumnFiltersField;
+use AlperenErsoy\FilamentExport\Actions\Concerns\HasFilterColumnsField;
 use AlperenErsoy\FilamentExport\Actions\Concerns\HasDefaultFormat;
 use AlperenErsoy\FilamentExport\Actions\Concerns\HasDefaultPageOrientation;
 use AlperenErsoy\FilamentExport\Actions\Concerns\HasExportModelActions;
@@ -25,12 +25,12 @@ use Illuminate\Support\Collection;
 class FilamentExportHeaderAction extends \Filament\Tables\Actions\Action
 {
     use CanDisableAdditionalColumns;
-    use CanDisableColumnFilters;
+    use CanDisableFilterColumns;
     use CanDisableFileName;
     use CanDisableFileNamePrefix;
     use CanDisablePreview;
     use HasAdditionalColumnsField;
-    use HasColumnFiltersField;
+    use HasFilterColumnsField;
     use HasDefaultFormat;
     use HasDefaultPageOrientation;
     use HasExportModelActions;

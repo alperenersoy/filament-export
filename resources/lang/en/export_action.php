@@ -6,7 +6,7 @@ return [
     'file_name_field_label' => 'File Name',
     'format_field_label' => 'Format',
     'page_orientation_field_label' => 'Page Orientation',
-    'column_filters_field_label' => 'Column Filters',
+    'filter_columns_field_label' => 'Filter Columns',
     'additional_columns_field' => [
         'label' => 'Additional Columns',
         'title_field_label' => 'Title',

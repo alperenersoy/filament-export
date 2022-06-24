@@ -108,7 +108,7 @@ class FilamentExport implements FromCollection, WithHeadings, WithTitle, WithCus
 
         $action->disableAdditionalColumns(config('filament-export.disable_additional_columns'));
 
-        $action->disableColumnFilters(config('filament-export.disable_column_filters'));
+        $action->disableFilterColumns(config('filament-export.disable_filter_columns'));
 
         $action->disableFileName(config('filament-export.disable_file_name'));
 
@@ -122,7 +122,7 @@ class FilamentExport implements FromCollection, WithHeadings, WithTitle, WithCus
 
         $action->fileNameFieldLabel(__('filament-export::export_action.file_name_field_label'));
 
-        $action->columnFiltersFieldLabel(__('filament-export::export_action.column_filters_field_label'));
+        $action->filterColumnsFieldLabel(__('filament-export::export_action.filter_columns_field_label'));
 
         $action->formatFieldLabel(__('filament-export::export_action.format_field_label'));
 
@@ -155,7 +155,7 @@ class FilamentExport implements FromCollection, WithHeadings, WithTitle, WithCus
             $data =  $action instanceof FilamentExportBulkAction ? $livewire->mountedTableBulkActionData : $livewire->mountedTableActionData;
 
             $export = FilamentExport::make()
-                ->filteredColumns($data["column_filters"] ?? [])
+                ->filteredColumns($data["filter_columns"] ?? [])
                 ->additionalColumns($data["additional_columns"] ?? [])
                 ->data($records)
                 ->table($action->getTable());
@@ -183,12 +183,12 @@ class FilamentExport implements FromCollection, WithHeadings, WithTitle, WithCus
                 ->default($action->getDefaultPageOrientation())
                 ->visible(fn ($get) => $get('format') === 'pdf')
                 ->reactive(),
-            \Filament\Forms\Components\MultiSelect::make('column_filters')
-                ->label($action->getColumnFiltersFieldLabel())
+            \Filament\Forms\Components\MultiSelect::make('filter_columns')
+                ->label($action->getFilterColumnsFieldLabel())
                 ->options($columns)
                 ->afterStateUpdated($updateTableView)
                 ->reactive()
-                ->hidden($action->isColumnFiltersDisabled()),
+                ->hidden($action->isFilterColumnsDisabled()),
             \Filament\Forms\Components\KeyValue::make('additional_columns')
                 ->label($action->getAdditionalColumnsFieldLabel())
                 ->keyLabel($action->getAdditionalColumnsTitleFieldLabel())
@@ -214,7 +214,7 @@ class FilamentExport implements FromCollection, WithHeadings, WithTitle, WithCus
             ->fileName($data["file_name"] ?? $action->getFileName())
             ->data($records)
             ->table($action->getTable())
-            ->filteredColumns(!$action->isColumnFiltersDisabled() ? $data["column_filters"] : [])
+            ->filteredColumns(!$action->isFilterColumnsDisabled() ? $data["filter_columns"] : [])
             ->additionalColumns(!$action->isAdditionalColumnsDisabled() ? $data["additional_columns"] : [])
             ->format($data["format"] ?? $action->getDefaultFormat())
             ->pageOrientation($data["page_orientation"] ?? $action->getDefaultPageOrientation())

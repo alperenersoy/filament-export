@@ -56,14 +56,14 @@ FilamentExportBulkAction::make('export')
     ->defaultFormat('pdf') // xlsx, csv or pdf
     ->defaultPageOrientation('landscape') // Page orientation for pdf files. portrait or landscape
     ->disableAdditionalColumns() // Disable additional columns input
-    ->disableColumnFilters() // Disable column filters input
+    ->disableFilterColumns() // Disable filter columns input
     ->disableFileName() // Disable file name input
     ->disableFileNamePrefix() // Disable file name prefix
     ->disablePreview() // Disable export preview
     ->fileNameFieldLabel('File Name') // Label for file name input
     ->formatFieldLabel('Format') // Label for format input
     ->pageOrientationFieldLabel('Page Orientation') // Label for page orientation input
-    ->columnFiltersFieldLabel('Column Filters') // Label for column filters input
+    ->filterColumnsFieldLabel('filter columns') // Label for filter columns input
     ->additionalColumnsFieldLabel('Additional Columns') // Label for additional columns input
     ->additionalColumnsTitleFieldLabel('Title') // Label for additional columns' title input 
     ->additionalColumnsDefaultValueFieldLabel('Default Value') // Label for additional columns' default value input 
@@ -87,7 +87,7 @@ return [
     'time_format' => 'M_d_Y-H_i',
     'default_page_orientation' => 'portrait',
     'disable_additional_columns' => false,
-    'disable_column_filters' => false,
+    'disable_filter_columns' => false,
     'disable_file_name' => false,
     'disable_preview' => false,
     'action_icon' => 'heroicon-o-document-download',

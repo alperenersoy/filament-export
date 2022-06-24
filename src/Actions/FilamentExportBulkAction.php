@@ -4,12 +4,12 @@ namespace AlperenErsoy\FilamentExport\Actions;
 
 use AlperenErsoy\FilamentExport\FilamentExport;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanDisableAdditionalColumns;
-use AlperenErsoy\FilamentExport\Actions\Concerns\CanDisableColumnFilters;
+use AlperenErsoy\FilamentExport\Actions\Concerns\CanDisableFilterColumns;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanDisableFileName;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanDisableFileNamePrefix;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanDisablePreview;
 use AlperenErsoy\FilamentExport\Actions\Concerns\HasAdditionalColumnsField;
-use AlperenErsoy\FilamentExport\Actions\Concerns\HasColumnFiltersField;
+use AlperenErsoy\FilamentExport\Actions\Concerns\HasFilterColumnsField;
 use AlperenErsoy\FilamentExport\Actions\Concerns\HasDefaultFormat;
 use AlperenErsoy\FilamentExport\Actions\Concerns\HasDefaultPageOrientation;
 use AlperenErsoy\FilamentExport\Actions\Concerns\HasExportModelActions;
@@ -25,11 +25,11 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 class FilamentExportBulkAction extends \Filament\Tables\Actions\BulkAction
 {
     use CanDisableAdditionalColumns;
-    use CanDisableColumnFilters;
+    use CanDisableFilterColumns;
     use CanDisableFileName;
     use CanDisablePreview;
     use HasAdditionalColumnsField;
-    use HasColumnFiltersField;
+    use HasFilterColumnsField;
     use HasDefaultFormat;
     use HasDefaultPageOrientation;
     use HasFileName;

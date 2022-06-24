@@ -5,7 +5,7 @@ return [
     'time_format' => 'M_d_Y-H_i',
     'default_page_orientation' => 'portrait',
     'disable_additional_columns' => false,
-    'disable_column_filters' => false,
+    'disable_filter_columns' => false,
     'disable_file_name' => false,
     'disable_file_name_prefix' => false,
     'disable_preview' => false,

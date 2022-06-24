@@ -6,7 +6,7 @@ return [
     'file_name_field_label' => 'Dosya Adı',
     'format_field_label' => 'Dosya Türü',
     'page_orientation_field_label' => 'Sayfa Yönlendirmesi',
-    'column_filters_field_label' => 'Sütun Filtreleri',
+    'filter_columns_field_label' => 'Sütun Filtreleri',
     'additional_columns_field' => [
         'label' => 'Ek Sütunlar',
         'title_field_label' => 'Başlık',
