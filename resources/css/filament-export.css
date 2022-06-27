@@ -1,0 +1,70 @@
+.preview-table {
+    background: white;
+    color: black;
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+.preview-table td,
+.preview-table th {
+    border-color: #ededed;
+    border-style: solid;
+    border-width: 1px;
+    font-size: 13px;
+    line-height: 2;
+    overflow: hidden;
+    padding-left: 6px;
+    word-break: normal;
+}
+
+.preview-table th {
+    font-weight: normal;
+}
+
+@media print {
+    .printing * {
+        background: white;
+        color: black;
+        visibility: hidden;
+        height: 0;
+    }
+
+    #printArea,
+    #printArea * {
+        visibility: visible;
+    }
+
+    #printArea {
+        position: absolute;
+        width: 100%;
+        max-height: 100%;
+        left: 0;
+        top: 0;
+    }
+
+    .preview-table {
+        page-break-after: auto
+    }
+
+    .preview-table tr {
+        page-break-inside: avoid;
+        page-break-after: auto
+    }
+
+    .preview-table td {
+        page-break-inside: avoid;
+        page-break-after: auto
+    }
+}
+
+@media screen {
+    #printArea {
+        display: none;
+    }
+
+    .preview-table-wrapper {
+        max-height: min(600px, 80vh);
+        overflow-y: scroll;
+    }
+}
