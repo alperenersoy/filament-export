@@ -148,8 +148,8 @@ class FilamentExport implements FromCollection, WithHeadings, WithTitle, WithCus
         $action->fileNamePrefix($action->getFileNamePrefix() ?: $action->getTable()->getHeading());
 
         $columns = collect($action->getTable()->getColumns())
-            ->map(fn ($column) => ['name' => $column->getName(), 'label' => $column->getLabel()])
-            ->pluck('label', 'name');
+            ->mapWithKeys(fn ($column) => [$column->getName() => $column->getLabel()])
+            ->toArray();
 
         $updateTableView = function ($component, $livewire) use ($records, $action) {
             $data =  $action instanceof FilamentExportBulkAction ? $livewire->mountedTableBulkActionData : $livewire->mountedTableActionData;
@@ -183,9 +183,11 @@ class FilamentExport implements FromCollection, WithHeadings, WithTitle, WithCus
                 ->default($action->getDefaultPageOrientation())
                 ->visible(fn ($get) => $get('format') === 'pdf')
                 ->reactive(),
-            \Filament\Forms\Components\MultiSelect::make('filter_columns')
+            \Filament\Forms\Components\CheckboxList::make('filter_columns')
                 ->label($action->getFilterColumnsFieldLabel())
                 ->options($columns)
+                ->columns(4)
+                ->default(array_keys($columns))
                 ->afterStateUpdated($updateTableView)
                 ->reactive()
                 ->hidden($action->isFilterColumnsDisabled()),
