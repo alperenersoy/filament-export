@@ -28,8 +28,10 @@ composer require alperenersoy/filament-export
 You can export selected rows with the bulk action.
 
 ```php
-$table->pushBulkActions([
+$table->bulkActions([
+    ...
     FilamentExportBulkAction::make('export')
+    ...
 ]);
 ```
 
@@ -38,8 +40,10 @@ $table->pushBulkActions([
 You can filter, search, sort and export your table with the header action. Header action is experimental for now, bulk action is safer to use.
 
 ```php
-$table->pushHeaderActions([
+$table->headerActions([
+    ...
     FilamentExportHeaderAction::make('export')
+    ...
 ]);
 ```
 
