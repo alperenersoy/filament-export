@@ -94,6 +94,7 @@ return [
     'disable_filter_columns' => false,
     'disable_file_name' => false,
     'disable_preview' => false,
+    'use_snappy' => false,
     'action_icon' => 'heroicon-o-document-download',
     'preview_icon' => 'heroicon-o-eye',
     'export_icon' => 'heroicon-o-download',
@@ -115,3 +116,31 @@ This package has two views:
 1. "components\table_view.blade.php" view is used for preview and as print template.
 
 2. "pdf.blade.php" view is used as pdf export template.
+
+## Using Snappy
+
+By default, this package uses [dompdf](https://github.com/barryvdh/laravel-dompdf) as pdf generator.
+
+If you want to use Snappy instead you need to install **barryvdh/laravel-snappy** to your project and configure it yourself. (See [barryvdh/laravel-snappy](https://github.com/barryvdh/laravel-snappy) for more information.)
+
+To use snappy for PDF exports:
+
+1. You can simply add ->snappy() to your actions.
+   
+```php
+FilamentExportBulkAction::make('export')
+    ->snappy()
+```
+or
+```php
+FilamentExportHeaderAction::make('export')
+    ->snappy()
+```
+2. You can update the config file to use it as default.
+```php
+[
+    ...
+    'use_snappy' => true,
+    ...
+]
+```
