@@ -17,12 +17,12 @@ use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Facades\Excel;
 use AlperenErsoy\FilamentExport\Concerns\CanFilterColumns;
 use AlperenErsoy\FilamentExport\Concerns\CanHaveAdditionalColumns;
+use AlperenErsoy\FilamentExport\Concerns\CanUseSnappy;
 use AlperenErsoy\FilamentExport\Concerns\HasData;
 use AlperenErsoy\FilamentExport\Concerns\HasFileName;
 use AlperenErsoy\FilamentExport\Concerns\HasFormat;
 use AlperenErsoy\FilamentExport\Concerns\HasPageOrientation;
 use AlperenErsoy\FilamentExport\Concerns\HasTable;
-use Barryvdh\DomPDF\PDF;
 use Carbon\Carbon;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -31,6 +31,7 @@ class FilamentExport implements FromCollection, WithHeadings, WithTitle, WithCus
 {
     use CanFilterColumns;
     use CanHaveAdditionalColumns;
+    use CanUseSnappy;
     use HasData;
     use HasFileName;
     use HasFormat;
@@ -87,15 +88,22 @@ class FilamentExport implements FromCollection, WithHeadings, WithTitle, WithCus
     {
         if ($this->getFormat() === 'pdf') {
             $pdf = $this->getPdf();
+
             return response()->streamDownload(fn () => print($pdf->output()), "{$this->getFileName()}.{$this->getFormat()}");
         }
 
         return Excel::download($this, "{$this->getFileName()}.{$this->getFormat()}", static::FORMATS[$this->getFormat()]);
     }
 
-    public function getPdf(): PDF
+    public function getPdf(): \Barryvdh\DomPDF\PDF | \Barryvdh\Snappy\PdfWrapper
     {
-        return \Barryvdh\DomPDF\Facade\Pdf::loadView($this->getPdfView(), $this->getPdfViewData())->setPaper('A4', $this->getPageOrientation());
+        if ($this->shouldUseSnappy()) {
+            return \Barryvdh\Snappy\Facades\SnappyPdf::loadView($this->getPdfView(), $this->getPdfViewData())
+                ->setPaper('A4', $this->getPageOrientation());
+        }
+
+        return \Barryvdh\DomPDF\Facade\Pdf::loadView($this->getPdfView(), $this->getPdfViewData())
+            ->setPaper('A4', $this->getPageOrientation());
     }
 
     public static function setUpFilamentExportAction(FilamentExportHeaderAction | FilamentExportBulkAction $action): void
@@ -115,6 +123,8 @@ class FilamentExport implements FromCollection, WithHeadings, WithTitle, WithCus
         $action->disableFileNamePrefix(config('filament-export.disable_file_name_prefix'));
 
         $action->disablePreview(config('filament-export.disable_preview'));
+
+        $action->snappy(config('filament-export.use_snappy'));
 
         $action->icon(config('filament-export.action_icon'));
 
@@ -220,6 +230,7 @@ class FilamentExport implements FromCollection, WithHeadings, WithTitle, WithCus
             ->additionalColumns(!$action->isAdditionalColumnsDisabled() ? $data["additional_columns"] : [])
             ->format($data["format"] ?? $action->getDefaultFormat())
             ->pageOrientation($data["page_orientation"] ?? $action->getDefaultPageOrientation())
+            ->snappy($action->shouldUseSnappy())
             ->download();
     }
 

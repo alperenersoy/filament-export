@@ -9,6 +9,7 @@ return [
     'disable_file_name' => false,
     'disable_file_name_prefix' => false,
     'disable_preview' => false,
+    'use_snappy' => true,
     'action_icon' => 'heroicon-o-document-download',
     'preview_icon' => 'heroicon-o-eye',
     'export_icon' => 'heroicon-o-download',
