@@ -18,5 +18,5 @@ return [
     'preview_action_label' => 'Prévisualisation',
     'cancel_action_label' => 'Annuler',
     'page_orientation_portrait' => 'Portrait',
-    'page_orientation_landscape' => 'Landscape'
+    'page_orientation_landscape' => 'Paysage'
 ];
