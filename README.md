@@ -101,3 +101,17 @@ return [
     'cancel_icon' => 'heroicon-o-x-circle'
 ];
 ```
+
+## Overriding Views
+
+Publish views
+
+```bash
+php artisan vendor:publish --provider="AlperenErsoy\FilamentExport\FilamentExportServiceProvider" --tag="views"
+```
+
+This package has two views:
+
+1. "components\table_view.blade.php" view is used for preview and as print template.
+
+2. "pdf.blade.php" view is used as pdf export template.
