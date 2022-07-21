@@ -124,7 +124,7 @@ class FilamentExport implements FromCollection, WithHeadings, WithTitle, WithCus
 
         $action->disablePreview(config('filament-export.disable_preview'));
 
-        $action->snappy(config('filament-export.use_snappy'));
+        $action->snappy(config('filament-export.use_snappy', false));
 
         $action->icon(config('filament-export.action_icon'));
 
