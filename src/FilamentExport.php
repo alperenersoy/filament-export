@@ -17,6 +17,7 @@ use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Facades\Excel;
 use AlperenErsoy\FilamentExport\Concerns\CanFilterColumns;
 use AlperenErsoy\FilamentExport\Concerns\CanHaveAdditionalColumns;
+use AlperenErsoy\FilamentExport\Concerns\CanHaveExtraViewData;
 use AlperenErsoy\FilamentExport\Concerns\CanUseSnappy;
 use AlperenErsoy\FilamentExport\Concerns\HasData;
 use AlperenErsoy\FilamentExport\Concerns\HasFileName;
@@ -31,6 +32,7 @@ class FilamentExport implements FromCollection, WithHeadings, WithTitle, WithCus
 {
     use CanFilterColumns;
     use CanHaveAdditionalColumns;
+    use CanHaveExtraViewData;
     use CanUseSnappy;
     use HasData;
     use HasFileName;
@@ -81,7 +83,14 @@ class FilamentExport implements FromCollection, WithHeadings, WithTitle, WithCus
 
     public function getPdfViewData(): array
     {
-        return ['fileName' => $this->getFileName(), 'columns' => $this->getAllColumns(), 'rows' => $this->collection()];
+        return array_merge(
+            [
+                'fileName' => $this->getFileName(),
+                'columns' => $this->getAllColumns(),
+                'rows' => $this->collection()
+            ],
+            $this->getExtraViewData()
+        );
     }
 
     public function download(): BinaryFileResponse | StreamedResponse
@@ -168,7 +177,8 @@ class FilamentExport implements FromCollection, WithHeadings, WithTitle, WithCus
                 ->filteredColumns($data["filter_columns"] ?? [])
                 ->additionalColumns($data["additional_columns"] ?? [])
                 ->data($records)
-                ->table($action->getTable());
+                ->table($action->getTable())
+                ->extraViewData($action->getExtraViewData());
 
             $table_view = $component->getContainer()->getComponent(fn ($component) => $component->getName() === 'table_view');
 
@@ -214,6 +224,7 @@ class FilamentExport implements FromCollection, WithHeadings, WithTitle, WithCus
                     FilamentExport::make()
                         ->data($records)
                         ->table($action->getTable())
+                        ->extraViewData($action->getExtraViewData())
                 )
                 ->uniqueActionId($action->getUniqueActionId())
                 ->reactive()
@@ -231,6 +242,7 @@ class FilamentExport implements FromCollection, WithHeadings, WithTitle, WithCus
             ->format($data["format"] ?? $action->getDefaultFormat())
             ->pageOrientation($data["page_orientation"] ?? $action->getDefaultPageOrientation())
             ->snappy($action->shouldUseSnappy())
+            ->extraViewData($action->getExtraViewData())
             ->download();
     }
 
