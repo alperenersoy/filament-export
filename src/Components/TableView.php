@@ -88,6 +88,18 @@ class TableView extends Component
         return $this->getExport()->getAdditionalColumns();
     }
 
+    public function extraViewData(array $extraViewData): static
+    {
+        $this->getExport()->extraViewData($extraViewData);
+
+        return $this;
+    }
+
+    public function getExtraViewData(): array
+    {
+        return $this->getExport()->getExtraViewData();
+    }
+
     public function getAllColumns(): Collection
     {
         return $this->getExport()->getAllColumns();
@@ -141,5 +153,13 @@ class TableView extends Component
     public function getPreviewModalHeading(): string
     {
         return __('filament-export::table_view.preview_modal_heading');
+    }
+
+    public function data()
+    {
+        return array_merge(
+            parent::data(),
+            $this->getExport()->getExtraViewData()
+        );
     }
 }

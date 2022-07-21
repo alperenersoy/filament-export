@@ -116,6 +116,30 @@ This package has two views:
 1. "components\table_view.blade.php" view is used for preview and as print template.
 
 2. "pdf.blade.php" view is used as pdf export template.
+   
+### Using Custom Variables In Templates
+
+```php
+FilamentExportBulkAction::make('export')
+    ->extraViewData([
+        'myVariable' => 'My Variable'
+    ])
+```
+
+or use closures
+
+```php
+FilamentExportHeaderAction::make('export')
+    ->extraViewData(fn ($action) => [
+        'recordCount' => $action->getRecords()->count()
+    ])
+```
+
+Then use them in the templates as regular blade variables:
+
+```blade
+{{ $myVariable }}
+```
 
 ## Using Snappy
 
