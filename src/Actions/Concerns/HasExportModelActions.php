@@ -24,13 +24,21 @@ trait HasExportModelActions
     {
         $uniqueActionId = $this->getUniqueActionId();
 
+        $livewireCallActionName = null;
+
+        if (method_exists($this, 'getLivewireSubmitActionName')) {
+            $livewireCallActionName = $this->getLivewireSubmitActionName();
+        } else if (method_exists($this, 'getLivewireCallActionName')) {
+            $livewireCallActionName = $this->getLivewireCallActionName();
+        }
+
         return array_merge(
             $this->getPreviewAction(),
             [
                 Action::make('submit')
                     ->button()
                     ->label($this->getModalButtonLabel())
-                    ->submit($this->getLivewireCallActionName())
+                    ->submit($livewireCallActionName)
                     ->color($this->getColor() !== 'secondary' ? $this->getColor() : null)
                     ->icon(config('filament-export.export_icon')),
                 Action::make('print')
