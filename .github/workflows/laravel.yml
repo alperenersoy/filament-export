@@ -35,12 +35,5 @@ jobs:
             - name: Install dependencies
               run: |
                   composer update --${{ matrix.dependency-version }} --prefer-dist --no-interaction
-            - name: Create Database
-              run: |
-                mkdir -p database
-                touch database/database.sqlite
             - name: Execute tests
-              env:
-                DB_CONNECTION: sqlite
-                DB_DATABASE: database/database.sqlite
               run: ./vendor/bin/pest --verbose
