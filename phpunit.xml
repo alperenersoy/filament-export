@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd" bootstrap="vendor/autoload.php" colors="true" backupGlobals="false">
+    <testsuites>
+        <testsuite name="Feature">
+            <directory suffix="Test.php">./tests/src</directory>
+        </testsuite>
+    </testsuites>
+    <coverage processUncoveredFiles="true">
+        <include>
+            <directory suffix=".php">./src</directory>
+        </include>
+    </coverage>
+    <php>
+        <server name="APP_ENV" value="testing" />
+        <server name="APP_KEY" value="base64:sA45WpnI8O75z2jhoN8DZ6SwjtBGnrMlsPWI2p4IFwU=" />
+        <server name="SESSION_DRIVER" value="array" />
+        <server name="DB_CONNECTION" value="sqlite" />
+        <server name="DB_DATABASE" value=":memory:" />
+    </php>
+</phpunit>
