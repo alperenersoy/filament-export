@@ -6,15 +6,28 @@
             "AlperenErsoy\\FilamentExport\\": "src/"
         }
     },
-    "authors": [{
-        "name": "alperen ersoy",
-        "email": "ersoyalperen@gmail.com"
-    }],
+    "autoload-dev": {
+        "psr-4": {
+            "AlperenErsoy\\FilamentExport\\Tests\\": "tests/src/",
+            "AlperenErsoy\\FilamentExport\\Tests\\Database\\Factories\\": "tests/database/factories/"
+        }
+    },
+    "authors": [
+        {
+            "name": "alperen ersoy",
+            "email": "ersoyalperen@gmail.com"
+        }
+    ],
     "require": {
         "php": "^8.0",
         "filament/filament": "^2.0",
         "maatwebsite/excel": "^3.1",
         "barryvdh/laravel-dompdf": "^2.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^7.6",
+        "pestphp/pest": "^1.21",
+        "pestphp/pest-plugin-livewire": "^1.0"
     },
     "extra": {
         "laravel": {
@@ -23,5 +36,10 @@
             ]
         }
     },
-    "license": "MIT"
+    "license": "MIT",
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    }
 }
