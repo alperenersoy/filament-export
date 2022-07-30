@@ -34,6 +34,6 @@ jobs:
                   coverage: none
             - name: Install dependencies
               run: |
-                  composer install --${{ matrix.dependency-version }} --prefer-dist --no-interaction
+                  composer update --${{ matrix.dependency-version }} --prefer-dist --no-interaction
             - name: Execute tests
               run: ./vendor/bin/pest --verbose
