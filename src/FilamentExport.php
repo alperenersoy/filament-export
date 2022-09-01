@@ -18,6 +18,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use AlperenErsoy\FilamentExport\Concerns\CanFilterColumns;
 use AlperenErsoy\FilamentExport\Concerns\CanHaveAdditionalColumns;
 use AlperenErsoy\FilamentExport\Concerns\CanHaveExtraViewData;
+use AlperenErsoy\FilamentExport\Concerns\CanShowHiddenColumns;
 use AlperenErsoy\FilamentExport\Concerns\CanUseSnappy;
 use AlperenErsoy\FilamentExport\Concerns\HasData;
 use AlperenErsoy\FilamentExport\Concerns\HasFileName;
@@ -33,6 +34,7 @@ class FilamentExport implements FromCollection, WithHeadings, WithTitle, WithCus
     use CanFilterColumns;
     use CanHaveAdditionalColumns;
     use CanHaveExtraViewData;
+    use CanShowHiddenColumns;
     use CanUseSnappy;
     use HasData;
     use HasFileName;
@@ -63,7 +65,9 @@ class FilamentExport implements FromCollection, WithHeadings, WithTitle, WithCus
 
     public function getAllColumns(): Collection
     {
-        $columns = collect($this->getTable()->getColumns());
+        $tableColumns = $this->shouldShowHiddenColumns() ? $this->getTable()->getLivewire()->getCachedTableColumns() : $this->getTable()->getColumns();
+
+        $columns = collect($tableColumns);
 
         if ($this->getFilteredColumns()->isNotEmpty()) {
             $columns = $columns->filter(fn ($column) => $this->getFilteredColumns()->contains($column->getName()));
@@ -166,7 +170,9 @@ class FilamentExport implements FromCollection, WithHeadings, WithTitle, WithCus
     {
         $action->fileNamePrefix($action->getFileNamePrefix() ?: $action->getTable()->getHeading());
 
-        $columns = collect($action->getTable()->getColumns())
+        $tableColumns = $action->shouldShowHiddenColumns() ? $action->getLivewire()->getCachedTableColumns() : $action->getTable()->getColumns();
+
+        $columns = collect($tableColumns)
             ->mapWithKeys(fn ($column) => [$column->getName() => $column->getLabel()])
             ->toArray();
 
@@ -178,7 +184,8 @@ class FilamentExport implements FromCollection, WithHeadings, WithTitle, WithCus
                 ->additionalColumns($data["additional_columns"] ?? [])
                 ->data($records)
                 ->table($action->getTable())
-                ->extraViewData($action->getExtraViewData());
+                ->extraViewData($action->getExtraViewData())
+                ->withHiddenColumns($action->shouldShowHiddenColumns());
 
             $table_view = $component->getContainer()->getComponent(fn ($component) => $component->getName() === 'table_view');
 
@@ -225,6 +232,7 @@ class FilamentExport implements FromCollection, WithHeadings, WithTitle, WithCus
                         ->data($records)
                         ->table($action->getTable())
                         ->extraViewData($action->getExtraViewData())
+                        ->withHiddenColumns($action->shouldShowHiddenColumns())
                 )
                 ->uniqueActionId($action->getUniqueActionId())
                 ->reactive()
@@ -243,6 +251,7 @@ class FilamentExport implements FromCollection, WithHeadings, WithTitle, WithCus
             ->pageOrientation($data["page_orientation"] ?? $action->getDefaultPageOrientation())
             ->snappy($action->shouldUseSnappy())
             ->extraViewData($action->getExtraViewData())
+            ->withHiddenColumns($action->shouldShowHiddenColumns())
             ->download();
     }
 

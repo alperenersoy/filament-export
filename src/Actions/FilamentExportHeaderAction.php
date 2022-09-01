@@ -8,6 +8,7 @@ use AlperenErsoy\FilamentExport\Actions\Concerns\CanDisableFileName;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanDisableFileNamePrefix;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanDisablePreview;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanHaveExtraViewData;
+use AlperenErsoy\FilamentExport\Actions\Concerns\CanShowHiddenColumns;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanUseSnappy;
 use AlperenErsoy\FilamentExport\Actions\Concerns\HasAdditionalColumnsField;
 use AlperenErsoy\FilamentExport\Actions\Concerns\HasFilterColumnsField;
@@ -32,6 +33,7 @@ class FilamentExportHeaderAction extends \Filament\Tables\Actions\Action
     use CanDisableFileNamePrefix;
     use CanDisablePreview;
     use CanHaveExtraViewData;
+    use CanShowHiddenColumns;
     use CanUseSnappy;
     use HasAdditionalColumnsField;
     use HasFilterColumnsField;
