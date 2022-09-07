@@ -24,6 +24,7 @@ use AlperenErsoy\FilamentExport\Actions\Concerns\HasUniqueActionId;
 use AlperenErsoy\FilamentExport\FilamentExport;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use ReflectionMethod;
 
 class FilamentExportHeaderAction extends \Filament\Tables\Actions\Action
 {
@@ -82,7 +83,18 @@ class FilamentExportHeaderAction extends \Filament\Tables\Actions\Action
         $livewire = $this->getLivewire();
 
         $model = $this->getTable()->getModel();
+
         $query = $model::query();
+
+        if (method_exists($livewire, 'getResource')) {
+            $query = $livewire::getResource()::getEloquentQuery();
+        }
+
+        $reflection = new ReflectionMethod($livewire, 'getTableQuery');
+
+        if ($reflection->isPublic()) {
+            $query = $livewire->getTableQuery();
+        }
 
         $filterData = $livewire->tableFilters;
 
