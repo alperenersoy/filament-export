@@ -260,7 +260,8 @@ class FilamentExport implements FromCollection, WithHeadings, WithTitle, WithCus
 
     public function collection(): Collection
     {
-        $records = $this->getData();
+        $records = $this->getData()
+                        ->when($this->getRecordLimit(), fn ($collection) => $collection->take($this->getRecordLimit()));
 
         $columns = $this->getAllColumns();
 
@@ -283,8 +284,7 @@ class FilamentExport implements FromCollection, WithHeadings, WithTitle, WithCus
             array_push($items, $item);
         }
 
-        return collect($items)
-            ->when($this->getRecordLimit(), fn ($collection) => $collection->take($this->getRecordLimit()));
+        return collect($items);
     }
 
     public function headings(): array
