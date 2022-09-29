@@ -2,6 +2,7 @@
 
 namespace AlperenErsoy\FilamentExport\Actions;
 
+use AlperenErsoy\FilamentExport\Actions\Concerns\HasRecordLimit;
 use AlperenErsoy\FilamentExport\FilamentExport;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanDisableAdditionalColumns;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanDisableFilterColumns;
@@ -46,6 +47,7 @@ class FilamentExportBulkAction extends \Filament\Tables\Actions\BulkAction
     use HasPageOrientationField;
     use HasTimeFormat;
     use HasUniqueActionId;
+    use HasRecordLimit;
 
     protected function setUp(): void
     {

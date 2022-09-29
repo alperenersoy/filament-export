@@ -2,6 +2,7 @@
 
 namespace AlperenErsoy\FilamentExport;
 
+use AlperenErsoy\FilamentExport\Actions\Concerns\HasRecordLimit;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
 use AlperenErsoy\FilamentExport\Components\TableView;
@@ -41,6 +42,7 @@ class FilamentExport implements FromCollection, WithHeadings, WithTitle, WithCus
     use HasFormat;
     use HasPageOrientation;
     use HasTable;
+    use HasRecordLimit;
 
     public const FORMATS = [
         'xlsx' => \Maatwebsite\Excel\Excel::XLSX,
@@ -252,6 +254,7 @@ class FilamentExport implements FromCollection, WithHeadings, WithTitle, WithCus
             ->snappy($action->shouldUseSnappy())
             ->extraViewData($action->getExtraViewData())
             ->withHiddenColumns($action->shouldShowHiddenColumns())
+            ->recordLimit($action->getRecordLimit())
             ->download();
     }
 
@@ -280,7 +283,8 @@ class FilamentExport implements FromCollection, WithHeadings, WithTitle, WithCus
             array_push($items, $item);
         }
 
-        return collect($items);
+        return collect($items)
+            ->when($this->getRecordLimit(), fn ($collection) => $collection->take($this->getRecordLimit()));
     }
 
     public function headings(): array
