@@ -107,7 +107,7 @@ class TableView extends Component
 
     public function getRows(): Collection
     {
-        return $this->getExport()->collection();
+        return $this->getExport()->getRows();
     }
 
     public function getExportAction(): Action

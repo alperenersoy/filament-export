@@ -9,12 +9,6 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\ViewColumn;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Date;
-use Maatwebsite\Excel\Concerns\FromCollection;
-use Maatwebsite\Excel\Concerns\ShouldAutoSize;
-use Maatwebsite\Excel\Concerns\WithCustomCsvSettings;
-use Maatwebsite\Excel\Concerns\WithHeadings;
-use Maatwebsite\Excel\Concerns\WithTitle;
-use Maatwebsite\Excel\Facades\Excel;
 use AlperenErsoy\FilamentExport\Concerns\CanFilterColumns;
 use AlperenErsoy\FilamentExport\Concerns\CanHaveAdditionalColumns;
 use AlperenErsoy\FilamentExport\Concerns\CanHaveExtraViewData;
@@ -26,10 +20,10 @@ use AlperenErsoy\FilamentExport\Concerns\HasFormat;
 use AlperenErsoy\FilamentExport\Concerns\HasPageOrientation;
 use AlperenErsoy\FilamentExport\Concerns\HasTable;
 use Carbon\Carbon;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Spatie\SimpleExcel\SimpleExcelWriter;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
-class FilamentExport implements FromCollection, WithHeadings, WithTitle, WithCustomCsvSettings, ShouldAutoSize
+class FilamentExport
 {
     use CanFilterColumns;
     use CanHaveAdditionalColumns;
@@ -43,9 +37,9 @@ class FilamentExport implements FromCollection, WithHeadings, WithTitle, WithCus
     use HasTable;
 
     public const FORMATS = [
-        'xlsx' => \Maatwebsite\Excel\Excel::XLSX,
-        'csv' => \Maatwebsite\Excel\Excel::CSV,
-        'pdf' => 'Pdf'
+        'xlsx' => 'XLSX',
+        'csv' => 'CSV',
+        'pdf' => 'PDF'
     ];
 
     public static function make(): static
@@ -91,13 +85,13 @@ class FilamentExport implements FromCollection, WithHeadings, WithTitle, WithCus
             [
                 'fileName' => $this->getFileName(),
                 'columns' => $this->getAllColumns(),
-                'rows' => $this->collection()
+                'rows' => $this->getRows()
             ],
             $this->getExtraViewData()
         );
     }
 
-    public function download(): BinaryFileResponse | StreamedResponse
+    public function download(): StreamedResponse
     {
         if ($this->getFormat() === 'pdf') {
             $pdf = $this->getPdf();
@@ -105,7 +99,15 @@ class FilamentExport implements FromCollection, WithHeadings, WithTitle, WithCus
             return response()->streamDownload(fn () => print($pdf->output()), "{$this->getFileName()}.{$this->getFormat()}");
         }
 
-        return Excel::download($this, "{$this->getFileName()}.{$this->getFormat()}", static::FORMATS[$this->getFormat()]);
+        return response()->streamDownload(function () {
+            $headers = $this->getAllColumns()->map(fn ($column) => $column->getLabel())->toArray();
+
+            $stream = SimpleExcelWriter::streamDownload("{$this->getFileName()}.{$this->getFormat()}",  $this->getFormat())
+                ->noHeaderRow()
+                ->addRows($this->getRows()->prepend($headers));
+
+            $stream->close();
+        }, "{$this->getFileName()}.{$this->getFormat()}");
     }
 
     public function getPdf(): \Barryvdh\DomPDF\PDF | \Barryvdh\Snappy\PdfWrapper
@@ -255,7 +257,7 @@ class FilamentExport implements FromCollection, WithHeadings, WithTitle, WithCus
             ->download();
     }
 
-    public function collection(): Collection
+    public function getRows(): Collection
     {
         $records = $this->getData();
 
@@ -281,30 +283,5 @@ class FilamentExport implements FromCollection, WithHeadings, WithTitle, WithCus
         }
 
         return collect($items);
-    }
-
-    public function headings(): array
-    {
-        $allColumns = $this->getAllColumns();
-
-        $headers = $allColumns->map(fn ($column) => $column->getLabel());
-
-        if ($this->getFilteredColumns()->isNotEmpty()) {
-            $headers = $allColumns
-                ->filter(fn ($column) => $this->getFilteredColumns()->contains($column->getName()) || $this->getAdditionalColumns()->contains($column))
-                ->map(fn ($column) => $column->getLabel());
-        }
-
-        return $headers->toArray();
-    }
-
-    public function title(): string
-    {
-        return $this->getFileName();
-    }
-
-    public function getCsvSettings(): array
-    {
-        return ['use_bom' => true];
     }
 }
