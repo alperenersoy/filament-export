@@ -12,7 +12,6 @@ use Filament\Notifications\NotificationsServiceProvider;
 use Filament\Support\SupportServiceProvider;
 use Filament\Tables\TablesServiceProvider;
 use Livewire\LivewireServiceProvider;
-use Maatwebsite\Excel\ExcelServiceProvider;
 use Orchestra\Testbench\TestCase as TestbenchTestCase;
 
 class TestCase extends TestbenchTestCase
@@ -36,8 +35,7 @@ class TestCase extends TestbenchTestCase
             SupportServiceProvider::class,
             TablesServiceProvider::class,
             FilamentExportServiceProvider::class,
-            \Barryvdh\DomPDF\ServiceProvider::class,
-            ExcelServiceProvider::class
+            \Barryvdh\DomPDF\ServiceProvider::class
         ];
     }
 

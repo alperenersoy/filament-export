@@ -19,9 +19,11 @@ use AlperenErsoy\FilamentExport\Actions\Concerns\HasFileName;
 use AlperenErsoy\FilamentExport\Actions\Concerns\HasFileNameField;
 use AlperenErsoy\FilamentExport\Actions\Concerns\HasFormatField;
 use AlperenErsoy\FilamentExport\Actions\Concerns\HasPageOrientationField;
+use AlperenErsoy\FilamentExport\Actions\Concerns\HasRecords;
 use AlperenErsoy\FilamentExport\Actions\Concerns\HasTimeFormat;
 use AlperenErsoy\FilamentExport\Actions\Concerns\HasUniqueActionId;
 use AlperenErsoy\FilamentExport\FilamentExport;
+use Filament\Tables\Columns\Concerns\HasRecord;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use ReflectionMethod;
@@ -45,6 +47,7 @@ class FilamentExportHeaderAction extends \Filament\Tables\Actions\Action
     use HasFileNameField;
     use HasFormatField;
     use HasPageOrientationField;
+    use HasRecords;
     use HasTimeFormat;
     use HasUniqueActionId;
 

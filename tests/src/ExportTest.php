@@ -85,7 +85,7 @@ foreach (FilamentExport::FORMATS as $format => $label) {
                 "format" => "$format",
                 "page_orientation" => null,
             ])
-        )->toBeInstanceOf($format === "pdf" ? StreamedResponse::class : BinaryFileResponse::class);
+        )->toBeInstanceOf(StreamedResponse::class);
     });
 }
 
@@ -108,7 +108,7 @@ foreach (FilamentExport::FORMATS as $format => $label) {
                 "format" => "$format",
                 "page_orientation" => null,
             ])
-        )->toBeInstanceOf($format === "pdf" ? StreamedResponse::class : BinaryFileResponse::class);
+        )->toBeInstanceOf(StreamedResponse::class);
     });
 }
 

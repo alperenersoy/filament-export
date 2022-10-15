@@ -1,19 +1,32 @@
-function printTable(el) {
-    var domClone = el.cloneNode(true);
+function onElementRemoved(element, callback) {
+    new MutationObserver(function (mutations) {
+        if (!document.body.contains(element)) {
+            callback();
+            this.disconnect();
+        }
+    }).observe(element.parentElement, { childList: true });
+}
 
-    var printArea = document.createElement("div");
+function triggerInputEvent(statePath, value) {
+    let input = document.getElementById(statePath);
+    input.value = value;
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+}
 
-    printArea.id = "printArea";
+function printHTML(html, statePath, uniqueActionId) {
+    let iframe = document.createElement("iframe");
 
-    document.body.classList.add("printing");
+    let random = Math.floor(Math.random() * 99999);
 
-    document.body.appendChild(printArea);
+    iframe.id = `print-${random}`;
 
-    printArea.appendChild(domClone);
+    iframe.srcdoc = html;
 
-    window.print();
+    document.body.append(iframe);
 
-    printArea.remove();
+    onElementRemoved(iframe, () => triggerInputEvent(statePath, `afterprint-${uniqueActionId}`));
 
-    document.body.classList.remove("printing");
+    iframe.contentWindow.onafterprint = () => document.getElementById(iframe.id).remove();
+
+    iframe.contentWindow.print();
 }

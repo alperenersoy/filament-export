@@ -168,7 +168,7 @@ class FilamentExport
         $action->modalActions($action->getExportModalActions());
     }
 
-    public static function getFormComponents(FilamentExportHeaderAction | FilamentExportBulkAction $action, Collection $records): array
+    public static function getFormComponents(FilamentExportHeaderAction | FilamentExportBulkAction $action): array
     {
         $action->fileNamePrefix($action->getFileNamePrefix() ?: $action->getTable()->getHeading());
 
@@ -178,21 +178,31 @@ class FilamentExport
             ->mapWithKeys(fn ($column) => [$column->getName() => $column->getLabel()])
             ->toArray();
 
-        $updateTableView = function ($component, $livewire) use ($records, $action) {
+        $updateTableView = function ($component, $livewire) use ($action) {
             $data =  $action instanceof FilamentExportBulkAction ? $livewire->mountedTableBulkActionData : $livewire->mountedTableActionData;
 
             $export = FilamentExport::make()
                 ->filteredColumns($data["filter_columns"] ?? [])
                 ->additionalColumns($data["additional_columns"] ?? [])
-                ->data($records)
+                ->data($action->getRecords())
                 ->table($action->getTable())
-                ->extraViewData($action->getExtraViewData())
-                ->withHiddenColumns($action->shouldShowHiddenColumns());
+                ->extraViewData($action->getExtraViewData());
 
-            $table_view = $component->getContainer()->getComponent(fn ($component) => $component->getName() === 'table_view');
+            $component
+                ->export($export);
+                // ->paginator($action->hasPaginator() ? $action->getPaginator() : null);
 
-            $table_view->export($export);
+            if ($data["table_view"] == "print-" . $action->getUniqueActionId()) {
+                $action->getLivewire()->printHTML = view('filament-export::print', ['fileName' => $component->getExport()->getFileName(), 'columns' => $component->getExport()->getAllColumns(), 'rows' => $component->getExport()->getRows()])->render();
+            } elseif ($data["table_view"] == "afterprint-" . $action->getUniqueActionId()) {
+                $action->getLivewire()->printHTML = null;
+            }
         };
+
+        $initialExport = FilamentExport::make()
+            ->table($action->getTable())
+            ->data(collect())
+            ->extraViewData($action->getExtraViewData());
 
         return [
             \Filament\Forms\Components\TextInput::make('file_name')
@@ -204,39 +214,28 @@ class FilamentExport
             \Filament\Forms\Components\Select::make('format')
                 ->label($action->getFormatFieldLabel())
                 ->options(FilamentExport::FORMATS)
-                ->default($action->getDefaultFormat())
-                ->reactive(),
+                ->default($action->getDefaultFormat()),
             \Filament\Forms\Components\Select::make('page_orientation')
                 ->label($action->getPageOrientationFieldLabel())
                 ->options(FilamentExport::getPageOrientations())
                 ->default($action->getDefaultPageOrientation())
-                ->visible(fn ($get) => $get('format') === 'pdf')
-                ->reactive(),
+                ->visible(fn ($get) => $get('format') === 'pdf'),
             \Filament\Forms\Components\CheckboxList::make('filter_columns')
                 ->label($action->getFilterColumnsFieldLabel())
                 ->options($columns)
                 ->columns(4)
                 ->default(array_keys($columns))
-                ->afterStateUpdated($updateTableView)
-                ->reactive()
                 ->hidden($action->isFilterColumnsDisabled()),
             \Filament\Forms\Components\KeyValue::make('additional_columns')
                 ->label($action->getAdditionalColumnsFieldLabel())
                 ->keyLabel($action->getAdditionalColumnsTitleFieldLabel())
                 ->valueLabel($action->getAdditionalColumnsDefaultValueFieldLabel())
                 ->addButtonLabel($action->getAdditionalColumnsAddButtonLabel())
-                ->afterStateUpdated($updateTableView)
-                ->reactive()
                 ->hidden($action->isAdditionalColumnsDisabled()),
             TableView::make('table_view')
-                ->export(
-                    FilamentExport::make()
-                        ->data($records)
-                        ->table($action->getTable())
-                        ->extraViewData($action->getExtraViewData())
-                        ->withHiddenColumns($action->shouldShowHiddenColumns())
-                )
+                ->export($initialExport)
                 ->uniqueActionId($action->getUniqueActionId())
+                ->afterStateUpdated($updateTableView)
                 ->reactive()
         ];
     }

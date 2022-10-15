@@ -27,8 +27,12 @@ class FilamentExportServiceProvider extends ServiceProvider
         ], 'views');
 
         Filament::serving(function () {
-            Filament::registerScripts([__DIR__ . '/../resources/js/filament-export.js']);
-            Filament::registerStyles([__DIR__ . '/../resources/css/filament-export.css']);
+            Filament::registerScripts([
+                'filament-export-0.2.0' => __DIR__ . '/../resources/js/filament-export.js'
+            ]);
+            Filament::registerStyles([
+                'filament-export-0.2.0' => __DIR__ . '/../resources/css/filament-export.css'
+            ]);
         });
     }
 }
