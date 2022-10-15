@@ -19,6 +19,14 @@ This package provides a bulk action and header action to export your filament ta
 composer require alperenersoy/filament-export
 ```
 
+### Laravel 9
+
+If you have an error related to `psr/simple-cache` try running require with specifying `psr/simple-cache` version.
+
+```bash
+composer require psr/simple-cache:^2.0 alperenersoy/filament-export
+```
+
 ## Using
 
 ### Simple Usage
