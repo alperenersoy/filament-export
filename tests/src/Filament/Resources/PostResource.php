@@ -2,13 +2,13 @@
 
 namespace AlperenErsoy\FilamentExport\Tests\Filament\Resources;
 
+use AlperenErsoy\FilamentExport\Tests\Filament\Resources\PostResource\Pages;
+use AlperenErsoy\FilamentExport\Tests\Models\Post;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
-use AlperenErsoy\FilamentExport\Tests\Filament\Resources\PostResource\Pages;
-use AlperenErsoy\FilamentExport\Tests\Models\Post;
 
 class PostResource extends Resource
 {
@@ -44,7 +44,7 @@ class PostResource extends Resource
                 Tables\Actions\EditAction::make(),
             ])
             ->headerActions([
-                \AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction::make('export')
+                \AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction::make('export'),
             ])
             ->bulkActions([
                 \AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction::make('export'),

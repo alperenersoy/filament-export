@@ -14,5 +14,5 @@ return [
     'preview_icon' => 'heroicon-o-eye',
     'export_icon' => 'heroicon-o-download',
     'print_icon' => 'heroicon-o-printer',
-    'cancel_icon' => 'heroicon-o-x-circle'
+    'cancel_icon' => 'heroicon-o-x-circle',
 ];

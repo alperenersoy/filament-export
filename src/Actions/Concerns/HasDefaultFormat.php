@@ -10,7 +10,7 @@ trait HasDefaultFormat
 
     public function defaultFormat(string $defaultFormat): static
     {
-        if (!array_key_exists($defaultFormat, FilamentExport::FORMATS)) {
+        if (! array_key_exists($defaultFormat, FilamentExport::FORMATS)) {
             return $this;
         }
 

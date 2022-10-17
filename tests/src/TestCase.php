@@ -12,7 +12,6 @@ use Filament\Notifications\NotificationsServiceProvider;
 use Filament\Support\SupportServiceProvider;
 use Filament\Tables\TablesServiceProvider;
 use Livewire\LivewireServiceProvider;
-use Maatwebsite\Excel\ExcelServiceProvider;
 use Orchestra\Testbench\TestCase as TestbenchTestCase;
 
 class TestCase extends TestbenchTestCase
@@ -37,18 +36,17 @@ class TestCase extends TestbenchTestCase
             TablesServiceProvider::class,
             FilamentExportServiceProvider::class,
             \Barryvdh\DomPDF\ServiceProvider::class,
-            ExcelServiceProvider::class
         ];
     }
 
     protected function defineDatabaseMigrations(): void
     {
-        $this->loadMigrationsFrom(__DIR__ . './../database/migrations');
+        $this->loadMigrationsFrom(__DIR__.'./../database/migrations');
     }
 
     protected function defineRoutes($router)
     {
-        require __DIR__ . './../routes/web.php';
+        require __DIR__.'./../routes/web.php';
     }
 
     protected function getEnvironmentSetUp($app): void

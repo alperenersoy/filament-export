@@ -2,14 +2,14 @@
 
 namespace AlperenErsoy\FilamentExport\Tests\Filament\Resources;
 
+use AlperenErsoy\FilamentExport\Tests\Filament\Resources\UserResource\Pages;
 use AlperenErsoy\FilamentExport\Tests\Filament\Resources\UserResource\RelationManagers\PostsRelationManager;
+use AlperenErsoy\FilamentExport\Tests\Models\User;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
-use AlperenErsoy\FilamentExport\Tests\Filament\Resources\UserResource\Pages;
-use AlperenErsoy\FilamentExport\Tests\Models\User;
 
 class UserResource extends Resource
 {
@@ -73,9 +73,7 @@ class UserResource extends Resource
     public static function getRelations(): array
     {
         return [
-            PostsRelationManager::class
+            PostsRelationManager::class,
         ];
     }
-
-
 }

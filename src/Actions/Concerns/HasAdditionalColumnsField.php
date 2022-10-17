@@ -5,8 +5,11 @@ namespace AlperenErsoy\FilamentExport\Actions\Concerns;
 trait HasAdditionalColumnsField
 {
     protected string|null $additionalColumnsFieldLabel;
+
     protected string|null $additionalColumnsTitleFieldLabel;
+
     protected string|null $additionalColumnsDefaultValueFieldLabel;
+
     protected string|null $additionalColumnsAddButtonLabel;
 
     public function additionalColumnsFieldLabel(string|null $label = null): static

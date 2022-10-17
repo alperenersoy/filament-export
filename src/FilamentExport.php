@@ -5,16 +5,6 @@ namespace AlperenErsoy\FilamentExport;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
 use AlperenErsoy\FilamentExport\Components\TableView;
-use Filament\Tables\Columns\ImageColumn;
-use Filament\Tables\Columns\ViewColumn;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Date;
-use Maatwebsite\Excel\Concerns\FromCollection;
-use Maatwebsite\Excel\Concerns\ShouldAutoSize;
-use Maatwebsite\Excel\Concerns\WithCustomCsvSettings;
-use Maatwebsite\Excel\Concerns\WithHeadings;
-use Maatwebsite\Excel\Concerns\WithTitle;
-use Maatwebsite\Excel\Facades\Excel;
 use AlperenErsoy\FilamentExport\Concerns\CanFilterColumns;
 use AlperenErsoy\FilamentExport\Concerns\CanHaveAdditionalColumns;
 use AlperenErsoy\FilamentExport\Concerns\CanHaveExtraViewData;
@@ -24,12 +14,17 @@ use AlperenErsoy\FilamentExport\Concerns\HasData;
 use AlperenErsoy\FilamentExport\Concerns\HasFileName;
 use AlperenErsoy\FilamentExport\Concerns\HasFormat;
 use AlperenErsoy\FilamentExport\Concerns\HasPageOrientation;
+use AlperenErsoy\FilamentExport\Concerns\HasPaginator;
 use AlperenErsoy\FilamentExport\Concerns\HasTable;
 use Carbon\Carbon;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\ViewColumn;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Date;
+use Spatie\SimpleExcel\SimpleExcelWriter;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
-class FilamentExport implements FromCollection, WithHeadings, WithTitle, WithCustomCsvSettings, ShouldAutoSize
+class FilamentExport
 {
     use CanFilterColumns;
     use CanHaveAdditionalColumns;
@@ -40,12 +35,13 @@ class FilamentExport implements FromCollection, WithHeadings, WithTitle, WithCus
     use HasFileName;
     use HasFormat;
     use HasPageOrientation;
+    use HasPaginator;
     use HasTable;
 
     public const FORMATS = [
-        'xlsx' => \Maatwebsite\Excel\Excel::XLSX,
-        'csv' => \Maatwebsite\Excel\Excel::CSV,
-        'pdf' => 'Pdf'
+        'xlsx' => 'XLSX',
+        'csv' => 'CSV',
+        'pdf' => 'PDF',
     ];
 
     public static function make(): static
@@ -91,13 +87,13 @@ class FilamentExport implements FromCollection, WithHeadings, WithTitle, WithCus
             [
                 'fileName' => $this->getFileName(),
                 'columns' => $this->getAllColumns(),
-                'rows' => $this->collection()
+                'rows' => $this->getRows(),
             ],
             $this->getExtraViewData()
         );
     }
 
-    public function download(): BinaryFileResponse | StreamedResponse
+    public function download(): StreamedResponse
     {
         if ($this->getFormat() === 'pdf') {
             $pdf = $this->getPdf();
@@ -105,7 +101,15 @@ class FilamentExport implements FromCollection, WithHeadings, WithTitle, WithCus
             return response()->streamDownload(fn () => print($pdf->output()), "{$this->getFileName()}.{$this->getFormat()}");
         }
 
-        return Excel::download($this, "{$this->getFileName()}.{$this->getFormat()}", static::FORMATS[$this->getFormat()]);
+        return response()->streamDownload(function () {
+            $headers = $this->getAllColumns()->map(fn ($column) => $column->getLabel())->toArray();
+
+            $stream = SimpleExcelWriter::streamDownload("{$this->getFileName()}.{$this->getFormat()}", $this->getFormat())
+                ->noHeaderRow()
+                ->addRows($this->getRows()->prepend($headers));
+
+            $stream->close();
+        }, "{$this->getFileName()}.{$this->getFormat()}");
     }
 
     public function getPdf(): \Barryvdh\DomPDF\PDF | \Barryvdh\Snappy\PdfWrapper
@@ -166,7 +170,7 @@ class FilamentExport implements FromCollection, WithHeadings, WithTitle, WithCus
         $action->modalActions($action->getExportModalActions());
     }
 
-    public static function getFormComponents(FilamentExportHeaderAction | FilamentExportBulkAction $action, Collection $records): array
+    public static function getFormComponents(FilamentExportHeaderAction | FilamentExportBulkAction $action): array
     {
         $action->fileNamePrefix($action->getFileNamePrefix() ?: $action->getTable()->getHeading());
 
@@ -176,21 +180,34 @@ class FilamentExport implements FromCollection, WithHeadings, WithTitle, WithCus
             ->mapWithKeys(fn ($column) => [$column->getName() => $column->getLabel()])
             ->toArray();
 
-        $updateTableView = function ($component, $livewire) use ($records, $action) {
-            $data =  $action instanceof FilamentExportBulkAction ? $livewire->mountedTableBulkActionData : $livewire->mountedTableActionData;
+        $updateTableView = function ($component, $livewire) use ($action) {
+            $data = $action instanceof FilamentExportBulkAction ? $livewire->mountedTableBulkActionData : $livewire->mountedTableActionData;
 
             $export = FilamentExport::make()
-                ->filteredColumns($data["filter_columns"] ?? [])
-                ->additionalColumns($data["additional_columns"] ?? [])
-                ->data($records)
+                ->filteredColumns($data['filter_columns'] ?? [])
+                ->additionalColumns($data['additional_columns'] ?? [])
+                ->data(collect())
                 ->table($action->getTable())
                 ->extraViewData($action->getExtraViewData())
-                ->withHiddenColumns($action->shouldShowHiddenColumns());
+                ->paginator($action->getPaginator());
 
-            $table_view = $component->getContainer()->getComponent(fn ($component) => $component->getName() === 'table_view');
+            $component
+                ->export($export)
+                ->refresh($action->shouldRefreshTableView());
 
-            $table_view->export($export);
+            if ($data['table_view'] == 'print-'.$action->getUniqueActionId()) {
+                $export->data($action->getRecords());
+                $action->getLivewire()->printHTML = view('filament-export::print', ['fileName' => $export->getFileName(), 'columns' => $export->getAllColumns(), 'rows' => $export->getRows()])->render();
+            } elseif ($data['table_view'] == 'afterprint-'.$action->getUniqueActionId()) {
+                $action->getLivewire()->printHTML = null;
+            }
         };
+
+        $initialExport = FilamentExport::make()
+            ->table($action->getTable())
+            ->data(collect())
+            ->extraViewData($action->getExtraViewData())
+            ->paginator($action->getPaginator());
 
         return [
             \Filament\Forms\Components\TextInput::make('file_name')
@@ -202,60 +219,50 @@ class FilamentExport implements FromCollection, WithHeadings, WithTitle, WithCus
             \Filament\Forms\Components\Select::make('format')
                 ->label($action->getFormatFieldLabel())
                 ->options(FilamentExport::FORMATS)
-                ->default($action->getDefaultFormat())
-                ->reactive(),
+                ->default($action->getDefaultFormat()),
             \Filament\Forms\Components\Select::make('page_orientation')
                 ->label($action->getPageOrientationFieldLabel())
                 ->options(FilamentExport::getPageOrientations())
                 ->default($action->getDefaultPageOrientation())
-                ->visible(fn ($get) => $get('format') === 'pdf')
-                ->reactive(),
+                ->visible(fn ($get) => $get('format') === 'pdf'),
             \Filament\Forms\Components\CheckboxList::make('filter_columns')
                 ->label($action->getFilterColumnsFieldLabel())
                 ->options($columns)
                 ->columns(4)
                 ->default(array_keys($columns))
-                ->afterStateUpdated($updateTableView)
-                ->reactive()
                 ->hidden($action->isFilterColumnsDisabled()),
             \Filament\Forms\Components\KeyValue::make('additional_columns')
                 ->label($action->getAdditionalColumnsFieldLabel())
                 ->keyLabel($action->getAdditionalColumnsTitleFieldLabel())
                 ->valueLabel($action->getAdditionalColumnsDefaultValueFieldLabel())
                 ->addButtonLabel($action->getAdditionalColumnsAddButtonLabel())
-                ->afterStateUpdated($updateTableView)
-                ->reactive()
                 ->hidden($action->isAdditionalColumnsDisabled()),
             TableView::make('table_view')
-                ->export(
-                    FilamentExport::make()
-                        ->data($records)
-                        ->table($action->getTable())
-                        ->extraViewData($action->getExtraViewData())
-                        ->withHiddenColumns($action->shouldShowHiddenColumns())
-                )
+                ->export($initialExport)
                 ->uniqueActionId($action->getUniqueActionId())
+                ->afterStateUpdated($updateTableView)
                 ->reactive()
+                ->refresh($action->shouldRefreshTableView()),
         ];
     }
 
     public static function callDownload(FilamentExportHeaderAction | FilamentExportBulkAction $action, Collection $records, array $data)
     {
         return FilamentExport::make()
-            ->fileName($data["file_name"] ?? $action->getFileName())
+            ->fileName($data['file_name'] ?? $action->getFileName())
             ->data($records)
             ->table($action->getTable())
-            ->filteredColumns(!$action->isFilterColumnsDisabled() ? $data["filter_columns"] : [])
-            ->additionalColumns(!$action->isAdditionalColumnsDisabled() ? $data["additional_columns"] : [])
-            ->format($data["format"] ?? $action->getDefaultFormat())
-            ->pageOrientation($data["page_orientation"] ?? $action->getDefaultPageOrientation())
+            ->filteredColumns(! $action->isFilterColumnsDisabled() ? $data['filter_columns'] : [])
+            ->additionalColumns(! $action->isAdditionalColumnsDisabled() ? $data['additional_columns'] : [])
+            ->format($data['format'] ?? $action->getDefaultFormat())
+            ->pageOrientation($data['page_orientation'] ?? $action->getDefaultPageOrientation())
             ->snappy($action->shouldUseSnappy())
             ->extraViewData($action->getExtraViewData())
             ->withHiddenColumns($action->shouldShowHiddenColumns())
             ->download();
     }
 
-    public function collection(): Collection
+    public function getRows(): Collection
     {
         $records = $this->getData();
 
@@ -269,7 +276,7 @@ class FilamentExport implements FromCollection, WithHeadings, WithTitle, WithCus
                 $column = $column->record($record);
                 $state = in_array(\Filament\Tables\Columns\Concerns\CanFormatState::class, class_uses($column)) ? $column->getFormattedState() : $column->getState();
                 if (is_array($state)) {
-                    $state = implode(", ", $state);
+                    $state = implode(', ', $state);
                 } elseif ($column instanceof ImageColumn) {
                     $state = $column->getImagePath();
                 } elseif ($column instanceof ViewColumn) {
@@ -281,30 +288,5 @@ class FilamentExport implements FromCollection, WithHeadings, WithTitle, WithCus
         }
 
         return collect($items);
-    }
-
-    public function headings(): array
-    {
-        $allColumns = $this->getAllColumns();
-
-        $headers = $allColumns->map(fn ($column) => $column->getLabel());
-
-        if ($this->getFilteredColumns()->isNotEmpty()) {
-            $headers = $allColumns
-                ->filter(fn ($column) => $this->getFilteredColumns()->contains($column->getName()) || $this->getAdditionalColumns()->contains($column))
-                ->map(fn ($column) => $column->getLabel());
-        }
-
-        return $headers->toArray();
-    }
-
-    public function title(): string
-    {
-        return $this->getFileName();
-    }
-
-    public function getCsvSettings(): array
-    {
-        return ['use_bom' => true];
     }
 }

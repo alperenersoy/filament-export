@@ -2,8 +2,6 @@
 
 namespace AlperenErsoy\FilamentExport\Tests\Filament\Resources\UserResource\RelationManagers;
 
-use App\Filament\Resources\AttendanceResource;
-use Closure;
 use Filament\Resources\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Resources\Table;
@@ -35,7 +33,7 @@ class PostsRelationManager extends RelationManager
             Tables\Actions\EditAction::make(),
         ])
         ->headerActions([
-            \AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction::make('export')
+            \AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction::make('export'),
         ])
         ->bulkActions([
             \AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction::make('export'),

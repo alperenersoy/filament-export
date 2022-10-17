@@ -2,8 +2,8 @@
 
 namespace AlperenErsoy\FilamentExport\Tests\Models;
 
-use Filament\Models\Contracts\FilamentUser;
 use AlperenErsoy\FilamentExport\Tests\Database\Factories\UserFactory;
+use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;

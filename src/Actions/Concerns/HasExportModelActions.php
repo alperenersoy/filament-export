@@ -10,13 +10,13 @@ trait HasExportModelActions
     {
         $uniqueActionId = $this->getUniqueActionId();
 
-        return !$this->isPreviewDisabled() ? [
+        return ! $this->isPreviewDisabled() ? [
             Action::make('preview')
                 ->button()
                 ->label(__('filament-export::export_action.preview_action_label'))
                 ->color('success')
                 ->icon(config('filament-export.preview_icon'))
-                ->action("\$emit('open-preview-modal-{$uniqueActionId}')")
+                ->action("\$emit('open-preview-modal-{$uniqueActionId}')"),
         ] : [];
     }
 
@@ -28,7 +28,7 @@ trait HasExportModelActions
 
         if (method_exists($this, 'getLivewireSubmitActionName')) {
             $livewireCallActionName = $this->getLivewireSubmitActionName();
-        } else if (method_exists($this, 'getLivewireCallActionName')) {
+        } elseif (method_exists($this, 'getLivewireCallActionName')) {
             $livewireCallActionName = $this->getLivewireCallActionName();
         }
 

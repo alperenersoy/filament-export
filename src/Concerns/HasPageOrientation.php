@@ -10,7 +10,7 @@ trait HasPageOrientation
 
     public function pageOrientation(string $pageOrientation): static
     {
-        if (!array_key_exists($pageOrientation, FilamentExport::getPageOrientations())) {
+        if (! array_key_exists($pageOrientation, FilamentExport::getPageOrientations())) {
             return $this;
         }
 
@@ -27,8 +27,8 @@ trait HasPageOrientation
     public static function getPageOrientations()
     {
         return [
-            'portrait' =>  __('filament-export::export_action.page_orientation_portrait'),
-            'landscape' => __('filament-export::export_action.page_orientation_landscape')
+            'portrait' => __('filament-export::export_action.page_orientation_portrait'),
+            'landscape' => __('filament-export::export_action.page_orientation_landscape'),
         ];
     }
 }

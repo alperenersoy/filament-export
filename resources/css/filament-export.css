@@ -22,49 +22,9 @@
     font-weight: normal;
 }
 
-@media print {
-    .printing * {
-        background: white;
-        color: black;
-        visibility: hidden;
-        height: 0;
-    }
-
-    #printArea,
-    #printArea * {
-        visibility: visible;
-    }
-
-    #printArea {
-        position: absolute;
-        width: 100%;
-        max-height: 100%;
-        left: 0;
-        top: 0;
-    }
-
-    .preview-table {
-        page-break-after: auto
-    }
-
-    .preview-table tr {
-        page-break-inside: avoid;
-        page-break-after: auto
-    }
-
-    .preview-table td {
-        page-break-inside: avoid;
-        page-break-after: auto
-    }
+.preview-table-wrapper {
+    max-height: min(500px, 80vh);
+    overflow-y: auto;
 }
 
-@media screen {
-    #printArea {
-        display: none;
-    }
 
-    .preview-table-wrapper {
-        max-height: min(600px, 80vh);
-        overflow-y: scroll;
-    }
-}

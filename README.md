@@ -67,6 +67,7 @@ FilamentExportBulkAction::make('export')
     ->timeFormat('m y d') // Default time format for naming exports
     ->defaultFormat('pdf') // xlsx, csv or pdf
     ->defaultPageOrientation('landscape') // Page orientation for pdf files. portrait or landscape
+    ->directDownload() // Download directly without showing modal
     ->disableAdditionalColumns() // Disable additional columns input
     ->disableFilterColumns() // Disable filter columns input
     ->disableFileName() // Disable file name input
@@ -83,6 +84,11 @@ FilamentExportBulkAction::make('export')
     ->additionalColumnsAddButtonLabel('Add Column') // Label for additional columns' add button 
 ```
 You can also use default bulk action and header action functions to customize actions.
+
+## Performance Tips for Large Datasets
+- Since header action does server-side pagination you may choose header action over bulk action.
+- You may disable preview.
+- You may enable direct download.
 
 ## Configuration
 

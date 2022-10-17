@@ -5,6 +5,7 @@ namespace AlperenErsoy\FilamentExport\Actions\Concerns;
 trait HasFileName
 {
     protected string $fileName;
+
     protected string|null $fileNamePrefix = null;
 
     public function fileName(string $fileName): static
@@ -16,7 +17,7 @@ trait HasFileName
 
     public function getFileName(): string
     {
-        if (!$this->isFileNamePrefixDisabled() && $this->getFileNamePrefix()) {
+        if (! $this->isFileNamePrefixDisabled() && $this->getFileNamePrefix()) {
             return "{$this->getFileNamePrefix()}-{$this->fileName}";
         }
 
