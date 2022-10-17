@@ -1,7 +1,7 @@
 <input id="{{ $getStatePath() }}" type="hidden" {{ $applyStateBindingModifiers('wire:model') }}="{{ $getStatePath() }}">
 
-<x-filament::modal id="preview-modal" width="6xl" display-classes="block" x-init="$wire.on('open-preview-modal-{{ $getUniqueActionId() }}', function() {
-    triggerInputEvent('{{ $getStatePath() }}', '');
+<x-filament::modal id="preview-modal" width="7xl" display-classes="block" x-init="$wire.on('open-preview-modal-{{ $getUniqueActionId() }}', function() {
+    triggerInputEvent('{{ $getStatePath() }}', '{{ $shouldRefresh() ? 'refresh' : '' }}');
     isOpen = true;
 });
 $wire.on('close-preview-modal-{{ $getUniqueActionId() }}', () => { isOpen = false; });" :heading="$getPreviewModalHeading()">
@@ -11,25 +11,23 @@ $wire.on('close-preview-modal-{{ $getUniqueActionId() }}', () => { isOpen = fals
         })">
             <tr>
                 @foreach ($getAllColumns() as $column)
-                    <th wire:loading.remove>
+                    <th>
                         {{ $column->getLabel() }}
                     </th>
                 @endforeach
-                <x-tables::loading-cell :colspan="$getAllColumns()->count()" wire:loading.class.remove.delay="hidden" class="hidden" />
             </tr>
             @foreach ($getRows() as $row)
                 <tr>
                     @foreach ($getAllColumns() as $column)
-                        <td wire:loading.remove>
+                        <td>
                             {{ $row[$column->getName()] }}
                         </td>
                     @endforeach
-                    <x-tables::loading-cell :colspan="$getAllColumns()->count()" wire:loading.class.remove.delay="hidden" class="hidden" />
                 </tr>
             @endforeach
         </table>
-        <div wire:loading.remove>
-            {{-- <x-tables::pagination :paginator="$getRows()" :records-per-page-select-options="$this->getTable()->getRecordsPerPageSelectOptions()" /> --}}
+        <div>
+            <x-tables::pagination :paginator="$getRows()" :records-per-page-select-options="$this->getTable()->getRecordsPerPageSelectOptions()" />
         </div>
     </div>
     <x-slot name="footer">
@@ -45,6 +43,15 @@ $wire.on('close-preview-modal-{{ $getUniqueActionId() }}', () => { isOpen = fals
         $data['table_view'] == 'print-' . $getUniqueActionId())
         <script>
             printHTML(`{!! $this->printHTML !!}`, '{{ $getStatePath() }}', '{{ $getUniqueActionId() }}');
+        </script>
+    @endif
+    @if ($shouldRefresh())
+        <script>
+            window.Livewire.emit("close-preview-modal-{{ $getUniqueActionId() }}");
+
+            triggerInputEvent('{{ $getStatePath() }}', 'refresh');
+
+            window.Livewire.emit("open-preview-modal-{{ $getUniqueActionId() }}");
         </script>
     @endif
 </x-filament::modal>

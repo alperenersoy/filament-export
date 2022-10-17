@@ -7,6 +7,7 @@ use AlperenErsoy\FilamentExport\FilamentExport;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Components\Concerns\HasName;
 use Filament\Tables\Actions\Modal\Actions\Action;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
 class TableView extends Component
@@ -17,6 +18,8 @@ class TableView extends Component
     protected ?string $statePath = "table_view";
 
     protected FilamentExport $export;
+
+    protected $shouldRefresh = false;
 
     protected function setUp(): void
     {
@@ -107,9 +110,11 @@ class TableView extends Component
         return $this->getExport()->getAllColumns();
     }
 
-    public function getRows(): Collection
+    public function getRows(): LengthAwarePaginator
     {
-        return $this->getExport()->getRows();
+        return $this
+            ->getExport()
+            ->getPaginator();
     }
 
     public function getExportAction(): Action
@@ -163,5 +168,17 @@ class TableView extends Component
             parent::data(),
             $this->getExport()->getExtraViewData()
         );
+    }
+
+    public function refresh(bool $condition): static
+    {
+        $this->shouldRefresh = $condition;
+
+        return $this;
+    }
+
+    public function shouldRefresh(): bool
+    {
+        return $this->shouldRefresh;
     }
 }

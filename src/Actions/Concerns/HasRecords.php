@@ -88,6 +88,7 @@ trait HasRecords
         return $this
             ->getTableQuery()
             ->get();
-            // ->paginate(20, ['*'], 'exportPage');
     }
+
+
 }

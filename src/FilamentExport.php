@@ -18,6 +18,7 @@ use AlperenErsoy\FilamentExport\Concerns\HasData;
 use AlperenErsoy\FilamentExport\Concerns\HasFileName;
 use AlperenErsoy\FilamentExport\Concerns\HasFormat;
 use AlperenErsoy\FilamentExport\Concerns\HasPageOrientation;
+use AlperenErsoy\FilamentExport\Concerns\HasPaginator;
 use AlperenErsoy\FilamentExport\Concerns\HasTable;
 use Carbon\Carbon;
 use Spatie\SimpleExcel\SimpleExcelWriter;
@@ -34,6 +35,7 @@ class FilamentExport
     use HasFileName;
     use HasFormat;
     use HasPageOrientation;
+    use HasPaginator;
     use HasTable;
 
     public const FORMATS = [
@@ -184,16 +186,18 @@ class FilamentExport
             $export = FilamentExport::make()
                 ->filteredColumns($data["filter_columns"] ?? [])
                 ->additionalColumns($data["additional_columns"] ?? [])
-                ->data($action->getRecords())
+                ->data(collect())
                 ->table($action->getTable())
-                ->extraViewData($action->getExtraViewData());
+                ->extraViewData($action->getExtraViewData())
+                ->paginator($action->getPaginator());
 
             $component
-                ->export($export);
-                // ->paginator($action->hasPaginator() ? $action->getPaginator() : null);
+                ->export($export)
+                ->refresh($action->shouldRefreshTableView());
 
             if ($data["table_view"] == "print-" . $action->getUniqueActionId()) {
-                $action->getLivewire()->printHTML = view('filament-export::print', ['fileName' => $component->getExport()->getFileName(), 'columns' => $component->getExport()->getAllColumns(), 'rows' => $component->getExport()->getRows()])->render();
+                $export->data($action->getRecords());
+                $action->getLivewire()->printHTML = view('filament-export::print', ['fileName' => $export->getFileName(), 'columns' => $export->getAllColumns(), 'rows' => $export->getRows()])->render();
             } elseif ($data["table_view"] == "afterprint-" . $action->getUniqueActionId()) {
                 $action->getLivewire()->printHTML = null;
             }
@@ -202,7 +206,8 @@ class FilamentExport
         $initialExport = FilamentExport::make()
             ->table($action->getTable())
             ->data(collect())
-            ->extraViewData($action->getExtraViewData());
+            ->extraViewData($action->getExtraViewData())
+            ->paginator($action->getPaginator());
 
         return [
             \Filament\Forms\Components\TextInput::make('file_name')
@@ -237,6 +242,7 @@ class FilamentExport
                 ->uniqueActionId($action->getUniqueActionId())
                 ->afterStateUpdated($updateTableView)
                 ->reactive()
+                ->refresh($action->shouldRefreshTableView())
         ];
     }
 

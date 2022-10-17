@@ -23,7 +23,7 @@
 }
 
 .preview-table-wrapper {
-    max-height: min(600px, 80vh);
+    max-height: min(500px, 80vh);
     overflow-y: auto;
 }
 
