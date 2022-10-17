@@ -8,6 +8,7 @@ use AlperenErsoy\FilamentExport\Actions\Concerns\CanDisableFilterColumns;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanDisableFileName;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanDisableFileNamePrefix;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanDisablePreview;
+use AlperenErsoy\FilamentExport\Actions\Concerns\CanDownloadDirect;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanHaveExtraViewData;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanRefreshTable;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanShowHiddenColumns;
@@ -33,6 +34,7 @@ class FilamentExportBulkAction extends \Filament\Tables\Actions\BulkAction
     use CanDisableFilterColumns;
     use CanDisableFileName;
     use CanDisablePreview;
+    use CanDownloadDirect;
     use CanHaveExtraViewData;
     use CanRefreshTable;
     use CanShowHiddenColumns;
@@ -61,6 +63,10 @@ class FilamentExportBulkAction extends \Filament\Tables\Actions\BulkAction
 
         $this
             ->form(static function ($action, $records, $livewire): array {
+                if ($action->shouldDownloadDirect()) {
+                    return [];
+                }
+
                 $currentPage = LengthAwarePaginator::resolveCurrentPage('exportPage');
 
                 $paginator = new LengthAwarePaginator($records->forPage($currentPage, $livewire->tableRecordsPerPage), $records->count(), $livewire->tableRecordsPerPage, $currentPage,  [
@@ -71,6 +77,10 @@ class FilamentExportBulkAction extends \Filament\Tables\Actions\BulkAction
 
                 return FilamentExport::getFormComponents($action);
             })
-            ->action(static fn ($action, $records, $data): StreamedResponse => FilamentExport::callDownload($action, $records, $data));
+            ->action(static function ($action, $records, $data): StreamedResponse {
+                $action->fillDefaultData($data);
+
+                return FilamentExport::callDownload($action, $records, $data);
+            });
     }
 }

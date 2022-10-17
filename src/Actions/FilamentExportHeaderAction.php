@@ -7,6 +7,7 @@ use AlperenErsoy\FilamentExport\Actions\Concerns\CanDisableFilterColumns;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanDisableFileName;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanDisableFileNamePrefix;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanDisablePreview;
+use AlperenErsoy\FilamentExport\Actions\Concerns\CanDownloadDirect;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanHaveExtraViewData;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanRefreshTable;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanShowHiddenColumns;
@@ -34,6 +35,7 @@ class FilamentExportHeaderAction extends \Filament\Tables\Actions\Action
     use CanDisableFileName;
     use CanDisableFileNamePrefix;
     use CanDisablePreview;
+    use CanDownloadDirect;
     use CanHaveExtraViewData;
     use CanShowHiddenColumns;
     use CanUseSnappy;
@@ -62,11 +64,17 @@ class FilamentExportHeaderAction extends \Filament\Tables\Actions\Action
 
         $this
             ->form(static function ($action, $livewire): array {
+                if ($action->shouldDownloadDirect()) {
+                    return [];
+                }
+
                 $action->paginator($action->getTableQuery()->paginate($livewire->tableRecordsPerPage, ['*'], 'exportPage'));
 
                 return FilamentExport::getFormComponents($action);
             })
             ->action(static function ($action, $data): StreamedResponse {
+                $action->fillDefaultData($data);
+
                 $records = $action->getRecords();
 
                 return FilamentExport::callDownload($action, $records, $data);
