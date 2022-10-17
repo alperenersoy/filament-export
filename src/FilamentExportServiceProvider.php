@@ -9,17 +9,17 @@ class FilamentExportServiceProvider extends ServiceProvider
 {
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__ . '/../config/filament-export.php', 'filament-export');
+        $this->mergeConfigFrom(__DIR__.'/../config/filament-export.php', 'filament-export');
     }
 
     public function boot()
     {
-        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'filament-export');
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'filament-export');
 
-        $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'filament-export');
+        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'filament-export');
 
         $this->publishes([
-            __DIR__ . '/../config/filament-export.php' => config_path('filament-export.php'),
+            __DIR__.'/../config/filament-export.php' => config_path('filament-export.php'),
         ], 'config');
 
         $this->publishes([
@@ -28,10 +28,10 @@ class FilamentExportServiceProvider extends ServiceProvider
 
         Filament::serving(function () {
             Filament::registerScripts([
-                'filament-export-0.2.0' => __DIR__ . '/../resources/js/filament-export.js'
+                'filament-export-0.2.0' => __DIR__.'/../resources/js/filament-export.js',
             ]);
             Filament::registerStyles([
-                'filament-export-0.2.0' => __DIR__ . '/../resources/css/filament-export.css'
+                'filament-export-0.2.0' => __DIR__.'/../resources/css/filament-export.css',
             ]);
         });
     }

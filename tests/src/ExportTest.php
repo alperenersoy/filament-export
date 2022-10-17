@@ -7,15 +7,12 @@ use AlperenErsoy\FilamentExport\Tests\Filament\Resources\PostResource;
 use AlperenErsoy\FilamentExport\Tests\Filament\Resources\PostResource\Pages\ListPosts;
 use AlperenErsoy\FilamentExport\Tests\Filament\Resources\UserResource;
 use AlperenErsoy\FilamentExport\Tests\Filament\Resources\UserResource\Pages\ListUsers;
-use AlperenErsoy\FilamentExport\Tests\Filament\Resources\UserResource\Pages\ViewUser;
 use AlperenErsoy\FilamentExport\Tests\Filament\Resources\UserResource\RelationManagers\PostsRelationManager;
 use AlperenErsoy\FilamentExport\Tests\Models\Post;
 use AlperenErsoy\FilamentExport\Tests\Models\User;
 use Filament\Tables\Table;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Symfony\Component\HttpFoundation\StreamedResponse;
-
 use function Pest\Livewire\livewire;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 it('can initiate tests', function () {
     expect(true)->toBe(true);
@@ -79,11 +76,11 @@ foreach (FilamentExport::FORMATS as $format => $label) {
 
         expect(
             FilamentExport::callDownload($action, $posts, [
-                "file_name" => null,
-                "filter_columns" => [],
-                "additional_columns" => [],
-                "format" => "$format",
-                "page_orientation" => null,
+                'file_name' => null,
+                'filter_columns' => [],
+                'additional_columns' => [],
+                'format' => "$format",
+                'page_orientation' => null,
             ])
         )->toBeInstanceOf(StreamedResponse::class);
     });
@@ -102,11 +99,11 @@ foreach (FilamentExport::FORMATS as $format => $label) {
 
         expect(
             FilamentExport::callDownload($action, $posts, [
-                "file_name" => null,
-                "filter_columns" => [],
-                "additional_columns" => [],
-                "format" => "$format",
-                "page_orientation" => null,
+                'file_name' => null,
+                'filter_columns' => [],
+                'additional_columns' => [],
+                'format' => "$format",
+                'page_orientation' => null,
             ])
         )->toBeInstanceOf(StreamedResponse::class);
     });
@@ -142,7 +139,7 @@ it('can render relation manager', function () {
 it('can call header action on relation manager', function () {
     Post::factory()->create();
 
-    $user =  User::latest()->first();
+    $user = User::latest()->first();
 
     livewire(PostsRelationManager::class, [
         'ownerRecord' => $user,
@@ -154,7 +151,7 @@ it('can call header action on relation manager', function () {
 it('can call bulk action on relation manager', function () {
     Post::factory()->create();
 
-    $user =  User::latest()->first();
+    $user = User::latest()->first();
 
     livewire(PostsRelationManager::class, [
         'ownerRecord' => $user,

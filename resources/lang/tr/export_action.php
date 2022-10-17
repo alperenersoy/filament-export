@@ -11,12 +11,12 @@ return [
         'label' => 'Ek Sütunlar',
         'title_field_label' => 'Başlık',
         'default_value_field_label' => 'Varsayılan Değer',
-        'add_button_label' => 'Sütun Ekle'
+        'add_button_label' => 'Sütun Ekle',
     ],
     'export_action_label' => 'Dışarı Aktar',
     'print_action_label' => 'Yazdır',
     'preview_action_label' => 'Önizleme',
     'cancel_action_label' => 'İptal',
     'page_orientation_portrait' => 'Dikey',
-    'page_orientation_landscape' => 'Yatay'
+    'page_orientation_landscape' => 'Yatay',
 ];

@@ -3,7 +3,6 @@
 namespace AlperenErsoy\FilamentExport\Actions\Concerns;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
 trait HasRecords
@@ -64,7 +63,7 @@ trait HasRecords
 
         $columnName = $livewire->tableSortColumn;
 
-        if (!$columnName) {
+        if (! $columnName) {
             return $query;
         }
 
@@ -89,6 +88,4 @@ trait HasRecords
             ->getTableQuery()
             ->get();
     }
-
-
 }

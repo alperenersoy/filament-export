@@ -15,7 +15,7 @@ class TableView extends Component
     use HasName;
     use HasUniqueActionId;
 
-    protected ?string $statePath = "table_view";
+    protected ?string $statePath = 'table_view';
 
     protected FilamentExport $export;
 

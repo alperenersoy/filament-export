@@ -5,10 +5,6 @@ namespace AlperenErsoy\FilamentExport;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
 use AlperenErsoy\FilamentExport\Components\TableView;
-use Filament\Tables\Columns\ImageColumn;
-use Filament\Tables\Columns\ViewColumn;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Date;
 use AlperenErsoy\FilamentExport\Concerns\CanFilterColumns;
 use AlperenErsoy\FilamentExport\Concerns\CanHaveAdditionalColumns;
 use AlperenErsoy\FilamentExport\Concerns\CanHaveExtraViewData;
@@ -21,6 +17,10 @@ use AlperenErsoy\FilamentExport\Concerns\HasPageOrientation;
 use AlperenErsoy\FilamentExport\Concerns\HasPaginator;
 use AlperenErsoy\FilamentExport\Concerns\HasTable;
 use Carbon\Carbon;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\ViewColumn;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Date;
 use Spatie\SimpleExcel\SimpleExcelWriter;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -41,7 +41,7 @@ class FilamentExport
     public const FORMATS = [
         'xlsx' => 'XLSX',
         'csv' => 'CSV',
-        'pdf' => 'PDF'
+        'pdf' => 'PDF',
     ];
 
     public static function make(): static
@@ -87,7 +87,7 @@ class FilamentExport
             [
                 'fileName' => $this->getFileName(),
                 'columns' => $this->getAllColumns(),
-                'rows' => $this->getRows()
+                'rows' => $this->getRows(),
             ],
             $this->getExtraViewData()
         );
@@ -104,7 +104,7 @@ class FilamentExport
         return response()->streamDownload(function () {
             $headers = $this->getAllColumns()->map(fn ($column) => $column->getLabel())->toArray();
 
-            $stream = SimpleExcelWriter::streamDownload("{$this->getFileName()}.{$this->getFormat()}",  $this->getFormat())
+            $stream = SimpleExcelWriter::streamDownload("{$this->getFileName()}.{$this->getFormat()}", $this->getFormat())
                 ->noHeaderRow()
                 ->addRows($this->getRows()->prepend($headers));
 
@@ -181,11 +181,11 @@ class FilamentExport
             ->toArray();
 
         $updateTableView = function ($component, $livewire) use ($action) {
-            $data =  $action instanceof FilamentExportBulkAction ? $livewire->mountedTableBulkActionData : $livewire->mountedTableActionData;
+            $data = $action instanceof FilamentExportBulkAction ? $livewire->mountedTableBulkActionData : $livewire->mountedTableActionData;
 
             $export = FilamentExport::make()
-                ->filteredColumns($data["filter_columns"] ?? [])
-                ->additionalColumns($data["additional_columns"] ?? [])
+                ->filteredColumns($data['filter_columns'] ?? [])
+                ->additionalColumns($data['additional_columns'] ?? [])
                 ->data(collect())
                 ->table($action->getTable())
                 ->extraViewData($action->getExtraViewData())
@@ -195,10 +195,10 @@ class FilamentExport
                 ->export($export)
                 ->refresh($action->shouldRefreshTableView());
 
-            if ($data["table_view"] == "print-" . $action->getUniqueActionId()) {
+            if ($data['table_view'] == 'print-'.$action->getUniqueActionId()) {
                 $export->data($action->getRecords());
                 $action->getLivewire()->printHTML = view('filament-export::print', ['fileName' => $export->getFileName(), 'columns' => $export->getAllColumns(), 'rows' => $export->getRows()])->render();
-            } elseif ($data["table_view"] == "afterprint-" . $action->getUniqueActionId()) {
+            } elseif ($data['table_view'] == 'afterprint-'.$action->getUniqueActionId()) {
                 $action->getLivewire()->printHTML = null;
             }
         };
@@ -242,20 +242,20 @@ class FilamentExport
                 ->uniqueActionId($action->getUniqueActionId())
                 ->afterStateUpdated($updateTableView)
                 ->reactive()
-                ->refresh($action->shouldRefreshTableView())
+                ->refresh($action->shouldRefreshTableView()),
         ];
     }
 
     public static function callDownload(FilamentExportHeaderAction | FilamentExportBulkAction $action, Collection $records, array $data)
     {
         return FilamentExport::make()
-            ->fileName($data["file_name"] ?? $action->getFileName())
+            ->fileName($data['file_name'] ?? $action->getFileName())
             ->data($records)
             ->table($action->getTable())
-            ->filteredColumns(!$action->isFilterColumnsDisabled() ? $data["filter_columns"] : [])
-            ->additionalColumns(!$action->isAdditionalColumnsDisabled() ? $data["additional_columns"] : [])
-            ->format($data["format"] ?? $action->getDefaultFormat())
-            ->pageOrientation($data["page_orientation"] ?? $action->getDefaultPageOrientation())
+            ->filteredColumns(! $action->isFilterColumnsDisabled() ? $data['filter_columns'] : [])
+            ->additionalColumns(! $action->isAdditionalColumnsDisabled() ? $data['additional_columns'] : [])
+            ->format($data['format'] ?? $action->getDefaultFormat())
+            ->pageOrientation($data['page_orientation'] ?? $action->getDefaultPageOrientation())
             ->snappy($action->shouldUseSnappy())
             ->extraViewData($action->getExtraViewData())
             ->withHiddenColumns($action->shouldShowHiddenColumns())
@@ -276,7 +276,7 @@ class FilamentExport
                 $column = $column->record($record);
                 $state = in_array(\Filament\Tables\Columns\Concerns\CanFormatState::class, class_uses($column)) ? $column->getFormattedState() : $column->getState();
                 if (is_array($state)) {
-                    $state = implode(", ", $state);
+                    $state = implode(', ', $state);
                 } elseif ($column instanceof ImageColumn) {
                     $state = $column->getImagePath();
                 } elseif ($column instanceof ViewColumn) {

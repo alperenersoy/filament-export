@@ -10,11 +10,10 @@ trait CanRefreshTable
             $updates = collect(request()->updates);
 
             $gotoPageCalls = $updates->filter(function ($item) {
-                return ($item['type'] === 'callMethod' && $item["payload"]["method"] === 'gotoPage' ||
-                    $item['type'] === 'callMethod' && $item["payload"]["method"] === 'previousPage' ||
-                    $item['type'] === 'callMethod' && $item["payload"]["method"] === 'nextPage' ||
-                    $item['type'] === 'syncInput' && $item["payload"]["name"] === 'tableRecordsPerPage'
-                );
+                return $item['type'] === 'callMethod' && $item['payload']['method'] === 'gotoPage' ||
+                    $item['type'] === 'callMethod' && $item['payload']['method'] === 'previousPage' ||
+                    $item['type'] === 'callMethod' && $item['payload']['method'] === 'nextPage' ||
+                    $item['type'] === 'syncInput' && $item['payload']['name'] === 'tableRecordsPerPage';
             });
 
             return $gotoPageCalls->count() > 0;

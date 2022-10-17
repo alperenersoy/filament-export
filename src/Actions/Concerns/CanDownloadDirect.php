@@ -20,12 +20,12 @@ trait CanDownloadDirect
 
     public function fillDefaultData(&$data)
     {
-        if (!is_array($data) || count($data) == 0) {
+        if (! is_array($data) || count($data) == 0) {
             $data = [
-                "file_name" => null,
-                "filter_columns" => [],
-                "additional_columns" => [],
-                "page_orientation" => null,
+                'file_name' => null,
+                'filter_columns' => [],
+                'additional_columns' => [],
+                'page_orientation' => null,
             ];
         }
     }

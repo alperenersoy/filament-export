@@ -16,7 +16,8 @@ trait CanHaveAdditionalColumns
         }
 
         $additionalColumns = collect($additionalColumns)->mapWithKeys(function ($value, $key) {
-            $name = $key . "-" . uniqid();
+            $name = $key.'-'.uniqid();
+
             return [$name => \Filament\Tables\Columns\TextColumn::make(Str::snake($name))->label($key)->default($value)];
         })->toArray();
 

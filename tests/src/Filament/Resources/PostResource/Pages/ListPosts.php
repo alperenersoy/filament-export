@@ -2,9 +2,9 @@
 
 namespace AlperenErsoy\FilamentExport\Tests\Filament\Resources\PostResource\Pages;
 
+use AlperenErsoy\FilamentExport\Tests\Filament\Resources\PostResource;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ListRecords;
-use AlperenErsoy\FilamentExport\Tests\Filament\Resources\PostResource;
 
 class ListPosts extends ListRecords
 {

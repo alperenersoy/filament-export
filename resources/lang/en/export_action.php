@@ -11,12 +11,12 @@ return [
         'label' => 'Additional Columns',
         'title_field_label' => 'Title',
         'default_value_field_label' => 'Default Value',
-        'add_button_label' => 'Add Column'
+        'add_button_label' => 'Add Column',
     ],
     'export_action_label' => 'Export',
     'print_action_label' => 'Print',
     'preview_action_label' => 'Preview',
     'cancel_action_label' => 'Cancel',
     'page_orientation_portrait' => 'Portrait',
-    'page_orientation_landscape' => 'Landscape'
+    'page_orientation_landscape' => 'Landscape',
 ];
