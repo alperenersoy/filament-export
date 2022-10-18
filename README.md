@@ -10,21 +10,13 @@ This package provides a bulk action and header action to export your filament ta
 - [Filament 2.0](https://github.com/laravel-filament/filament)
 
 ### Dependencies
-- [maatwebsite/excel](https://github.com/SpartnerNL/Laravel-Excel)
+- [spatie/simple-excel](https://github.com/spatie/simple-excel)
 - [barryvdh/laravel-dompdf](https://github.com/barryvdh/laravel-dompdf)
 
 ## Installation
 
 ```bash
 composer require alperenersoy/filament-export
-```
-
-### Laravel 9
-
-If you have an error related to `psr/simple-cache` try running require with specifying `psr/simple-cache` version.
-
-```bash
-composer require psr/simple-cache:^2.0 alperenersoy/filament-export
 ```
 
 ## Using
