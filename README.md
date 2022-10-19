@@ -40,7 +40,7 @@ $table->bulkActions([
 
 #### Header Action
 
-You can filter, search, sort and export your table with the header action. Header action is experimental for now, bulk action is safer to use.
+You can filter, search, sort and export your table with the header action.
 
 ```php
 $table->headerActions([
