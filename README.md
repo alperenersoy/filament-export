@@ -38,7 +38,7 @@ $table->bulkActions([
 ]);
 ```
 
-#### Header Action (Experimental)
+#### Header Action
 
 You can filter, search, sort and export your table with the header action. Header action is experimental for now, bulk action is safer to use.
 
@@ -123,9 +123,11 @@ php artisan vendor:publish --provider="AlperenErsoy\FilamentExport\FilamentExpor
 
 This package has two views:
 
-1. "components\table_view.blade.php" view is used for preview and as print template.
+1. "components\table_view.blade.php" view is used for preview.
 
 2. "pdf.blade.php" view is used as pdf export template.
+
+3. "print.blade.php" view is used as print template.
    
 ### Using Custom Variables In Templates
 
