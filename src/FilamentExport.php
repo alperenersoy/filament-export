@@ -282,7 +282,7 @@ class FilamentExport
                 } elseif ($column instanceof ViewColumn) {
                     $state = trim(preg_replace('/\s+/', ' ', strip_tags($column->render()->render())));
                 }
-                $item[$column->getName()] = $state;
+                $item[$column->getName()] = (string) $state;
             }
             array_push($items, $item);
         }
