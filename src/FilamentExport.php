@@ -81,7 +81,7 @@ class FilamentExport
         return 'filament-export::pdf';
     }
 
-    public function getPdfViewData(): array
+    public function getViewData(): array
     {
         return array_merge(
             [
@@ -115,11 +115,11 @@ class FilamentExport
     public function getPdf(): \Barryvdh\DomPDF\PDF | \Barryvdh\Snappy\PdfWrapper
     {
         if ($this->shouldUseSnappy()) {
-            return \Barryvdh\Snappy\Facades\SnappyPdf::loadView($this->getPdfView(), $this->getPdfViewData())
+            return \Barryvdh\Snappy\Facades\SnappyPdf::loadView($this->getPdfView(), $this->getViewData())
                 ->setPaper('A4', $this->getPageOrientation());
         }
 
-        return \Barryvdh\DomPDF\Facade\Pdf::loadView($this->getPdfView(), $this->getPdfViewData())
+        return \Barryvdh\DomPDF\Facade\Pdf::loadView($this->getPdfView(), $this->getViewData())
             ->setPaper('A4', $this->getPageOrientation());
     }
 
@@ -197,7 +197,7 @@ class FilamentExport
 
             if ($data['table_view'] == 'print-'.$action->getUniqueActionId()) {
                 $export->data($action->getRecords());
-                $action->getLivewire()->printHTML = view('filament-export::print', ['fileName' => $export->getFileName(), 'columns' => $export->getAllColumns(), 'rows' => $export->getRows()])->render();
+                $action->getLivewire()->printHTML = view('filament-export::print', $export->getViewData())->render();
             } elseif ($data['table_view'] == 'afterprint-'.$action->getUniqueActionId()) {
                 $action->getLivewire()->printHTML = null;
             }
