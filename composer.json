@@ -22,7 +22,7 @@
         "php": "^8.0",
         "filament/filament": "^2.0",
         "barryvdh/laravel-dompdf": "^2.0",
-        "spatie/simple-excel": "^2.3"
+        "spatie/simple-excel": "^3"
     },
     "require-dev": {
         "orchestra/testbench": "^7.6",
