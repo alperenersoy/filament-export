@@ -112,9 +112,21 @@ class TableView extends Component
 
     public function getRows(): LengthAwarePaginator
     {
-        return $this
+        $paginator = $this
             ->getExport()
             ->getPaginator();
+
+        $paginator->getCollection()->transform(function ($row) {
+            $data = [];
+
+            foreach ($this->getAllColumns() as $column) {
+                $data[$column->getName()] = data_get($row, $column->getName());
+            }
+
+            return $data;
+        });
+
+        return $paginator;
     }
 
     public function getExportAction(): Action
