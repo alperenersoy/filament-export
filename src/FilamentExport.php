@@ -7,6 +7,7 @@ use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
 use AlperenErsoy\FilamentExport\Components\TableView;
 use AlperenErsoy\FilamentExport\Concerns\CanFilterColumns;
 use AlperenErsoy\FilamentExport\Concerns\CanHaveAdditionalColumns;
+use AlperenErsoy\FilamentExport\Concerns\CanHaveExtraColumns;
 use AlperenErsoy\FilamentExport\Concerns\CanHaveExtraViewData;
 use AlperenErsoy\FilamentExport\Concerns\CanShowHiddenColumns;
 use AlperenErsoy\FilamentExport\Concerns\CanUseSnappy;
@@ -28,6 +29,7 @@ class FilamentExport
 {
     use CanFilterColumns;
     use CanHaveAdditionalColumns;
+    use CanHaveExtraColumns;
     use CanHaveExtraViewData;
     use CanShowHiddenColumns;
     use CanUseSnappy;
@@ -64,6 +66,10 @@ class FilamentExport
         $tableColumns = $this->shouldShowHiddenColumns() ? $this->getTable()->getLivewire()->getCachedTableColumns() : $this->getTable()->getColumns();
 
         $columns = collect($tableColumns);
+
+        if ($this->getWithColumns()->isNotEmpty()) {
+            $columns = $columns->merge($this->getWithColumns());
+        }
 
         if ($this->getFilteredColumns()->isNotEmpty()) {
             $columns = $columns->filter(fn ($column) => $this->getFilteredColumns()->contains($column->getName()));
@@ -174,9 +180,17 @@ class FilamentExport
     {
         $action->fileNamePrefix($action->getFileNamePrefix() ?: $action->getTable()->getHeading());
 
-        $tableColumns = $action->shouldShowHiddenColumns() ? $action->getLivewire()->getCachedTableColumns() : $action->getTable()->getColumns();
+        $columns = $action->shouldShowHiddenColumns() ? $action->getLivewire()->getCachedcolumns() : $action->getTable()->getColumns();
 
-        $columns = collect($tableColumns)
+        $columns = collect($columns);
+
+        $extraColumns = collect($action->getWithColumns());
+
+        if($extraColumns->isNotEmpty()) {
+            $columns = $columns->merge($extraColumns);
+        }
+
+        $columns = $columns
             ->mapWithKeys(fn ($column) => [$column->getName() => $column->getLabel()])
             ->toArray();
 
@@ -189,6 +203,7 @@ class FilamentExport
                 ->data(collect())
                 ->table($action->getTable())
                 ->extraViewData($action->getExtraViewData())
+                ->withColumns($action->getWithColumns())
                 ->paginator($action->getPaginator());
 
             $component
@@ -207,6 +222,7 @@ class FilamentExport
             ->table($action->getTable())
             ->data(collect())
             ->extraViewData($action->getExtraViewData())
+            ->withColumns($action->getWithColumns())
             ->paginator($action->getPaginator());
 
         return [
@@ -258,6 +274,7 @@ class FilamentExport
             ->pageOrientation($data['page_orientation'] ?? $action->getDefaultPageOrientation())
             ->snappy($action->shouldUseSnappy())
             ->extraViewData($action->getExtraViewData())
+            ->withColumns($action->getWithColumns())
             ->withHiddenColumns($action->shouldShowHiddenColumns())
             ->download();
     }
