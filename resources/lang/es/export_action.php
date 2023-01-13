@@ -4,7 +4,7 @@ return [
     'action_label' => 'Exportar',
     'modal_heading' => 'Exportar',
     'file_name_field_label' => 'Nombre del archivo',
-    'format_field_label' => 'Formata',
+    'format_field_label' => 'Formato',
     'page_orientation_field_label' => 'orientación de la página',
     'filter_columns_field_label' => 'Filtrar columnas',
     'additional_columns_field' => [
