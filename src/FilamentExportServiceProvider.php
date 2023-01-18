@@ -2,7 +2,6 @@
 
 namespace AlperenErsoy\FilamentExport;
 
-use Filament\Facades\Filament;
 use Illuminate\Support\ServiceProvider;
 
 class FilamentExportServiceProvider extends ServiceProvider
@@ -25,14 +24,16 @@ class FilamentExportServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../resources/views' => resource_path('views/vendor/filament-export'),
         ], 'views');
-
-        Filament::serving(function () {
-            Filament::registerScripts([
-                'filament-export-0.2.0' => __DIR__.'/../resources/js/filament-export.js',
-            ]);
-            Filament::registerStyles([
-                'filament-export-0.2.0' => __DIR__.'/../resources/css/filament-export.css',
-            ]);
-        });
+    
+        if (class_exists('\Filament\Facades\Filament')) {
+            \Filament\Facades\Filament::serving(function () {
+                \Filament\Facades\Filament::registerScripts([
+                    'filament-export-0.2.0' => __DIR__.'/../resources/js/filament-export.js',
+                ]);
+                \Filament\Facades\Filament::registerStyles([
+                    'filament-export-0.2.0' => __DIR__.'/../resources/css/filament-export.css',
+                ]);
+            });
+        }
     }
 }
