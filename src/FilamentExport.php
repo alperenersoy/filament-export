@@ -180,7 +180,7 @@ class FilamentExport
     {
         $action->fileNamePrefix($action->getFileNamePrefix() ?: $action->getTable()->getHeading());
 
-        $columns = $action->shouldShowHiddenColumns() ? $action->getLivewire()->getCachedcolumns() : $action->getTable()->getColumns();
+        $columns = $action->shouldShowHiddenColumns() ? $action->getLivewire()->getCachedTableColumns() : $action->getTable()->getColumns();
 
         $columns = collect($columns);
 
