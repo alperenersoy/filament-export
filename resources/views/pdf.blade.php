@@ -49,11 +49,15 @@
                 </th>
             @endforeach
         </tr>
-        @foreach ($rows as $row)
+        @foreach ($rows as $index => $row)
             <tr>
                 @foreach ($columns as $column)
                     <td>
-                        {{ $row[$column->getName()] }}
+                        @if ($column->getName() === $action->getRowLoopName())
+                            {{ $action->getRowIndex($index) }}
+                        @else
+                            {{ $row[$column->getName()] }}
+                        @endif
                     </td>
                 @endforeach
             </tr>

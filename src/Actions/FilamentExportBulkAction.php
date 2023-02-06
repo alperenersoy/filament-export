@@ -23,6 +23,7 @@ use AlperenErsoy\FilamentExport\Actions\Concerns\HasFilterColumnsField;
 use AlperenErsoy\FilamentExport\Actions\Concerns\HasFormatField;
 use AlperenErsoy\FilamentExport\Actions\Concerns\HasPageOrientationField;
 use AlperenErsoy\FilamentExport\Actions\Concerns\HasPaginator;
+use AlperenErsoy\FilamentExport\Actions\Concerns\HasRowLoop;
 use AlperenErsoy\FilamentExport\Actions\Concerns\HasTimeFormat;
 use AlperenErsoy\FilamentExport\Actions\Concerns\HasUniqueActionId;
 use AlperenErsoy\FilamentExport\FilamentExport;
@@ -54,6 +55,7 @@ class FilamentExportBulkAction extends \Filament\Tables\Actions\BulkAction
     use HasPaginator;
     use HasTimeFormat;
     use HasUniqueActionId;
+    use HasRowLoop;
 
     protected function setUp(): void
     {

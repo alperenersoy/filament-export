@@ -16,11 +16,22 @@ $wire.on('close-preview-modal-{{ $getUniqueActionId() }}', () => { isOpen = fals
                     </th>
                 @endforeach
             </tr>
-            @foreach ($getRows() as $row)
+            @php
+                $action = collect(
+                    $this->getTable()
+                        ->getLivewire()
+                        ->getCachedTableBulkActions(),
+                )->firstWhere(fn($action) => $action instanceof \AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction);
+            @endphp
+            @foreach ($getRows() as $index => $row)
                 <tr>
                     @foreach ($getAllColumns() as $column)
                         <td>
-                            {{ $row[$column->getName()] }}
+                            @if ($column->getName() === $action->getRowLoopName())
+                                {{ $action->getRowIndex($index) }}
+                            @else
+                                {{ $row[$column->getName()] }}
+                            @endif
                         </td>
                     @endforeach
                 </tr>

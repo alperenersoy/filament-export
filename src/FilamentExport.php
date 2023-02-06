@@ -94,9 +94,16 @@ class FilamentExport
                 'fileName' => $this->getFileName(),
                 'columns' => $this->getAllColumns(),
                 'rows' => $this->getRows(),
+                'action' => $this->getAction(),
             ],
             $this->getExtraViewData()
         );
+    }
+
+    public function getAction()
+    {
+        return collect($this->getTable()->getLivewire()->getCachedTableBulkActions())
+            ->firstWhere(fn ($action) => $action instanceof FilamentExportBulkAction);
     }
 
     public function download(): StreamedResponse
@@ -186,7 +193,7 @@ class FilamentExport
 
         $extraColumns = collect($action->getWithColumns());
 
-        if($extraColumns->isNotEmpty()) {
+        if ($extraColumns->isNotEmpty()) {
             $columns = $columns->merge($extraColumns);
         }
 
@@ -210,10 +217,10 @@ class FilamentExport
                 ->export($export)
                 ->refresh($action->shouldRefreshTableView());
 
-            if ($data['table_view'] == 'print-'.$action->getUniqueActionId()) {
+            if ($data['table_view'] == 'print-' . $action->getUniqueActionId()) {
                 $export->data($action->getRecords());
                 $action->getLivewire()->printHTML = view('filament-export::print', $export->getViewData())->render();
-            } elseif ($data['table_view'] == 'afterprint-'.$action->getUniqueActionId()) {
+            } elseif ($data['table_view'] == 'afterprint-' . $action->getUniqueActionId()) {
                 $action->getLivewire()->printHTML = null;
             }
         };
@@ -268,8 +275,8 @@ class FilamentExport
             ->fileName($data['file_name'] ?? $action->getFileName())
             ->data($records)
             ->table($action->getTable())
-            ->filteredColumns(! $action->isFilterColumnsDisabled() ? $data['filter_columns'] : [])
-            ->additionalColumns(! $action->isAdditionalColumnsDisabled() ? $data['additional_columns'] : [])
+            ->filteredColumns(!$action->isFilterColumnsDisabled() ? $data['filter_columns'] : [])
+            ->additionalColumns(!$action->isAdditionalColumnsDisabled() ? $data['additional_columns'] : [])
             ->format($data['format'] ?? $action->getDefaultFormat())
             ->pageOrientation($data['page_orientation'] ?? $action->getDefaultPageOrientation())
             ->snappy($action->shouldUseSnappy())
@@ -285,13 +292,21 @@ class FilamentExport
 
         $columns = $this->getAllColumns();
 
+        $action = $this->getAction();
+
         $items = [];
 
-        foreach ($records as $record) {
+        foreach ($records as $index => $record) {
             $item = [];
             foreach ($columns as $column) {
                 $column = $column->record($record);
-                $state = in_array(\Filament\Tables\Columns\Concerns\CanFormatState::class, class_uses($column)) ? $column->getFormattedState() : $column->getState();
+
+                if ($column->getName() === $action->getRowLoopName()) {
+                    $state = (string) $action->getRowIndex($index);
+                } else {
+                    $state = in_array(\Filament\Tables\Columns\Concerns\CanFormatState::class, class_uses($column)) ? $column->getFormattedState() : $column->getState();
+                }
+
                 if (is_array($state)) {
                     $state = implode(', ', $state);
                 } elseif ($column instanceof ImageColumn) {

@@ -59,6 +59,7 @@ Both actions provide functions for configuration.
 ```php
 FilamentExportBulkAction::make('export')
     ->fileName('My File') // Default file name
+    ->rowLoop('index', isFromZero: false) // Enable row numbers by giving the column name
     ->timeFormat('m y d') // Default time format for naming exports
     ->defaultFormat('pdf') // xlsx, csv or pdf
     ->defaultPageOrientation('landscape') // Page orientation for pdf files. portrait or landscape
@@ -179,4 +180,21 @@ FilamentExportHeaderAction::make('export')
     'use_snappy' => true,
     ...
 ]
+```
+
+## Troubleshooting
+
+- If you are using `rowIndex()` function to display the row numbers, you should define the field name when defining bulk action. Currently this feature is only available for bulk action. Like the following example:
+
+```php
+
+...
+    // Table columns
+    Columns\TextColumn::make('my_index')->rowIndex()
+...
+
+...
+    // bulkActions
+    Actions\FilamentExportBulkAction::make('export')->rowLoop('my_index'),
+...
 ```
