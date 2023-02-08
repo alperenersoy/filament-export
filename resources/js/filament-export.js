@@ -30,3 +30,7 @@ function printHTML(html, statePath, uniqueActionId) {
 
     iframe.contentWindow.print();
 }
+
+window.triggerInputEvent = triggerInputEvent;
+
+window.printHTML = printHTML;
