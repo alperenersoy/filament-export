@@ -41,12 +41,12 @@ class TestCase extends TestbenchTestCase
 
     protected function defineDatabaseMigrations(): void
     {
-        $this->loadMigrationsFrom(__DIR__.'./../database/migrations');
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
     }
 
     protected function defineRoutes($router)
     {
-        require __DIR__.'./../routes/web.php';
+        require __DIR__.'/../routes/web.php';
     }
 
     protected function getEnvironmentSetUp($app): void
