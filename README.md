@@ -129,6 +129,7 @@ FilamentExportBulkAction::make('export')
     ->additionalColumnsTitleFieldLabel('Title') // Label for additional columns' title input 
     ->additionalColumnsDefaultValueFieldLabel('Default Value') // Label for additional columns' default value input 
     ->additionalColumnsAddButtonLabel('Add Column') // Label for additional columns' add button 
+    ->withColumns([TextColumn::make('additionalModelColumn')]) // Export additional model columns that aren't visible in the table results
 ```
 You can also use default bulk action and header action functions to customize actions.
 
