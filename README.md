@@ -22,6 +22,28 @@ This package provides a bulk action and header action to export your filament ta
 composer require alperenersoy/filament-export
 ```
 
+### Configuring for Standalone Table Builder (Experimental)
+
+To use this package in a standalone table builder instead of Filament Admin Panel you need to follow these steps. Otherwise, some features such as print and preview may not work properly.
+
+1. Import `filament-export.css` in your `/resources/app.css`
+
+```css
+@import '../../vendor/alperenersoy/filament-export/resources/css/filament-export.css';
+```
+
+2. Import `filament-export.js` in your `/resources/app.js`
+
+```js
+import '../../vendor/alperenersoy/filament-export/resources/js/filament-export.js';
+```
+
+3. Compile your assets
+
+```bash
+npm run dev
+```
+
 ## Using
 
 ### Simple Usage
@@ -29,6 +51,8 @@ composer require alperenersoy/filament-export
 #### Bulk Action
 
 You can export selected rows with the bulk action.
+
+**Filament Admin Panel**
 
 ```php
 $table->bulkActions([
@@ -38,9 +62,24 @@ $table->bulkActions([
 ]);
 ```
 
+**Filament Table Builder**
+    
+```php
+protected function getTableBulkActions(): array
+{
+    return [
+        ...
+        FilamentExportBulkAction::make('Export'),
+        ...
+    ];
+}
+```
+
 #### Header Action
 
 You can filter, search, sort and export your table with the header action.
+
+**Filament Admin Panel**
 
 ```php
 $table->headerActions([
@@ -48,6 +87,19 @@ $table->headerActions([
     FilamentExportHeaderAction::make('export')
     ...
 ]);
+```
+
+**Filament Table Builder**
+    
+```php
+protected function getTableHeaderActions(): array
+{
+    return [
+        ...
+        FilamentExportHeaderAction::make('Export'),
+        ...
+    ];
+}
 ```
 
 Since ButtonAction is deprecated you may use this action with ->button() instead.
@@ -78,6 +130,7 @@ FilamentExportBulkAction::make('export')
     ->additionalColumnsTitleFieldLabel('Title') // Label for additional columns' title input 
     ->additionalColumnsDefaultValueFieldLabel('Default Value') // Label for additional columns' default value input 
     ->additionalColumnsAddButtonLabel('Add Column') // Label for additional columns' add button 
+    ->withColumns([TextColumn::make('additionalModelColumn')]) // Export additional model columns that aren't visible in the table results
 ```
 You can also use default bulk action and header action functions to customize actions.
 
