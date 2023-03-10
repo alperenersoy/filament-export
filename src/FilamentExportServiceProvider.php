@@ -24,7 +24,7 @@ class FilamentExportServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../resources/views' => resource_path('views/vendor/filament-export'),
         ], 'views');
-    
+
         if (class_exists('\Filament\Facades\Filament')) {
             \Filament\Facades\Filament::serving(function () {
                 \Filament\Facades\Filament::registerScripts([

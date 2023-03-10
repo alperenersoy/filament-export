@@ -125,7 +125,7 @@ class FilamentExport
         }, "{$this->getFileName()}.{$this->getFormat()}");
     }
 
-    public function getPdf(): \Barryvdh\DomPDF\PDF | \Barryvdh\Snappy\PdfWrapper
+    public function getPdf(): \Barryvdh\DomPDF\PDF|\Barryvdh\Snappy\PdfWrapper
     {
         if ($this->shouldUseSnappy()) {
             return \Barryvdh\Snappy\Facades\SnappyPdf::loadView($this->getPdfView(), $this->getViewData())
@@ -136,7 +136,7 @@ class FilamentExport
             ->setPaper('A4', $this->getPageOrientation());
     }
 
-    public static function setUpFilamentExportAction(FilamentExportHeaderAction | FilamentExportBulkAction $action): void
+    public static function setUpFilamentExportAction(FilamentExportHeaderAction|FilamentExportBulkAction $action): void
     {
         $action->timeFormat(config('filament-export.time_format'));
 
@@ -183,7 +183,7 @@ class FilamentExport
         $action->modalActions($action->getExportModalActions());
     }
 
-    public static function getFormComponents(FilamentExportHeaderAction | FilamentExportBulkAction $action): array
+    public static function getFormComponents(FilamentExportHeaderAction|FilamentExportBulkAction $action): array
     {
         $action->fileNamePrefix($action->getFileNamePrefix() ?: $action->getTable()->getHeading());
 
@@ -217,10 +217,10 @@ class FilamentExport
                 ->export($export)
                 ->refresh($action->shouldRefreshTableView());
 
-            if ($data['table_view'] == 'print-' . $action->getUniqueActionId()) {
+            if ($data['table_view'] == 'print-'.$action->getUniqueActionId()) {
                 $export->data($action->getRecords());
                 $action->getLivewire()->printHTML = view('filament-export::print', $export->getViewData())->render();
-            } elseif ($data['table_view'] == 'afterprint-' . $action->getUniqueActionId()) {
+            } elseif ($data['table_view'] == 'afterprint-'.$action->getUniqueActionId()) {
                 $action->getLivewire()->printHTML = null;
             }
         };
@@ -269,14 +269,14 @@ class FilamentExport
         ];
     }
 
-    public static function callDownload(FilamentExportHeaderAction | FilamentExportBulkAction $action, Collection $records, array $data)
+    public static function callDownload(FilamentExportHeaderAction|FilamentExportBulkAction $action, Collection $records, array $data)
     {
         return FilamentExport::make()
             ->fileName($data['file_name'] ?? $action->getFileName())
             ->data($records)
             ->table($action->getTable())
-            ->filteredColumns(!$action->isFilterColumnsDisabled() ? $data['filter_columns'] : [])
-            ->additionalColumns(!$action->isAdditionalColumnsDisabled() ? $data['additional_columns'] : [])
+            ->filteredColumns(! $action->isFilterColumnsDisabled() ? $data['filter_columns'] : [])
+            ->additionalColumns(! $action->isAdditionalColumnsDisabled() ? $data['additional_columns'] : [])
             ->format($data['format'] ?? $action->getDefaultFormat())
             ->pageOrientation($data['page_orientation'] ?? $action->getDefaultPageOrientation())
             ->snappy($action->shouldUseSnappy())

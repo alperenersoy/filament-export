@@ -6,9 +6,9 @@ use Closure;
 
 trait CanHaveExtraViewData
 {
-    protected array | Closure $extraViewData = [];
+    protected array|Closure $extraViewData = [];
 
-    public function extraViewData(array | Closure $extraViewData): static
+    public function extraViewData(array|Closure $extraViewData): static
     {
         $this->extraViewData = $extraViewData;
 

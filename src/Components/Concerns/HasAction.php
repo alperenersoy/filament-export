@@ -7,9 +7,9 @@ use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
 
 trait HasAction
 {
-    protected FilamentExportBulkAction | FilamentExportHeaderAction $action;
+    protected FilamentExportBulkAction|FilamentExportHeaderAction $action;
 
-    public function action(FilamentExportBulkAction | FilamentExportHeaderAction $action): static
+    public function action(FilamentExportBulkAction|FilamentExportHeaderAction $action): static
     {
         $this->action = $action;
 
@@ -20,7 +20,7 @@ trait HasAction
         return $this;
     }
 
-    public function getAction(): FilamentExportBulkAction | FilamentExportHeaderAction
+    public function getAction(): FilamentExportBulkAction|FilamentExportHeaderAction
     {
         return $this->action;
     }

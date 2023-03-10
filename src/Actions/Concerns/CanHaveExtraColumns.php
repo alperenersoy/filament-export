@@ -6,9 +6,9 @@ use Closure;
 
 trait CanHaveExtraColumns
 {
-    protected array | Closure $withColumns = [];
+    protected array|Closure $withColumns = [];
 
-    public function withColumns(array | Closure $columns): static
+    public function withColumns(array|Closure $columns): static
     {
         $this->withColumns = $columns;
 

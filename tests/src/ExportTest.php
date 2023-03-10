@@ -11,8 +11,9 @@ use AlperenErsoy\FilamentExport\Tests\Filament\Resources\UserResource\RelationMa
 use AlperenErsoy\FilamentExport\Tests\Models\Post;
 use AlperenErsoy\FilamentExport\Tests\Models\User;
 use Filament\Tables\Table;
-use function Pest\Livewire\livewire;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+
+use function Pest\Livewire\livewire;
 
 it('can initiate tests', function () {
     expect(true)->toBe(true);
@@ -67,7 +68,7 @@ foreach (FilamentExport::FORMATS as $format => $label) {
     it("can header action call $format download", function () use ($format) {
         $posts = Post::factory()->count(10)->create();
 
-        $livewire = new ListPosts();
+        $livewire = new ListPosts;
 
         $livewire->bootedInteractsWithTable();
 
@@ -90,7 +91,7 @@ foreach (FilamentExport::FORMATS as $format => $label) {
     it("can bulk action call $format download", function () use ($format) {
         $posts = Post::factory()->count(10)->create();
 
-        $livewire = new ListPosts();
+        $livewire = new ListPosts;
 
         $livewire->bootedInteractsWithTable();
 
