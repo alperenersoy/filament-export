@@ -16,6 +16,16 @@ trait HasRecords
         $model = $this->getTable()->getModel();
         $query = $model::query();
 
+        if (method_exists($livewire, 'getResource')) {
+            $query = $livewire::getResource()::getEloquentQuery();
+        }
+
+        $reflection = new \ReflectionMethod($livewire, 'getTableQuery');
+
+        if ($reflection->isPublic()) {
+            $query = $livewire->getTableQuery();
+        }
+
         $filterData = $livewire->tableFilters;
 
         if (isset($livewire->ownerRecord)) {
@@ -63,7 +73,7 @@ trait HasRecords
 
         $columnName = $livewire->tableSortColumn;
 
-        if (! $columnName) {
+        if (!$columnName) {
             return $query;
         }
 
