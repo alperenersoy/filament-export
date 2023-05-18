@@ -116,11 +116,17 @@ class TableView extends Component
             ->getExport()
             ->getPaginator();
 
-        $paginator->getCollection()->transform(function ($row) {
+        $paginator->getCollection()->transform(function ($row, $key) {
             $data = [];
 
             foreach ($this->getAllColumns() as $column) {
-                $data[$column->getName()] = data_get($row, $column->getName());
+                if (is_array($row)) {
+                    $data[$column->getName()] = data_get($row, $column->getName());
+
+                    continue;
+                }
+
+                $data[$column->getName()] = FilamentExport::getColumnState($column, $row, $key);
             }
 
             return $data;

@@ -19,8 +19,11 @@ use AlperenErsoy\FilamentExport\Concerns\HasPageOrientation;
 use AlperenErsoy\FilamentExport\Concerns\HasPaginator;
 use AlperenErsoy\FilamentExport\Concerns\HasTable;
 use Carbon\Carbon;
+use Filament\Tables\Columns\Column;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\ViewColumn;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Date;
 use Spatie\SimpleExcel\SimpleExcelWriter;
@@ -288,27 +291,49 @@ class FilamentExport
     {
         $records = $this->getData();
 
-        $columns = $this->getAllColumns();
+        $data = self::getDataWithStates($records);
 
+        return collect($data);
+    }
+
+    public function getDataWithStates(Collection|LengthAwarePaginator $records): array
+    {
         $items = [];
 
-        foreach ($records as $record) {
+        $columns = $this->getAllColumns();
+
+        foreach ($records as $index => $record) {
             $item = [];
             foreach ($columns as $column) {
-                $column = $column->record($record);
-                $state = in_array(\Filament\Tables\Columns\Concerns\CanFormatState::class, class_uses($column)) ? $column->getFormattedState() : $column->getState();
-                if (is_array($state)) {
-                    $state = implode(', ', $state);
-                } elseif ($column instanceof ImageColumn) {
-                    $state = $column->getImagePath();
-                } elseif ($column instanceof ViewColumn) {
-                    $state = trim(preg_replace('/\s+/', ' ', strip_tags($column->render()->render())));
-                }
+                $state = self::getColumnState($column, $record, $index);
+
                 $item[$column->getName()] = (string) $state;
             }
             array_push($items, $item);
         }
 
-        return collect($items);
+        return $items;
+    }
+
+    public static function getColumnState(Column $column, Model $record, int $index): ?string
+    {
+        $column->rowLoop((object) [
+            'index' => $index,
+            'iteration' => $index + 1,
+        ]);
+
+        $column = $column->record($record);
+
+        $state = in_array(\Filament\Tables\Columns\Concerns\CanFormatState::class, class_uses($column)) ? $column->getFormattedState() : $column->getState();
+
+        if (is_array($state)) {
+            $state = implode(', ', $state);
+        } elseif ($column instanceof ImageColumn) {
+            $state = $column->getImagePath();
+        } elseif ($column instanceof ViewColumn) {
+            $state = trim(preg_replace('/\s+/', ' ', strip_tags($column->render()->render())));
+        }
+
+        return $state;
     }
 }
