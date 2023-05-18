@@ -26,6 +26,7 @@ use AlperenErsoy\FilamentExport\Actions\Concerns\HasPaginator;
 use AlperenErsoy\FilamentExport\Actions\Concerns\HasRecords;
 use AlperenErsoy\FilamentExport\Actions\Concerns\HasTimeFormat;
 use AlperenErsoy\FilamentExport\Actions\Concerns\HasUniqueActionId;
+use AlperenErsoy\FilamentExport\Actions\Concerns\HasCsvDelimiter;
 use AlperenErsoy\FilamentExport\FilamentExport;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -43,6 +44,7 @@ class FilamentExportHeaderAction extends \Filament\Tables\Actions\Action
     use CanUseSnappy;
     use CanRefreshTable;
     use HasAdditionalColumnsField;
+    use HasCsvDelimiter;
     use HasFilterColumnsField;
     use HasDefaultFormat;
     use HasDefaultPageOrientation;

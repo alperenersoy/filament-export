@@ -11,6 +11,7 @@ use AlperenErsoy\FilamentExport\Concerns\CanHaveExtraColumns;
 use AlperenErsoy\FilamentExport\Concerns\CanHaveExtraViewData;
 use AlperenErsoy\FilamentExport\Concerns\CanShowHiddenColumns;
 use AlperenErsoy\FilamentExport\Concerns\CanUseSnappy;
+use AlperenErsoy\FilamentExport\Concerns\HasCsvDelimiter;
 use AlperenErsoy\FilamentExport\Concerns\HasData;
 use AlperenErsoy\FilamentExport\Concerns\HasFileName;
 use AlperenErsoy\FilamentExport\Concerns\HasFormat;
@@ -33,6 +34,7 @@ class FilamentExport
     use CanHaveExtraViewData;
     use CanShowHiddenColumns;
     use CanUseSnappy;
+    use HasCsvDelimiter;
     use HasData;
     use HasFileName;
     use HasFormat;
@@ -117,7 +119,7 @@ class FilamentExport
         return response()->streamDownload(function () {
             $headers = $this->getAllColumns()->map(fn ($column) => $column->getLabel())->toArray();
 
-            $stream = SimpleExcelWriter::streamDownload("{$this->getFileName()}.{$this->getFormat()}", $this->getFormat())
+            $stream = SimpleExcelWriter::streamDownload("{$this->getFileName()}.{$this->getFormat()}", $this->getFormat(), delimiter: $this->getCsvDelimiter())
                 ->noHeaderRow()
                 ->addRows($this->getRows()->prepend($headers));
 
@@ -211,7 +213,8 @@ class FilamentExport
                 ->table($action->getTable())
                 ->extraViewData($action->getExtraViewData())
                 ->withColumns($action->getWithColumns())
-                ->paginator($action->getPaginator());
+                ->paginator($action->getPaginator())
+                ->csvDelimiter($action->getCsvDelimiter());
 
             $component
                 ->export($export)
@@ -230,7 +233,8 @@ class FilamentExport
             ->data(collect())
             ->extraViewData($action->getExtraViewData())
             ->withColumns($action->getWithColumns())
-            ->paginator($action->getPaginator());
+            ->paginator($action->getPaginator())
+            ->csvDelimiter($action->getCsvDelimiter());
 
         return [
             \Filament\Forms\Components\TextInput::make('file_name')
@@ -283,6 +287,7 @@ class FilamentExport
             ->extraViewData($action->getExtraViewData())
             ->withColumns($action->getWithColumns())
             ->withHiddenColumns($action->shouldShowHiddenColumns())
+            ->csvDelimiter($action->getCsvDelimiter())
             ->download();
     }
 
