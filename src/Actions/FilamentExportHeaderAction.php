@@ -27,6 +27,7 @@ use AlperenErsoy\FilamentExport\Actions\Concerns\HasRecords;
 use AlperenErsoy\FilamentExport\Actions\Concerns\HasTimeFormat;
 use AlperenErsoy\FilamentExport\Actions\Concerns\HasUniqueActionId;
 use AlperenErsoy\FilamentExport\Actions\Concerns\HasCsvDelimiter;
+use AlperenErsoy\FilamentExport\Actions\Concerns\HasFormatOptions;
 use AlperenErsoy\FilamentExport\FilamentExport;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -47,6 +48,7 @@ class FilamentExportHeaderAction extends \Filament\Tables\Actions\Action
     use HasCsvDelimiter;
     use HasFilterColumnsField;
     use HasDefaultFormat;
+    use HasFormatOptions;
     use HasDefaultPageOrientation;
     use HasExportModelActions;
     use HasFileName;

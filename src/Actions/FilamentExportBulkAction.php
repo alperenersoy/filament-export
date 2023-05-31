@@ -26,6 +26,7 @@ use AlperenErsoy\FilamentExport\Actions\Concerns\HasPaginator;
 use AlperenErsoy\FilamentExport\Actions\Concerns\HasTimeFormat;
 use AlperenErsoy\FilamentExport\Actions\Concerns\HasUniqueActionId;
 use AlperenErsoy\FilamentExport\Actions\Concerns\HasCsvDelimiter;
+use AlperenErsoy\FilamentExport\Actions\Concerns\HasFormatOptions;
 use AlperenErsoy\FilamentExport\FilamentExport;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -46,6 +47,7 @@ class FilamentExportBulkAction extends \Filament\Tables\Actions\BulkAction
     use HasCsvDelimiter;
     use HasFilterColumnsField;
     use HasDefaultFormat;
+    use HasFormatOptions;
     use HasDefaultPageOrientation;
     use HasFileName;
     use CanDisableFileNamePrefix;
