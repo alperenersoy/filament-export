@@ -126,7 +126,7 @@ class TableView extends Component
                     continue;
                 }
 
-                $data[$column->getName()] = FilamentExport::getColumnState($column, $row, $key);
+                $data[$column->getName()] = FilamentExport::getColumnState($this->getExport()->getTable(), $column, $row, $key);
             }
 
             return $data;

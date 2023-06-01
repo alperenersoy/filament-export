@@ -34,8 +34,10 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 class FilamentExportBulkAction extends \Filament\Tables\Actions\BulkAction
 {
     use CanDisableAdditionalColumns;
-    use CanDisableFilterColumns;
     use CanDisableFileName;
+    use CanDisableFileNamePrefix;
+    use CanDisableFilterColumns;
+    use CanDisableFormats;
     use CanDisablePreview;
     use CanDownloadDirect;
     use CanHaveExtraColumns;
@@ -45,14 +47,12 @@ class FilamentExportBulkAction extends \Filament\Tables\Actions\BulkAction
     use CanUseSnappy;
     use HasAdditionalColumnsField;
     use HasCsvDelimiter;
-    use HasFilterColumnsField;
     use HasDefaultFormat;
-    use CanDisableFormats;
     use HasDefaultPageOrientation;
-    use HasFileName;
-    use CanDisableFileNamePrefix;
     use HasExportModelActions;
+    use HasFileName;
     use HasFileNameField;
+    use HasFilterColumnsField;
     use HasFormatField;
     use HasPageOrientationField;
     use HasPaginator;

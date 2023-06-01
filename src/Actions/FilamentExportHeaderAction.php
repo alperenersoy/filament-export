@@ -34,9 +34,10 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 class FilamentExportHeaderAction extends \Filament\Tables\Actions\Action
 {
     use CanDisableAdditionalColumns;
-    use CanDisableFilterColumns;
     use CanDisableFileName;
     use CanDisableFileNamePrefix;
+    use CanDisableFilterColumns;
+    use CanDisableFormats;
     use CanDisablePreview;
     use CanDownloadDirect;
     use CanHaveExtraColumns;
@@ -46,13 +47,12 @@ class FilamentExportHeaderAction extends \Filament\Tables\Actions\Action
     use CanRefreshTable;
     use HasAdditionalColumnsField;
     use HasCsvDelimiter;
-    use HasFilterColumnsField;
     use HasDefaultFormat;
-    use CanDisableFormats;
     use HasDefaultPageOrientation;
     use HasExportModelActions;
     use HasFileName;
     use HasFileNameField;
+    use HasFilterColumnsField;
     use HasFormatField;
     use HasPageOrientationField;
     use HasPaginator;

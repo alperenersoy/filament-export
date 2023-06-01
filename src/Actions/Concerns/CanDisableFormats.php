@@ -2,57 +2,39 @@
 
 namespace AlperenErsoy\FilamentExport\Actions\Concerns;
 
+use AlperenErsoy\FilamentExport\FilamentExport;
+
 trait CanDisableFormats
 {
-    protected ?array $formats = null;
-
-    protected bool $disablePdf = false;
-
-    protected bool $disableXlsx = false;
-
-    protected bool $disableCsv = false;
+    protected array $formats = FilamentExport::DEFAULT_FORMATS;
 
     public function disablePdf(): static
     {
-        $this->disablePdf = true;
+        unset($this->formats['pdf']);
 
         return $this;
     }
 
     public function disableXlsx(): static
     {
-        $this->disableXlsx = true;
+        unset($this->formats['xlsx']);
 
         return $this;
     }
 
     public function disableCsv(): static
     {
-        $this->disableeCsv = true;
+        unset($this->formats['csv']);
 
         return $this;
     }
 
     public function getFormats(): array
     {
-        if ($this->formats !== null) {
+        if (!empty($this->formats)) {
             return $this->formats;
         }
 
-        $this->formats = [];
-
-        if (! $this->disablePdf) {
-            $this->formats['pdf'] = 'PDF';
-        }
-
-        if (! $this->disableXlsx) {
-            $this->formats['xlsx'] = 'XLSX';
-        }
-
-        if (! $this->disableCsv) {
-            $this->formats['csv'] = 'CSV';
-        }
-
-        return $this->formats;
+        return FilamentExport::DEFAULT_FORMATS;
     }
 }
