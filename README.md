@@ -112,7 +112,9 @@ Both actions provide functions for configuration.
 FilamentExportBulkAction::make('export')
     ->fileName('My File') // Default file name
     ->timeFormat('m y d') // Default time format for naming exports
-    ->formatOptions(['csv']) // Enable only given format options. Available options: pdf, xlsx, csv
+    ->disablePdf() // Disable PDF option to download
+    ->disableXlsx() // Disable XLSX option to download
+    ->disableCsv() // Disable CSV option to download
     ->defaultFormat('pdf') // xlsx, csv or pdf
     ->defaultPageOrientation('landscape') // Page orientation for pdf files. portrait or landscape
     ->directDownload() // Download directly without showing modal

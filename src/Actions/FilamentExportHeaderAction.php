@@ -6,6 +6,7 @@ use AlperenErsoy\FilamentExport\Actions\Concerns\CanDisableAdditionalColumns;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanDisableFileName;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanDisableFileNamePrefix;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanDisableFilterColumns;
+use AlperenErsoy\FilamentExport\Actions\Concerns\CanDisableFormats;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanDisablePreview;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanDownloadDirect;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanHaveExtraColumns;
@@ -27,7 +28,6 @@ use AlperenErsoy\FilamentExport\Actions\Concerns\HasRecords;
 use AlperenErsoy\FilamentExport\Actions\Concerns\HasTimeFormat;
 use AlperenErsoy\FilamentExport\Actions\Concerns\HasUniqueActionId;
 use AlperenErsoy\FilamentExport\Actions\Concerns\HasCsvDelimiter;
-use AlperenErsoy\FilamentExport\Actions\Concerns\HasFormatOptions;
 use AlperenErsoy\FilamentExport\FilamentExport;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -48,7 +48,7 @@ class FilamentExportHeaderAction extends \Filament\Tables\Actions\Action
     use HasCsvDelimiter;
     use HasFilterColumnsField;
     use HasDefaultFormat;
-    use HasFormatOptions;
+    use CanDisableFormats;
     use HasDefaultPageOrientation;
     use HasExportModelActions;
     use HasFileName;
