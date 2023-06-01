@@ -28,7 +28,7 @@ function printHTML(html, statePath, uniqueActionId) {
 
     iframe.contentWindow.onafterprint = () => document.getElementById(iframe.id).remove();
 
-    iframe.contentWindow.print();
+    iframe.contentWindow.onload = () => iframe.contentWindow.print();
 }
 
 window.triggerInputEvent = triggerInputEvent;

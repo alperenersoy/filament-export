@@ -28,10 +28,10 @@ class FilamentExportServiceProvider extends ServiceProvider
         if (class_exists('\Filament\Facades\Filament')) {
             \Filament\Facades\Filament::serving(function () {
                 \Filament\Facades\Filament::registerScripts([
-                    'filament-export-0.2.0' => __DIR__.'/../resources/js/filament-export.js',
+                    'filament-export-0.3.0' => __DIR__.'/../resources/js/filament-export.js',
                 ]);
                 \Filament\Facades\Filament::registerStyles([
-                    'filament-export-0.2.0' => __DIR__.'/../resources/css/filament-export.css',
+                    'filament-export-0.3.0' => __DIR__.'/../resources/css/filament-export.css',
                 ]);
             });
         }
