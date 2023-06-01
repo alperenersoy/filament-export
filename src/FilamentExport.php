@@ -22,6 +22,7 @@ use Carbon\Carbon;
 use Filament\Tables\Columns\Column;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\ViewColumn;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -305,7 +306,7 @@ class FilamentExport
         foreach ($records as $index => $record) {
             $item = [];
             foreach ($columns as $column) {
-                $state = self::getColumnState($column, $record, $index);
+                $state = self::getColumnState($this->getTable(), $column, $record, $index);
 
                 $item[$column->getName()] = (string) $state;
             }
@@ -315,14 +316,16 @@ class FilamentExport
         return $items;
     }
 
-    public static function getColumnState(Column $column, Model $record, int $index): ?string
+    public static function getColumnState(Table $table, Column $column, Model $record, int $index): ?string
     {
         $column->rowLoop((object) [
             'index' => $index,
             'iteration' => $index + 1,
         ]);
 
-        $column = $column->record($record);
+        $column->record($record);
+
+        $column->table($table);
 
         $state = in_array(\Filament\Tables\Columns\Concerns\CanFormatState::class, class_uses($column)) ? $column->getFormattedState() : $column->getState();
 
