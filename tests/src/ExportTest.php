@@ -63,7 +63,7 @@ it('can call bulk action', function () {
         ->assertSuccessful();
 });
 
-foreach (FilamentExport::FORMATS as $format => $label) {
+foreach (FilamentExport::DEFAULT_FORMATS as $format => $label) {
     it("can header action call $format download", function () use ($format) {
         $posts = Post::factory()->count(10)->create();
 
@@ -86,7 +86,7 @@ foreach (FilamentExport::FORMATS as $format => $label) {
     });
 }
 
-foreach (FilamentExport::FORMATS as $format => $label) {
+foreach (FilamentExport::DEFAULT_FORMATS as $format => $label) {
     it("can bulk action call $format download", function () use ($format) {
         $posts = Post::factory()->count(10)->create();
 

@@ -46,7 +46,7 @@ class FilamentExport
     use HasPaginator;
     use HasTable;
 
-    public const FORMATS = [
+    public const DEFAULT_FORMATS = [
         'xlsx' => 'XLSX',
         'csv' => 'CSV',
         'pdf' => 'PDF',
@@ -242,7 +242,7 @@ class FilamentExport
                 ->required(),
             \Filament\Forms\Components\Select::make('format')
                 ->label($action->getFormatFieldLabel())
-                ->options(FilamentExport::FORMATS)
+                ->options($action->getFormats())
                 ->default($action->getDefaultFormat()),
             \Filament\Forms\Components\Select::make('page_orientation')
                 ->label($action->getPageOrientationFieldLabel())
