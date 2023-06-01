@@ -9,6 +9,7 @@ use AlperenErsoy\FilamentExport\Concerns\CanFilterColumns;
 use AlperenErsoy\FilamentExport\Concerns\CanHaveAdditionalColumns;
 use AlperenErsoy\FilamentExport\Concerns\CanHaveExtraColumns;
 use AlperenErsoy\FilamentExport\Concerns\CanHaveExtraViewData;
+use AlperenErsoy\FilamentExport\Concerns\CanModifyWriters;
 use AlperenErsoy\FilamentExport\Concerns\CanShowHiddenColumns;
 use AlperenErsoy\FilamentExport\Concerns\CanUseSnappy;
 use AlperenErsoy\FilamentExport\Concerns\HasCsvDelimiter;
@@ -36,6 +37,7 @@ class FilamentExport
     use CanHaveAdditionalColumns;
     use CanHaveExtraColumns;
     use CanHaveExtraViewData;
+    use CanModifyWriters;
     use CanShowHiddenColumns;
     use CanUseSnappy;
     use HasCsvDelimiter;
@@ -110,6 +112,10 @@ class FilamentExport
         if ($this->getFormat() === 'pdf') {
             $pdf = $this->getPdf();
 
+            if ($modifyPdf = $this->getModifyPdfWriter()) {
+                $pdf = $modifyPdf($pdf);
+            }
+
             return response()->streamDownload(fn () => print($pdf->output()), "{$this->getFileName()}.{$this->getFormat()}");
         }
 
@@ -119,6 +125,10 @@ class FilamentExport
             $stream = SimpleExcelWriter::streamDownload("{$this->getFileName()}.{$this->getFormat()}", $this->getFormat(), delimiter: $this->getCsvDelimiter())
                 ->noHeaderRow()
                 ->addRows($this->getRows()->prepend($headers));
+
+            if ($modifyExcel = $this->getModifyExcelWriter()) {
+                $stream = $modifyExcel($stream);
+            }
 
             $stream->close();
         }, "{$this->getFileName()}.{$this->getFormat()}");
@@ -285,6 +295,8 @@ class FilamentExport
             ->withColumns($action->getWithColumns())
             ->withHiddenColumns($action->shouldShowHiddenColumns())
             ->csvDelimiter($action->getCsvDelimiter())
+            ->modifyExcelWriter($action->getModifyExcelWriter())
+            ->modifyPdfWriter($action->getModifyPdfWriter())
             ->download();
     }
 

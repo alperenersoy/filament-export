@@ -134,6 +134,8 @@ FilamentExportBulkAction::make('export')
     ->additionalColumnsAddButtonLabel('Add Column') // Label for additional columns' add button 
     ->withColumns([TextColumn::make('additionalModelColumn')]) // Export additional model columns that aren't visible in the table results
     ->csvDelimiter(',') // Delimiter for csv files
+    ->modifyExcelWriter(fn (SimpleExcelWriter $writer) => $writer->nameCurrentSheet('Sheet')) // Modify SimpleExcelWriter before download
+    ->modifyPdfWriter(fn (\Barryvdh\DomPDF\PDF|\Barryvdh\Snappy\PdfWrapper $writer) => $writer->setPaper('a4', 'landscape')) // Modify DomPdf or Snappy writer before download
 ```
 You can also use default bulk action and header action functions to customize actions.
 
