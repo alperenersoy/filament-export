@@ -11,6 +11,7 @@ use AlperenErsoy\FilamentExport\Actions\Concerns\CanDisablePreview;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanDownloadDirect;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanHaveExtraColumns;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanHaveExtraViewData;
+use AlperenErsoy\FilamentExport\Actions\Concerns\CanModifyWriters;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanRefreshTable;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanShowHiddenColumns;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanUseSnappy;
@@ -42,6 +43,7 @@ class FilamentExportHeaderAction extends \Filament\Tables\Actions\Action
     use CanDownloadDirect;
     use CanHaveExtraColumns;
     use CanHaveExtraViewData;
+    use CanModifyWriters;
     use CanShowHiddenColumns;
     use CanUseSnappy;
     use CanRefreshTable;
