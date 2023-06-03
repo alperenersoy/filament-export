@@ -26,9 +26,11 @@ $wire.on('close-preview-modal-{{ $getUniqueActionId() }}', () => { isOpen = fals
                 </tr>
             @endforeach
         </table>
-        <div>
-            <x-tables::pagination :paginator="$getRows()" :records-per-page-select-options="$this->getTable()->getRecordsPerPageSelectOptions()" />
-        </div>
+        @if ($getRows() instanceof \Illuminate\Pagination\LengthAwarePaginator)
+            <div>
+                <x-tables::pagination :paginator="$getRows()" :records-per-page-select-options="$this->getTable()->getRecordsPerPageSelectOptions()" />
+            </div>
+        @endif
     </div>
     <x-slot name="footer">
         @foreach ($getFooterActions() as $action)

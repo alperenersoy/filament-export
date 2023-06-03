@@ -75,13 +75,15 @@ class FilamentExportBulkAction extends \Filament\Tables\Actions\BulkAction
                     return [];
                 }
 
-                $currentPage = LengthAwarePaginator::resolveCurrentPage('exportPage');
+                if ($livewire->tableRecordsPerPage !== null) {
+                    $currentPage = LengthAwarePaginator::resolveCurrentPage('exportPage');
+                    
+                    $paginator = new LengthAwarePaginator($records->forPage($currentPage, $livewire->tableRecordsPerPage), $records->count(), $livewire->tableRecordsPerPage, $currentPage, [
+                        'pageName' => 'exportPage',
+                    ]);
 
-                $paginator = new LengthAwarePaginator($records->forPage($currentPage, $livewire->tableRecordsPerPage), $records->count(), $livewire->tableRecordsPerPage, $currentPage, [
-                    'pageName' => 'exportPage',
-                ]);
-
-                $action->paginator($paginator);
+                    $action->paginator($paginator);
+                }
 
                 return FilamentExport::getFormComponents($action);
             })

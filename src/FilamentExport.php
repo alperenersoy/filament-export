@@ -202,7 +202,7 @@ class FilamentExport
 
         $extraColumns = collect($action->getWithColumns());
 
-        if($extraColumns->isNotEmpty()) {
+        if ($extraColumns->isNotEmpty()) {
             $columns = $columns->merge($extraColumns);
         }
 
@@ -216,12 +216,16 @@ class FilamentExport
             $export = FilamentExport::make()
                 ->filteredColumns($data['filter_columns'] ?? [])
                 ->additionalColumns($data['additional_columns'] ?? [])
-                ->data(collect())
                 ->table($action->getTable())
                 ->extraViewData($action->getExtraViewData())
                 ->withColumns($action->getWithColumns())
-                ->paginator($action->getPaginator())
                 ->csvDelimiter($action->getCsvDelimiter());
+
+            if ($paginator = $action->getPaginator()) {
+                $export->paginator($paginator)->data(collect());
+            } else {
+                $export->data($action->getRecords());
+            }
 
             $component
                 ->export($export)
@@ -240,8 +244,13 @@ class FilamentExport
             ->data(collect())
             ->extraViewData($action->getExtraViewData())
             ->withColumns($action->getWithColumns())
-            ->paginator($action->getPaginator())
             ->csvDelimiter($action->getCsvDelimiter());
+
+          if ($paginator = $action->getPaginator()) {
+              $initialExport->paginator($paginator)->data(collect());
+          } else {
+              $initialExport->data($action->getRecords());
+          }
 
         return [
             \Filament\Forms\Components\TextInput::make('file_name')

@@ -63,7 +63,7 @@ class TableView extends Component
 
     public function filteredColumns(array $columns): static
     {
-        if (count($columns) == 0) {
+        if (count($columns) === 0) {
             return $this;
         }
 
@@ -79,7 +79,7 @@ class TableView extends Component
 
     public function additionalColumns(array $additionalColumns): static
     {
-        if (count($additionalColumns) == 0) {
+        if (count($additionalColumns) === 0) {
             return $this;
         }
 
@@ -110,13 +110,15 @@ class TableView extends Component
         return $this->getExport()->getAllColumns();
     }
 
-    public function getRows(): LengthAwarePaginator
+    public function getRows(): Collection|LengthAwarePaginator
     {
         $paginator = $this
             ->getExport()
             ->getPaginator();
 
-        $paginator->getCollection()->transform(function ($row, $key) {
+        $collection = $paginator !== null ? $paginator->getCollection() : $this->getExport()->getData();
+
+        $collection->transform(function ($row, $key) {
             $data = [];
 
             foreach ($this->getAllColumns() as $column) {
@@ -132,7 +134,7 @@ class TableView extends Component
             return $data;
         });
 
-        return $paginator;
+        return $paginator !== null ? $paginator : $collection;
     }
 
     public function getExportAction(): Action
