@@ -26,7 +26,7 @@ $wire.on('close-preview-modal-{{ $getUniqueActionId() }}', () => { isOpen = fals
                 </tr>
             @endforeach
         </table>
-        @if ($getRows() instanceof \Illuminate\Pagination\LengthAwarePaginator)
+        @if ($getExport()->getPaginator() !== null)
             <div>
                 <x-tables::pagination :paginator="$getRows()" :records-per-page-select-options="$this->getTable()->getRecordsPerPageSelectOptions()" />
             </div>
