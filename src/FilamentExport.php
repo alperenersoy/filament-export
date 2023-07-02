@@ -262,7 +262,8 @@ class FilamentExport
             \Filament\Forms\Components\Select::make('format')
                 ->label($action->getFormatFieldLabel())
                 ->options($action->getFormats())
-                ->default($action->getDefaultFormat()),
+                ->default($action->getDefaultFormat())
+                ->reactive(),
             \Filament\Forms\Components\Select::make('page_orientation')
                 ->label($action->getPageOrientationFieldLabel())
                 ->options(FilamentExport::getPageOrientations())
