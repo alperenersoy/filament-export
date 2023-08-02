@@ -1,6 +1,6 @@
 <input id="{{ $getStatePath() }}" type="hidden" {{ $applyStateBindingModifiers('wire:model') }}="{{ $getStatePath() }}">
 
-<x-filament-support::modal id="preview-modal" width="7xl" display-classes="block" :dark-mode="config('filament.dark_mode')" x-init="$wire.on('open-preview-modal-{{ $getUniqueActionId() }}', function() {
+<x-filament::modal id="preview-modal" width="7xl" display-classes="block" :dark-mode="config('filament.dark_mode')" x-init="$wire.on('open-preview-modal-{{ $getUniqueActionId() }}', function() {
     triggerInputEvent('{{ $getStatePath() }}', '{{ $shouldRefresh() ? 'refresh' : '' }}');
     isOpen = true;
 });
@@ -54,4 +54,4 @@ $wire.on('close-preview-modal-{{ $getUniqueActionId() }}', () => { isOpen = fals
             window.Livewire.emit("open-preview-modal-{{ $getUniqueActionId() }}");
         </script>
     @endif
-</x-filament-support::modal>
+</x-filament::modal>
