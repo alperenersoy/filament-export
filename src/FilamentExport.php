@@ -71,7 +71,7 @@ class FilamentExport
 
     public function getAllColumns(): Collection
     {
-        $tableColumns = $this->shouldShowHiddenColumns() ? $this->getTable()->getLivewire()->getCachedTableColumns() : $this->getTable()->getColumns();
+        $tableColumns = $this->shouldShowHiddenColumns() ? $this->getTable()->getColumns() : $this->getTable()->getVisibleColumns();
 
         $columns = collect($tableColumns);
 
@@ -185,18 +185,18 @@ class FilamentExport
 
         $action->additionalColumnsAddButtonLabel(__('filament-export::export_action.additional_columns_field.add_button_label'));
 
-        $action->modalButton(__('filament-export::export_action.export_action_label'));
+        $action->modalSubmitActionLabel(__('filament-export::export_action.export_action_label'));
 
         $action->modalHeading(__('filament-export::export_action.modal_heading'));
 
-        $action->modalActions($action->getExportModalActions());
+        $action->modalFooterActions($action->getExportModalActions());
     }
 
     public static function getFormComponents(FilamentExportHeaderAction | FilamentExportBulkAction $action): array
     {
         $action->fileNamePrefix($action->getFileNamePrefix() ?: $action->getTable()->getHeading());
 
-        $columns = $action->shouldShowHiddenColumns() ? $action->getLivewire()->getCachedTableColumns() : $action->getTable()->getColumns();
+        $columns = $action->shouldShowHiddenColumns() ? $action->getTable()->getColumns() : $action->getTable()->getVisibleColumns();
 
         $columns = collect($columns);
 
@@ -211,7 +211,8 @@ class FilamentExport
             ->toArray();
 
         $updateTableView = function ($component, $livewire) use ($action) {
-            $data = $action instanceof FilamentExportBulkAction ? $livewire->mountedTableBulkActionData : $livewire->mountedTableActionData;
+            /** @var \Filament\Resources\Pages\ListRecords $livewire */
+            $data = $action instanceof FilamentExportBulkAction ? $livewire->getMountedTableBulkAction()->getFormData() : $livewire->getMountedTableAction()->getFormData();
 
             $export = FilamentExport::make()
                 ->filteredColumns($data['filter_columns'] ?? [])
@@ -340,7 +341,7 @@ class FilamentExport
 
         $column->table($table);
 
-        $state = in_array(\Filament\Tables\Columns\Concerns\CanFormatState::class, class_uses($column)) ? $column->getFormattedState() : $column->getState();
+        $state = in_array(\Filament\Tables\Columns\Concerns\CanFormatState::class, class_uses($column)) ? $column->formatState($column->getState()) : $column->getState();
 
         if (is_array($state)) {
             $state = implode(', ', $state);

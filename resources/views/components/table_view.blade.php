@@ -27,7 +27,7 @@ $wire.on('close-preview-modal-{{ $getUniqueActionId() }}', () => { isOpen = fals
             @endforeach
         </table>
         <div>
-            <x-filament::pagination :paginator="$getRows()" :records-per-page-select-options="$this->getTable()->getRecordsPerPageSelectOptions()" />
+            <x-filament::pagination :paginator="$getRows()" :page-options="$this->getTable()->getPaginationPageOptions()" />
         </div>
     </div>
     <x-slot name="footer">
@@ -36,7 +36,7 @@ $wire.on('close-preview-modal-{{ $getUniqueActionId() }}', () => { isOpen = fals
         @endforeach
     </x-slot>
     @php
-        $data = $this->mountedTableBulkAction ? $this->mountedTableBulkActionData : $this->mountedTableActionData;
+        $data = $this->mountedTableBulkAction ? $this->getMountedTableBulkAction()->getFormData() : $this->getMountedTableAction()->getFormData();
     @endphp
     @if (is_array($data) &&
         array_key_exists('table_view', $data) &&

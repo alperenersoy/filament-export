@@ -11,6 +11,7 @@ trait HasRecords
 
     public function getTableQuery(): Builder
     {
+        /** @var \Filament\Resources\Pages\ListRecords $livewire */
         $livewire = $this->getLivewire();
 
         $model = $this->getTable()->getModel();
@@ -32,10 +33,8 @@ trait HasRecords
             $query->whereBelongsTo($livewire->ownerRecord);
         }
 
-        $livewire->cacheTableFilters();
-
         $query->where(function (Builder $query) use ($filterData, $livewire) {
-            foreach ($livewire->getCachedTableFilters() as $filter) {
+            foreach ($livewire->tableFilters ?? [] as $filter) {
                 $filter->apply(
                     $query,
                     $filterData[$filter->getName()] ?? [],
@@ -43,7 +42,7 @@ trait HasRecords
             }
         });
 
-        $searchQuery = $livewire->tableSearchQuery;
+        $searchQuery = $livewire->getTableSearch();
 
         if ($searchQuery !== '') {
             foreach (explode(' ', $searchQuery) as $searchQueryWord) {
@@ -57,7 +56,7 @@ trait HasRecords
             }
         }
 
-        foreach ($livewire->getCachedTableColumns() as $column) {
+        foreach ($livewire->getTable()->getColumns() as $column) {
             $column->applyEagerLoading($query);
             $column->applyRelationshipAggregates($query);
         }
@@ -69,6 +68,7 @@ trait HasRecords
 
     protected function applySortingToTableQuery(Builder $query): Builder
     {
+        /** @var \Filament\Resources\Pages\ListRecords $livewire */
         $livewire = $this->getLivewire();
 
         $columnName = $livewire->tableSortColumn;
