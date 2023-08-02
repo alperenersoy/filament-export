@@ -32,8 +32,8 @@ class FilamentExportServiceProvider extends ServiceProvider
             ]);
 
             \Filament\Facades\Filament::serving(function () {
-                \Filament\Support\Facades\FilamentAsset::renderScripts('filament-export-0.3.0');
-                \Filament\Support\Facades\FilamentAsset::renderStyles('filament-export-0.3.0');
+                \Filament\Support\Facades\FilamentAsset::renderScripts(['filament-export-0.3.0']);
+                \Filament\Support\Facades\FilamentAsset::renderStyles(['filament-export-0.3.0']);
             });
         }
     }
