@@ -151,7 +151,7 @@ class TableView extends Component
         return StaticAction::make('print')
             ->button()
             ->label(__('filament-export::table_view.print_action_label'))
-            ->action("\$emit('print-table-$uniqueActionId')")
+            ->action("\$dispatch('print-table-$uniqueActionId')")
             ->color('gray')
             ->icon(config('filament-export.print_icon'));
     }

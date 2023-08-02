@@ -16,7 +16,7 @@ trait HasExportModelActions
                 ->label(__('filament-export::export_action.preview_action_label'))
                 ->color('success')
                 ->icon(config('filament-export.preview_icon'))
-                ->action("\$emit('open-preview-modal-{$uniqueActionId}')"),
+                ->action("\$dispatch('open-preview-modal-{$uniqueActionId}')"),
         ] : [];
     }
 
@@ -46,14 +46,14 @@ trait HasExportModelActions
                     ->label(__('filament-export::export_action.print_action_label'))
                     ->color('gray')
                     ->icon(config('filament-export.print_icon'))
-                    ->action("\$emit('print-table-{$uniqueActionId}')"),
+                    ->action("\$dispatch('print-table-{$uniqueActionId}')"),
                 StaticAction::make('cancel')
                     ->button()
                     ->label(__('filament-export::export_action.cancel_action_label'))
                     ->close()
                     ->color('secondary')
                     ->icon(config('filament-export.cancel_icon'))
-                    ->action("\$emit('close-preview-modal-{$uniqueActionId}')"),
+                    ->action("\$dispatch('close-preview-modal-{$uniqueActionId}')"),
             ]
         );
     }

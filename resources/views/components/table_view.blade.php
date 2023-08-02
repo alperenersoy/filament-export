@@ -47,11 +47,11 @@ $wire.on('close-preview-modal-{{ $getUniqueActionId() }}', () => { isOpen = fals
     @endif
     @if ($shouldRefresh())
         <script>
-            window.Livewire.emit("close-preview-modal-{{ $getUniqueActionId() }}");
+            window.Livewire.dispatch("close-preview-modal-{{ $getUniqueActionId() }}");
 
             triggerInputEvent('{{ $getStatePath() }}', 'refresh');
 
-            window.Livewire.emit("open-preview-modal-{{ $getUniqueActionId() }}");
+            window.Livewire.dispatch("open-preview-modal-{{ $getUniqueActionId() }}");
         </script>
     @endif
 </x-filament::modal>
