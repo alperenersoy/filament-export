@@ -3,7 +3,7 @@
 namespace AlperenErsoy\FilamentExport\Tests\Filament\Resources\PostResource\Pages;
 
 use AlperenErsoy\FilamentExport\Tests\Filament\Resources\PostResource;
-use Filament\Pages\Actions;
+use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
 class ListPosts extends ListRecords

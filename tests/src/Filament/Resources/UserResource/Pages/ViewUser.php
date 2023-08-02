@@ -3,7 +3,7 @@
 namespace AlperenErsoy\FilamentExport\Tests\Filament\Resources\UserResource\Pages;
 
 use AlperenErsoy\FilamentExport\Tests\Filament\Resources\UserResource;
-use Filament\Pages\Actions;
+use Filament\Actions;
 use Filament\Resources\Pages\ViewRecord;
 
 class ViewUser extends ViewRecord

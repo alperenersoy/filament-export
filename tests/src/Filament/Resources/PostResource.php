@@ -5,9 +5,9 @@ namespace AlperenErsoy\FilamentExport\Tests\Filament\Resources;
 use AlperenErsoy\FilamentExport\Tests\Filament\Resources\PostResource\Pages;
 use AlperenErsoy\FilamentExport\Tests\Models\Post;
 use Filament\Forms;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Resources\Table;
+use Filament\Tables\Table;
 use Filament\Tables;
 
 class PostResource extends Resource
@@ -22,7 +22,7 @@ class PostResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('title')->required(),
                 Forms\Components\MarkdownEditor::make('content'),
-                Forms\Components\BelongsToSelect::make('user_id')
+                Forms\Components\Select::make('user_id')
                     ->relationship('user', 'name')
                     ->required(),
                 Forms\Components\TagsInput::make('tags'),

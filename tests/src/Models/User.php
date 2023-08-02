@@ -2,11 +2,12 @@
 
 namespace AlperenErsoy\FilamentExport\Tests\Models;
 
-use AlperenErsoy\FilamentExport\Tests\Database\Factories\UserFactory;
+use Filament\Panel;
 use Filament\Models\Contracts\FilamentUser;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use AlperenErsoy\FilamentExport\Tests\Database\Factories\UserFactory;
 
 class User extends Authenticatable implements FilamentUser
 {
@@ -19,7 +20,7 @@ class User extends Authenticatable implements FilamentUser
         'remember_token',
     ];
 
-    public function canAccessFilament(): bool
+    public function canAccessPanel(Panel $panel): bool
     {
         return true;
     }

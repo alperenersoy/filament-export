@@ -6,9 +6,9 @@ use AlperenErsoy\FilamentExport\Tests\Filament\Resources\UserResource\Pages;
 use AlperenErsoy\FilamentExport\Tests\Filament\Resources\UserResource\RelationManagers\PostsRelationManager;
 use AlperenErsoy\FilamentExport\Tests\Models\User;
 use Filament\Forms;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Resources\Table;
+use Filament\Tables\Table;
 use Filament\Tables;
 
 class UserResource extends Resource
