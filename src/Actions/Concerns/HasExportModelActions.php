@@ -37,7 +37,7 @@ trait HasExportModelActions
             [
                 StaticAction::make('submit')
                     ->button()
-                    ->label($this->getModalButtonLabel())
+                    ->label($this->getModalSubmitActionLabel())
                     ->submit($livewireCallActionName)
                     ->color($this->getColor() !== 'secondary' ? $this->getColor() : null)
                     ->icon(config('filament-export.export_icon')),
@@ -50,7 +50,7 @@ trait HasExportModelActions
                 StaticAction::make('cancel')
                     ->button()
                     ->label(__('filament-export::export_action.cancel_action_label'))
-                    ->cancel()
+                    ->close()
                     ->color('secondary')
                     ->icon(config('filament-export.cancel_icon'))
                     ->action("\$emit('close-preview-modal-{$uniqueActionId}')"),
