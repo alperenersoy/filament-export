@@ -1,12 +1,12 @@
 <input id="{{ $getStatePath() }}" type="hidden" {{ $applyStateBindingModifiers('wire:model') }}="{{ $getStatePath() }}">
 
-<x-filament::modal id="preview-modal" width="7xl" display-classes="block" :dark-mode="config('filament.dark_mode')" x-init="$wire.on('open-preview-modal-{{ $getUniqueActionId() }}', function() {
+<x-filament::modal id="preview-modal" width="7xl" display-classes="block" :dark-mode="config('filament.dark_mode')" x-init="$wire.$on('open-preview-modal-{{ $getUniqueActionId() }}', function() {
     triggerInputEvent('{{ $getStatePath() }}', '{{ $shouldRefresh() ? 'refresh' : '' }}');
     isOpen = true;
 });
-$wire.on('close-preview-modal-{{ $getUniqueActionId() }}', () => { isOpen = false; });" :heading="$getPreviewModalHeading()">
+$wire.$on('close-preview-modal-{{ $getUniqueActionId() }}', () => { isOpen = false; });" :heading="$getPreviewModalHeading()">
     <div class="preview-table-wrapper space-y-4">
-        <table class="preview-table dark:bg-gray-800 dark:text-white dark:border-gray-700" x-init="$wire.on('print-table-{{ $getUniqueActionId() }}', function() {
+        <table class="preview-table dark:bg-gray-800 dark:text-white dark:border-gray-700" x-init="$wire.$on('print-table-{{ $getUniqueActionId() }}', function() {
             triggerInputEvent('{{ $getStatePath() }}', 'print-{{ $getUniqueActionId() }}')
         })">
             <tr class="dark:border-gray-700">
