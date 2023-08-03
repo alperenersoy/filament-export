@@ -34,7 +34,7 @@ trait HasRecords
         }
 
         $query->where(function (Builder $query) use ($filterData, $livewire) {
-            foreach ($livewire->tableFilters ?? [] as $filter) {
+            foreach ($livewire->getTable()->getFilters() ?? [] as $filter) {
                 $filter->apply(
                     $query,
                     $filterData[$filter->getName()] ?? [],
@@ -49,8 +49,10 @@ trait HasRecords
                 $query->where(function (Builder $query) use ($searchQueryWord, $livewire) {
                     $isFirst = true;
 
-                    foreach ($livewire->getCachedTableColumns() as $column) {
-                        $column->applySearchConstraint($query, $searchQueryWord, $isFirst);
+                    foreach ($livewire->getTable()->getColumns() as $column) {
+                        if ($column->isSearchable()) {
+                            $column->applySearchConstraint($query, $searchQueryWord, $isFirst);
+                        }
                     }
                 });
             }
