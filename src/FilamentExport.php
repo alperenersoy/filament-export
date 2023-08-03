@@ -211,8 +211,9 @@ class FilamentExport
             ->toArray();
 
         $updateTableView = function ($component, $livewire) use ($action) {
+            /** @var \AlperenErsoy\FilamentExport\Components\TableView $component */
             /** @var \Filament\Resources\Pages\ListRecords $livewire */
-            $data = $action instanceof FilamentExportBulkAction ? $livewire->getMountedTableBulkAction()->getFormData() : $livewire->getMountedTableAction()->getFormData();
+            $data = $action instanceof FilamentExportBulkAction ? $livewire->getMountedTableBulkActionForm()->getState() : $livewire->getMountedTableActionForm()->getState();
 
             $export = FilamentExport::make()
                 ->filteredColumns($data['filter_columns'] ?? [])
@@ -271,7 +272,7 @@ class FilamentExport
                 ->label($action->getAdditionalColumnsFieldLabel())
                 ->keyLabel($action->getAdditionalColumnsTitleFieldLabel())
                 ->valueLabel($action->getAdditionalColumnsDefaultValueFieldLabel())
-                ->addButtonLabel($action->getAdditionalColumnsAddButtonLabel())
+                ->addActionLabel($action->getAdditionalColumnsAddButtonLabel())
                 ->hidden($action->isAdditionalColumnsDisabled()),
             TableView::make('table_view')
                 ->export($initialExport)

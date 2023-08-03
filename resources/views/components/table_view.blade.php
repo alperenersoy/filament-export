@@ -36,7 +36,7 @@ $wire.$on('close-preview-modal-{{ $getUniqueActionId() }}', () => { isOpen = fal
         @endforeach
     </x-slot>
     @php
-        $data = $this->mountedTableBulkAction ? $this->getMountedTableBulkAction()->getFormData() : $this->getMountedTableAction()->getFormData();
+        $data = $this->mountedTableBulkAction ? $this->getMountedTableBulkActionForm()->getState() : $this->getMountedTableActionForm()->getState();
     @endphp
     @if (is_array($data) &&
         array_key_exists('table_view', $data) &&
