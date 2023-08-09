@@ -25,14 +25,15 @@ class FilamentExportServiceProvider extends ServiceProvider
             __DIR__.'/../resources/views' => resource_path('views/vendor/filament-export'),
         ], 'views');
     
-        if (class_exists('\Filament\Facades\Filament')) {
+        if (class_exists('\Filament\Support\Facades\FilamentAsset')) {
+            \Filament\Support\Facades\FilamentAsset::register([
+                \Filament\Support\Assets\Js::make('filament-export-0.3.0', __DIR__.'/../resources/js/filament-export.js'),
+                \Filament\Support\Assets\Css::make('filament-export-0.3.0', __DIR__.'/../resources/css/filament-export.css'),
+            ]);
+
             \Filament\Facades\Filament::serving(function () {
-                \Filament\Facades\Filament::registerScripts([
-                    'filament-export-0.3.0' => __DIR__.'/../resources/js/filament-export.js',
-                ]);
-                \Filament\Facades\Filament::registerStyles([
-                    'filament-export-0.3.0' => __DIR__.'/../resources/css/filament-export.css',
-                ]);
+                \Filament\Support\Facades\FilamentAsset::renderScripts(['filament-export-0.3.0']);
+                \Filament\Support\Facades\FilamentAsset::renderStyles(['filament-export-0.3.0']);
             });
         }
     }

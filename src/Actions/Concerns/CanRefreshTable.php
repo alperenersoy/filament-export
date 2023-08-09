@@ -6,17 +6,18 @@ trait CanRefreshTable
 {
     public function shouldRefreshTableView()
     {
-        if (request()->has('updates')) {
-            $updates = collect(request()->updates);
+        if (request()->has('components')) {
+            foreach (request('components') as $component) {
+                $callMethods = array_unique(array_column($component['calls'], 'method'));
 
-            $gotoPageCalls = $updates->filter(function ($item) {
-                return $item['type'] === 'callMethod' && $item['payload']['method'] === 'gotoPage' ||
-                    $item['type'] === 'callMethod' && $item['payload']['method'] === 'previousPage' ||
-                    $item['type'] === 'callMethod' && $item['payload']['method'] === 'nextPage' ||
-                    $item['type'] === 'syncInput' && $item['payload']['name'] === 'tableRecordsPerPage';
-            });
+                if (in_array('gotoPage', $callMethods) || in_array('previousPage', $callMethods) || in_array('nextPage', $callMethods)) {
+                    return true;
+                }
 
-            return $gotoPageCalls->count() > 0;
+                if (array_key_exists('tableRecordsPerPage', $component['updates'])) {
+                    return true;
+                }
+            }
         }
 
         return false;

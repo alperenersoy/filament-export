@@ -1,18 +1,20 @@
 <?php
 
-use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
-use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
-use AlperenErsoy\FilamentExport\FilamentExport;
-use AlperenErsoy\FilamentExport\Tests\Filament\Resources\PostResource;
-use AlperenErsoy\FilamentExport\Tests\Filament\Resources\PostResource\Pages\ListPosts;
-use AlperenErsoy\FilamentExport\Tests\Filament\Resources\UserResource;
-use AlperenErsoy\FilamentExport\Tests\Filament\Resources\UserResource\Pages\ListUsers;
-use AlperenErsoy\FilamentExport\Tests\Filament\Resources\UserResource\RelationManagers\PostsRelationManager;
-use AlperenErsoy\FilamentExport\Tests\Models\Post;
-use AlperenErsoy\FilamentExport\Tests\Models\User;
 use Filament\Tables\Table;
 use function Pest\Livewire\livewire;
+use AlperenErsoy\FilamentExport\FilamentExport;
+use AlperenErsoy\FilamentExport\Tests\Models\Post;
+use AlperenErsoy\FilamentExport\Tests\Models\User;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
+use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
+use AlperenErsoy\FilamentExport\Tests\Filament\Resources\PostResource;
+use AlperenErsoy\FilamentExport\Tests\Filament\Resources\UserResource;
+use AlperenErsoy\FilamentExport\Tests\Filament\Resources\UserResource\Pages\EditUser;
+
+use AlperenErsoy\FilamentExport\Tests\Filament\Resources\PostResource\Pages\ListPosts;
+use AlperenErsoy\FilamentExport\Tests\Filament\Resources\UserResource\Pages\ListUsers;
+use AlperenErsoy\FilamentExport\Tests\Filament\Resources\UserResource\RelationManagers\PostsRelationManager;
 
 it('can initiate tests', function () {
     expect(true)->toBe(true);
@@ -125,7 +127,7 @@ it('can view user with posts relation manager', function () {
 
     $this->get(PostResource::getUrl('view', [
         'record' => $posts->first()->id,
-    ]))->assertSuccessful();
+    ], panel: 'test-panel'))->assertSuccessful();
 });
 
 it('can render relation manager', function () {
@@ -133,6 +135,7 @@ it('can render relation manager', function () {
 
     livewire(PostsRelationManager::class, [
         'ownerRecord' => User::latest()->first(),
+        'pageClass' => EditUser::class,
     ])->assertSuccessful();
 });
 
@@ -143,6 +146,7 @@ it('can call header action on relation manager', function () {
 
     livewire(PostsRelationManager::class, [
         'ownerRecord' => $user,
+        'pageClass' => EditUser::class,
     ])
         ->callTableAction('export')
         ->assertSuccessful();
@@ -155,6 +159,7 @@ it('can call bulk action on relation manager', function () {
 
     livewire(PostsRelationManager::class, [
         'ownerRecord' => $user,
+        'pageClass' => EditUser::class,
     ])
         ->callTableBulkAction('export', $user->posts)
         ->assertSuccessful();
