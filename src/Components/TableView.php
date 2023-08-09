@@ -19,7 +19,9 @@ class TableView extends Component
 
     protected FilamentExport $export;
 
-    protected $shouldRefresh = false;
+    protected bool $shouldRefresh = false;
+
+    protected string $printHTML = '';
 
     protected function setUp(): void
     {
@@ -198,5 +200,17 @@ class TableView extends Component
     public function shouldRefresh(): bool
     {
         return $this->shouldRefresh;
+    }
+
+    public function printHTML(string $printHTML): static
+    {
+        $this->printHTML = $printHTML;
+
+        return $this;
+    }
+
+    public function getPrintHTML(): string
+    {
+        return htmlentities($this->printHTML);
     }
 }

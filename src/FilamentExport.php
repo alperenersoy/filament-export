@@ -225,16 +225,20 @@ class FilamentExport
                 ->paginator($action->getPaginator())
                 ->csvDelimiter($action->getCsvDelimiter());
 
+
+            if ($data['table_view'] == 'print-' . $action->getUniqueActionId()) {
+                $export->data($action->getRecords());
+                $printHTML = view('filament-export::print', $export->getViewData())->render();
+            } else {
+                $printHTML = '';
+            }
+
+            $livewire->resetPage('exportPage');
+
             $component
                 ->export($export)
-                ->refresh($action->shouldRefreshTableView());
-
-            if ($data['table_view'] == 'print-'.$action->getUniqueActionId()) {
-                $export->data($action->getRecords());
-                $action->getLivewire()->printHTML = view('filament-export::print', $export->getViewData())->render();
-            } elseif ($data['table_view'] == 'afterprint-'.$action->getUniqueActionId()) {
-                $action->getLivewire()->printHTML = null;
-            }
+                ->refresh($action->shouldRefreshTableView())
+                ->printHTML($printHTML);
         };
 
         $initialExport = FilamentExport::make()
