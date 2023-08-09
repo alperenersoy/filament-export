@@ -2,15 +2,15 @@
 
 [![Latest Stable Version](http://poser.pugx.org/alperenersoy/filament-export/v)](https://packagist.org/packages/alperenersoy/filament-export) [![Total Downloads](http://poser.pugx.org/alperenersoy/filament-export/downloads)](https://packagist.org/packages/alperenersoy/filament-export) [![License](http://poser.pugx.org/alperenersoy/filament-export/license)](https://packagist.org/packages/alperenersoy/filament-export)
 
-Customizable export and print functionality for Filament Admin Panel.
+Customizable export and print functionality for Filament Admin Panel v3. v3 version is currently in beta.
 
 This package provides a bulk action and header action to export your filament tables easily.
 
 ![filament-export-3](https://user-images.githubusercontent.com/83382417/179013026-14ddd872-fedc-45d2-954a-1447005777bb.png)
 
 ## Requirements
-- PHP 8
-- [Filament 2.0](https://github.com/laravel-filament/filament)
+- PHP 8.1
+- [Filament 3.0](https://github.com/laravel-filament/filament)
 
 ### Dependencies
 - [spatie/simple-excel](https://github.com/spatie/simple-excel)
@@ -18,8 +18,15 @@ This package provides a bulk action and header action to export your filament ta
 
 ## Installation
 
+1. Install the package
+
 ```bash
 composer require alperenersoy/filament-export
+```
+
+2. Copy assets
+```bash
+php artisan filament:assets
 ```
 
 ### Configuring for Standalone Table Builder (Experimental)
