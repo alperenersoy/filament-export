@@ -2,13 +2,13 @@
 
 namespace AlperenErsoy\FilamentExport\Components;
 
-use AlperenErsoy\FilamentExport\Components\Concerns\HasUniqueActionId;
-use AlperenErsoy\FilamentExport\FilamentExport;
-use Filament\Forms\Components\Component;
-use Filament\Forms\Components\Concerns\HasName;
-use Filament\Tables\Actions\Modal\Actions\Action;
-use Illuminate\Pagination\LengthAwarePaginator;
+use Filament\Actions\StaticAction;
 use Illuminate\Support\Collection;
+use Filament\Forms\Components\Component;
+use AlperenErsoy\FilamentExport\FilamentExport;
+use Filament\Forms\Components\Concerns\HasName;
+use Illuminate\Pagination\LengthAwarePaginator;
+use AlperenErsoy\FilamentExport\Components\Concerns\HasUniqueActionId;
 
 class TableView extends Component
 {
@@ -19,7 +19,9 @@ class TableView extends Component
 
     protected FilamentExport $export;
 
-    protected $shouldRefresh = false;
+    protected bool $shouldRefresh = false;
+
+    protected string $printHTML = '';
 
     protected function setUp(): void
     {
@@ -135,33 +137,33 @@ class TableView extends Component
         return $paginator;
     }
 
-    public function getExportAction(): Action
+    public function getExportAction(): StaticAction
     {
-        return Action::make('export')
+        return StaticAction::make('export')
             ->button()
             ->label(__('filament-export::table_view.export_action_label'))
             ->submit()
             ->icon(config('filament-export.export_icon'));
     }
 
-    public function getPrintAction(): Action
+    public function getPrintAction(): StaticAction
     {
         $uniqueActionId = $this->getUniqueActionId();
 
-        return Action::make('print')
+        return StaticAction::make('print')
             ->button()
             ->label(__('filament-export::table_view.print_action_label'))
-            ->action("\$emit('print-table-$uniqueActionId')")
+            ->action("\$dispatch('print-table-$uniqueActionId')")
             ->color('gray')
             ->icon(config('filament-export.print_icon'));
     }
 
-    public function getCancelAction(): Action
+    public function getCancelAction(): StaticAction
     {
-        return Action::make('cancel')
+        return StaticAction::make('cancel')
             ->button()
             ->label(__('filament-export::export_action.cancel_action_label'))
-            ->cancel()
+            ->close()
             ->color('secondary')
             ->icon(config('filament-export.cancel_icon'));
     }
@@ -198,5 +200,17 @@ class TableView extends Component
     public function shouldRefresh(): bool
     {
         return $this->shouldRefresh;
+    }
+
+    public function printHTML(string $printHTML): static
+    {
+        $this->printHTML = $printHTML;
+
+        return $this;
+    }
+
+    public function getPrintHTML(): string
+    {
+        return htmlentities($this->printHTML);
     }
 }

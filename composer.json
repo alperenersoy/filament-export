@@ -20,15 +20,15 @@
     ],
     "require": {
         "php": "^8.0",
-        "filament/tables": "^2.0",
+        "filament/tables": "^3.0",
         "barryvdh/laravel-dompdf": "^2.0",
-        "spatie/simple-excel": "^3.0 >=3.2.0"
+        "spatie/simple-excel": ">=3.2.0"
     },
     "require-dev": {
-        "orchestra/testbench": "^7.6",
-        "pestphp/pest": "^1.21",
-        "pestphp/pest-plugin-livewire": "^1.0",
-        "filament/filament": "^2.0"
+        "orchestra/testbench": "^8.5",
+        "pestphp/pest": "^2.1",
+        "pestphp/pest-plugin-livewire": "^2.1",
+        "filament/filament": "^3.0"
     },
     "extra": {
         "laravel": {
@@ -42,5 +42,6 @@
         "allow-plugins": {
             "pestphp/pest-plugin": true
         }
-    }
+    },
+    "minimum-stability": "beta"
 }
