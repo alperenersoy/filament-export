@@ -6,7 +6,7 @@ trait CanDisableTableColumns
 {
     protected bool $isTableColumnsDisabled = false;
 
-    public function disableTableColumns(bool $condition = false): static
+    public function disableTableColumns(bool $condition = true): static
     {
         $this->isTableColumnsDisabled = $condition;
 
