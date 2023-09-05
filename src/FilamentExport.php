@@ -5,6 +5,7 @@ namespace AlperenErsoy\FilamentExport;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
 use AlperenErsoy\FilamentExport\Components\TableView;
+use AlperenErsoy\FilamentExport\Concerns\CanDisableTableColumns;
 use AlperenErsoy\FilamentExport\Concerns\CanFilterColumns;
 use AlperenErsoy\FilamentExport\Concerns\CanHaveAdditionalColumns;
 use AlperenErsoy\FilamentExport\Concerns\CanHaveExtraColumns;
@@ -39,6 +40,7 @@ class FilamentExport
     use CanHaveExtraViewData;
     use CanModifyWriters;
     use CanShowHiddenColumns;
+    use CanDisableTableColumns;
     use CanUseSnappy;
     use HasCsvDelimiter;
     use HasData;
@@ -71,7 +73,11 @@ class FilamentExport
 
     public function getAllColumns(): Collection
     {
-        $tableColumns = $this->shouldShowHiddenColumns() ? $this->getTable()->getLivewire()->getCachedTableColumns() : $this->getTable()->getColumns();
+        if ($this->isTableColumnsDisabled()) {
+            $tableColumns = [];
+        } else {
+            $tableColumns = $this->shouldShowHiddenColumns() ? $this->getTable()->getColumns() : $this->getTable()->getVisibleColumns();
+        }
 
         $columns = collect($tableColumns);
 
@@ -196,8 +202,11 @@ class FilamentExport
     {
         $action->fileNamePrefix($action->getFileNamePrefix() ?: $action->getTable()->getHeading());
 
-        $columns = $action->shouldShowHiddenColumns() ? $action->getLivewire()->getCachedTableColumns() : $action->getTable()->getColumns();
-
+        if ($action->isTableColumnsDisabled()) {
+            $columns = [];
+        } else {
+            $columns = $action->shouldShowHiddenColumns() ? $action->getLivewire()->getCachedTableColumns() : $action->getTable()->getColumns();
+        }
         $columns = collect($columns);
 
         $extraColumns = collect($action->getWithColumns());
@@ -218,6 +227,7 @@ class FilamentExport
                 ->additionalColumns($data['additional_columns'] ?? [])
                 ->data(collect())
                 ->table($action->getTable())
+                ->disableTableColumns($action->isTableColumnsDisabled())
                 ->extraViewData($action->getExtraViewData())
                 ->withColumns($action->getWithColumns())
                 ->paginator($action->getPaginator())
@@ -237,6 +247,7 @@ class FilamentExport
 
         $initialExport = FilamentExport::make()
             ->table($action->getTable())
+            ->disableTableColumns($action->isTableColumnsDisabled())
             ->data(collect())
             ->extraViewData($action->getExtraViewData())
             ->withColumns($action->getWithColumns())
@@ -287,6 +298,7 @@ class FilamentExport
             ->fileName($data['file_name'] ?? $action->getFileName())
             ->data($records)
             ->table($action->getTable())
+            ->disableTableColumns($action->isTableColumnsDisabled())
             ->filteredColumns(! $action->isFilterColumnsDisabled() ? $data['filter_columns'] : [])
             ->additionalColumns(! $action->isAdditionalColumnsDisabled() ? $data['additional_columns'] : [])
             ->format($data['format'] ?? $action->getDefaultFormat())
