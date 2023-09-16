@@ -123,6 +123,7 @@ FilamentExportBulkAction::make('export')
     ->disableFileName() // Disable file name input
     ->disableFileNamePrefix() // Disable file name prefix
     ->disablePreview() // Disable export preview
+    ->disableTableColumns() // Disable table columns in the export
     ->withHiddenColumns() //Show the columns which are toggled hidden
     ->fileNameFieldLabel('File Name') // Label for file name input
     ->formatFieldLabel('Format') // Label for format input
