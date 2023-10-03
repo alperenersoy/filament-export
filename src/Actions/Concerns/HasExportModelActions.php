@@ -31,7 +31,7 @@ trait HasExportModelActions
         } elseif (method_exists($this, 'getLivewireCallActionName')) {
             $livewireCallActionName = $this->getLivewireCallActionName();
         } else {
-            $$livewireCallActionName = $this->name;
+            $livewireCallActionName = $this->name;
         }
 
         return array_merge(
