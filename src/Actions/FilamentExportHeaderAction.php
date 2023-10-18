@@ -64,6 +64,18 @@ class FilamentExportHeaderAction extends \Filament\Tables\Actions\Action
     use HasTimeFormat;
     use HasUniqueActionId;
 
+    protected $formatColumns = [];
+
+    public function formatColumns(array $array = []): static
+    {
+        $this->formatColumns = $array;
+        return $this;
+    }
+
+    public function getformatColumns() : array {
+        return $this->formatColumns;
+    }
+    
     protected function setUp(): void
     {
         parent::setUp();
@@ -87,7 +99,7 @@ class FilamentExportHeaderAction extends \Filament\Tables\Actions\Action
 
                 $records = $action->getRecords();
 
-                return FilamentExport::callDownload($action, $records, $data);
+                return FilamentExport::callDownload($action, $records, $data, $action->getformatColumns());
             });
     }
 }
