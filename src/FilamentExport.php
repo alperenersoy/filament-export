@@ -8,6 +8,7 @@ use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
 use AlperenErsoy\FilamentExport\Components\TableView;
 use AlperenErsoy\FilamentExport\Concerns\CanDisableTableColumns;
 use AlperenErsoy\FilamentExport\Concerns\CanFilterColumns;
+use AlperenErsoy\FilamentExport\Concerns\CanFormatStates;
 use AlperenErsoy\FilamentExport\Concerns\CanHaveAdditionalColumns;
 use AlperenErsoy\FilamentExport\Concerns\CanHaveExtraColumns;
 use AlperenErsoy\FilamentExport\Concerns\CanHaveExtraViewData;
@@ -37,6 +38,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 class FilamentExport
 {
     use CanFilterColumns;
+    use CanFormatStates;
     use CanHaveAdditionalColumns;
     use CanHaveExtraColumns;
     use CanHaveExtraViewData;
@@ -51,16 +53,13 @@ class FilamentExport
     use HasPageOrientation;
     use HasPaginator;
     use HasTable;
-    use EvaluatesClosures;
 
     public const DEFAULT_FORMATS = [
         'xlsx' => 'XLSX',
         'csv' => 'CSV',
         'pdf' => 'PDF',
     ];
-    
-    protected $formatColumns = [];
-    
+
     public static function make(): static
     {
         $static = app(static::class);
@@ -213,7 +212,7 @@ class FilamentExport
             $columns = $action->shouldShowHiddenColumns() ? $action->getTable()->getColumns() : $action->getTable()->getVisibleColumns();
         }
         $columns = $action->shouldShowHiddenColumns() ? $action->getTable()->getColumns() : $action->getTable()->getVisibleColumns();
-      
+
         $columns = collect($columns);
 
         $extraColumns = collect($action->getWithColumns());
@@ -240,7 +239,8 @@ class FilamentExport
                 ->extraViewData($action->getExtraViewData())
                 ->withColumns($action->getWithColumns())
                 ->paginator($action->getPaginator())
-                ->csvDelimiter($action->getCsvDelimiter());
+                ->csvDelimiter($action->getCsvDelimiter())
+                ->formatStates($action->getFormatStates());
 
 
             if ($data['table_view'] == 'print-' . $action->getUniqueActionId()) {
@@ -265,7 +265,8 @@ class FilamentExport
             ->extraViewData($action->getExtraViewData())
             ->withColumns($action->getWithColumns())
             ->paginator($action->getPaginator())
-            ->csvDelimiter($action->getCsvDelimiter());
+            ->csvDelimiter($action->getCsvDelimiter())
+            ->formatStates($action->getFormatStates());
 
         return [
             \Filament\Forms\Components\TextInput::make('file_name')
@@ -305,7 +306,7 @@ class FilamentExport
         ];
     }
 
-    public static function callDownload(FilamentExportHeaderAction | FilamentExportBulkAction $action, Collection $records, array $data, array $formatColumns = [])
+    public static function callDownload(FilamentExportHeaderAction | FilamentExportBulkAction $action, Collection $records, array $data)
     {
         return FilamentExport::make()
             ->fileName($data['file_name'] ?? $action->getFileName())
@@ -323,7 +324,7 @@ class FilamentExport
             ->csvDelimiter($action->getCsvDelimiter())
             ->modifyExcelWriter($action->getModifyExcelWriter())
             ->modifyPdfWriter($action->getModifyPdfWriter())
-            ->formatColumns($formatColumns)
+            ->formatStates($action->getFormatStates())
             ->download();
     }
 
@@ -341,35 +342,14 @@ class FilamentExport
         $items = [];
 
         $columns = $this->getAllColumns();
-        $format_columns  = $this->getFormatColumns();
+
+        $formatStates  = $this->getFormatStates();
 
         foreach ($records as $index => $record) {
             $item = [];
+
             foreach ($columns as $column) {
-
-                if(!empty($format_columns)) {
-                    
-                    $column_name = $column->getName();
-                    
-                    if(array_key_exists($column_name, $format_columns) || in_array($column_name, $format_columns)) {
-
-                        $format_col = data_get($format_columns, $column_name);
-                        if ($format_col) {
-                            $state = $this->evaluate($format_col,[
-                                'record' => $record,
-                                'state'  => $record->{$column->getName()},
-                                'column' => $column,
-                            ]);
-                        } else {
-                            // is in the array but is not a Closure or value so return raw value
-                            $state = (string)$record->{$column->getName()};
-                        }
-                        $item[ $column->getName() ] = (string) $state;
-                        continue;
-                    }
-                }
-                
-                $state = self::getColumnState($this->getTable(), $column, $record, $index);
+                $state = self::getColumnState($this->getTable(), $column, $record, $index, $formatStates);
 
                 $item[$column->getName()] = (string) $state;
             }
@@ -379,7 +359,7 @@ class FilamentExport
         return $items;
     }
 
-    public static function getColumnState(Table $table, Column $column, Model $record, int $index): ?string
+    public static function getColumnState(Table $table, Column $column, Model $record, int $index, array $formatStates): ?string
     {
         $column->rowLoop((object) [
             'index' => $index,
@@ -389,6 +369,31 @@ class FilamentExport
         $column->record($record);
 
         $column->table($table);
+
+        if (array_key_exists($column->getName(), $formatStates) && $formatStates[$column->getName()] instanceof \Closure) {
+            $closure = $formatStates[$column->getName()];
+
+            $dependencies = [];
+
+            foreach ((new \ReflectionFunction($closure))->getParameters() as $parameter) {
+                switch ($parameter->getName()) {
+                    case 'table':
+                        $dependencies[] = $table;
+                        break;
+                    case 'column':
+                        $dependencies[] = $column;
+                        break;
+                    case 'record':
+                        $dependencies[] = $record;
+                        break;
+                    case 'index':
+                        $dependencies[] = $index;
+                        break;
+                }
+            }
+
+            return $closure(...$dependencies);
+        }
 
         $state = in_array(\Filament\Tables\Columns\Concerns\CanFormatState::class, class_uses($column)) ? $column->formatState($column->getState()) : $column->getState();
 
@@ -402,15 +407,4 @@ class FilamentExport
 
         return $state;
     }
-
-    public function formatColumns(array $array = []): static
-    {
-        $this->formatColumns = $array;
-        return $this;
-    }
-
-    public function getformatColumns() : array {
-        return $this->formatColumns;
-    }
-    
 }
