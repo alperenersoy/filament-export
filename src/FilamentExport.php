@@ -55,7 +55,9 @@ class FilamentExport
         'csv' => 'CSV',
         'pdf' => 'PDF',
     ];
-
+    
+    protected $formatColumns = [];
+    
     public static function make(): static
     {
         $static = app(static::class);
@@ -300,7 +302,7 @@ class FilamentExport
         ];
     }
 
-    public static function callDownload(FilamentExportHeaderAction | FilamentExportBulkAction $action, Collection $records, array $data)
+    public static function callDownload(FilamentExportHeaderAction | FilamentExportBulkAction $action, Collection $records, array $data, array $formatColumns = [])
     {
         return FilamentExport::make()
             ->fileName($data['file_name'] ?? $action->getFileName())
@@ -318,6 +320,7 @@ class FilamentExport
             ->csvDelimiter($action->getCsvDelimiter())
             ->modifyExcelWriter($action->getModifyExcelWriter())
             ->modifyPdfWriter($action->getModifyPdfWriter())
+            ->formatColumns($formatColumns)
             ->download();
     }
 
@@ -335,10 +338,30 @@ class FilamentExport
         $items = [];
 
         $columns = $this->getAllColumns();
+        $format_columns  = $this->getFormatColumns();
 
         foreach ($records as $index => $record) {
             $item = [];
             foreach ($columns as $column) {
+
+                if(!empty($format_columns)) {
+                    
+                    $column_name = $column->getName();
+                    
+                    if(array_key_exists($column_name, $format_columns) || in_array($column_name, $format_columns)) {
+
+                        $format_col = data_get($format_columns, $column_name);
+                        if ($format_col) {
+                            $state = $this->evaluate($format_col);
+                        } else {
+                            // is in the array but is not a Closure or value so return raw value
+                            $state = (string)$record->{$column->getName()};
+                        }
+                        $item[ $column->getName() ] = (string) $state;
+                        continue;
+                    }
+                }
+                
                 $state = self::getColumnState($this->getTable(), $column, $record, $index);
 
                 $item[$column->getName()] = (string) $state;
@@ -372,4 +395,15 @@ class FilamentExport
 
         return $state;
     }
+
+    public function formatColumns(array $array = []): static
+    {
+        $this->formatColumns = $array;
+        return $this;
+    }
+
+    public function getformatColumns() : array {
+        return $this->formatColumns;
+    }
+    
 }
