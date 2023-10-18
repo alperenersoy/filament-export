@@ -2,6 +2,7 @@
 
 namespace AlperenErsoy\FilamentExport;
 
+
 use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
 use AlperenErsoy\FilamentExport\Components\TableView;
@@ -21,6 +22,7 @@ use AlperenErsoy\FilamentExport\Concerns\HasPageOrientation;
 use AlperenErsoy\FilamentExport\Concerns\HasPaginator;
 use AlperenErsoy\FilamentExport\Concerns\HasTable;
 use Carbon\Carbon;
+use Filament\Support\Concerns\EvaluatesClosures;
 use Filament\Tables\Columns\Column;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\ViewColumn;
@@ -49,6 +51,7 @@ class FilamentExport
     use HasPageOrientation;
     use HasPaginator;
     use HasTable;
+    use EvaluatesClosures;
 
     public const DEFAULT_FORMATS = [
         'xlsx' => 'XLSX',
@@ -344,7 +347,11 @@ class FilamentExport
 
                         $format_col = data_get($format_columns, $column_name);
                         if ($format_col) {
-                            $state = $this->evaluate($format_col);
+                            $state = $this->evaluate($format_col,[
+                                'record' => $record,
+                                'state'  => $record->{$column->getName()},
+                                'column' => $column,
+                            ]);
                         } else {
                             // is in the array but is not a Closure or value so return raw value
                             $state = (string)$record->{$column->getName()};
