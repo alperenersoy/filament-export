@@ -387,7 +387,7 @@ class FilamentExport
             return $closure(...$dependencies);
         }
 
-        $state = in_array(\Filament\Tables\Columns\Concerns\CanFormatState::class, class_uses($column)) ? $column->formatState($column->getState()) : $column->getState();
+         $state = in_array(\Filament\Tables\Columns\Concerns\CanFormatState::class, class_uses($column)) ? $column->getFormattedState() : $column->getState();
 
         if (is_array($state)) {
             $state = implode(', ', $state);
