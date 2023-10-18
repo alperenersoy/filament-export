@@ -10,6 +10,7 @@ use AlperenErsoy\FilamentExport\Actions\Concerns\CanDisableFormats;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanDisablePreview;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanDisableTableColumns;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanDownloadDirect;
+use AlperenErsoy\FilamentExport\Actions\Concerns\CanFormatStates;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanHaveExtraColumns;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanHaveExtraViewData;
 use AlperenErsoy\FilamentExport\Actions\Concerns\CanModifyWriters;
@@ -43,6 +44,7 @@ class FilamentExportHeaderAction extends \Filament\Tables\Actions\Action
     use CanDisablePreview;
     use CanDisableTableColumns;
     use CanDownloadDirect;
+    use CanFormatStates;
     use CanHaveExtraColumns;
     use CanHaveExtraViewData;
     use CanModifyWriters;
