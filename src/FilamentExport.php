@@ -380,6 +380,8 @@ class FilamentExport
                         break;
                     case 'index':
                         $dependencies[] = $index;
+                    case 'state':
+                        $dependencies[] = $column->getState();
                         break;
                 }
             }
