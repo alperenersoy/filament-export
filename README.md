@@ -123,6 +123,7 @@ FilamentExportBulkAction::make('export')
     ->disableFileName() // Disable file name input
     ->disableFileNamePrefix() // Disable file name prefix
     ->disablePreview() // Disable export preview
+    ->disableTableColumns() // Disable table columns in the export
     ->withHiddenColumns() //Show the columns which are toggled hidden
     ->fileNameFieldLabel('File Name') // Label for file name input
     ->formatFieldLabel('Format') // Label for format input
@@ -136,6 +137,9 @@ FilamentExportBulkAction::make('export')
     ->csvDelimiter(',') // Delimiter for csv files
     ->modifyExcelWriter(fn (SimpleExcelWriter $writer) => $writer->nameCurrentSheet('Sheet')) // Modify SimpleExcelWriter before download
     ->modifyPdfWriter(fn (\Barryvdh\DomPDF\PDF|\Barryvdh\Snappy\PdfWrapper $writer) => $writer->setPaper('a4', 'landscape')) // Modify DomPdf or Snappy writer before download
+    ->formatStates([
+        'name' => fn (?Model $record) => strtoupper($record->name),
+    ]) // Manually format states for a specific column
 ```
 You can also use default bulk action and header action functions to customize actions.
 
