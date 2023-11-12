@@ -24,18 +24,18 @@
         triggerInputEvent('{{ $statePath }}', '{{ uniqid() }}');
         isOpen = true;
     });
-    
+
     $wire.$on('close-preview-modal-{{ $uniqueActionId }}', () => { isOpen = false; });
-    
+
     if (shouldRefresh) {
         $wire.dispatch('close-preview-modal-{{ $uniqueActionId }}');
-     
+
         triggerInputEvent('{{ $statePath }}', '{{ uniqid() }}');
-        
+
         $wire.dispatch('open-preview-modal-{{ $uniqueActionId }}');
     }
 
-    
+
     if (shouldPrint) {
         window.printHTML(`{!! $printContent !!}`, '{{ $statePath }}', '{{ $uniqueActionId }}');
     }
@@ -56,7 +56,11 @@
                 <tr class="dark:border-gray-700">
                     @foreach ($getAllColumns() as $column)
                         <td class="dark:border-gray-700">
-                            {{ $row[$column->getName()] }}
+                            @if($column instanceof \Filament\Tables\Columns\ImageColumn)
+                                <img src="{{ $row[$column->getName()] }}"/>
+                            @else
+                                {{ $row[$column->getName()] }}
+                            @endif
                         </td>
                     @endforeach
                 </tr>
