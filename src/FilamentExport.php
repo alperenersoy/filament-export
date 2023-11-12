@@ -80,7 +80,7 @@ class FilamentExport
         if ($this->isTableColumnsDisabled()) {
             $tableColumns = [];
         } else {
-            $tableColumns = $this->shouldShowHiddenColumns() ? $this->getTable()->getColumns() : $this->getTable()->getVisibleColumns();
+            $tableColumns = $this->shouldShowHiddenColumns() ? $this->getTable()->getLivewire()->getCachedTableColumns() : $this->getTable()->getColumns();
         }
 
         $columns = collect($tableColumns);
@@ -400,7 +400,9 @@ class FilamentExport
         if (is_array($state)) {
             $state = implode(', ', $state);
         } elseif ($column instanceof ImageColumn) {
-            $state = $column->getImageUrl();
+            if ($state !== null) {
+                $state = $column->getImageUrl($state);
+            }
         } elseif ($column instanceof ViewColumn) {
             $state = trim(preg_replace('/\s+/', ' ', strip_tags($column->render()->render())));
         }
