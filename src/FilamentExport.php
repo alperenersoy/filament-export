@@ -2,11 +2,13 @@
 
 namespace AlperenErsoy\FilamentExport;
 
+
 use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
 use AlperenErsoy\FilamentExport\Components\TableView;
 use AlperenErsoy\FilamentExport\Concerns\CanDisableTableColumns;
 use AlperenErsoy\FilamentExport\Concerns\CanFilterColumns;
+use AlperenErsoy\FilamentExport\Concerns\CanFormatStates;
 use AlperenErsoy\FilamentExport\Concerns\CanHaveAdditionalColumns;
 use AlperenErsoy\FilamentExport\Concerns\CanHaveExtraColumns;
 use AlperenErsoy\FilamentExport\Concerns\CanHaveExtraViewData;
@@ -21,6 +23,7 @@ use AlperenErsoy\FilamentExport\Concerns\HasPageOrientation;
 use AlperenErsoy\FilamentExport\Concerns\HasPaginator;
 use AlperenErsoy\FilamentExport\Concerns\HasTable;
 use Carbon\Carbon;
+use Filament\Support\Concerns\EvaluatesClosures;
 use Filament\Tables\Columns\Column;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\ViewColumn;
@@ -35,6 +38,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 class FilamentExport
 {
     use CanFilterColumns;
+    use CanFormatStates;
     use CanHaveAdditionalColumns;
     use CanHaveExtraColumns;
     use CanHaveExtraViewData;
@@ -235,7 +239,8 @@ class FilamentExport
                 ->extraViewData($action->getExtraViewData())
                 ->withColumns($action->getWithColumns())
                 ->paginator($action->getPaginator())
-                ->csvDelimiter($action->getCsvDelimiter());
+                ->csvDelimiter($action->getCsvDelimiter())
+                ->formatStates($action->getFormatStates());
 
 
             if ($data['table_view'] == 'print-' . $action->getUniqueActionId()) {
@@ -260,7 +265,8 @@ class FilamentExport
             ->extraViewData($action->getExtraViewData())
             ->withColumns($action->getWithColumns())
             ->paginator($action->getPaginator())
-            ->csvDelimiter($action->getCsvDelimiter());
+            ->csvDelimiter($action->getCsvDelimiter())
+            ->formatStates($action->getFormatStates());
 
         return [
             \Filament\Forms\Components\TextInput::make('file_name')
@@ -318,6 +324,7 @@ class FilamentExport
             ->csvDelimiter($action->getCsvDelimiter())
             ->modifyExcelWriter($action->getModifyExcelWriter())
             ->modifyPdfWriter($action->getModifyPdfWriter())
+            ->formatStates($action->getFormatStates())
             ->download();
     }
 
@@ -336,10 +343,13 @@ class FilamentExport
 
         $columns = $this->getAllColumns();
 
+        $formatStates  = $this->getFormatStates();
+
         foreach ($records as $index => $record) {
             $item = [];
+
             foreach ($columns as $column) {
-                $state = self::getColumnState($this->getTable(), $column, $record, $index);
+                $state = self::getColumnState($this->getTable(), $column, $record, $index, $formatStates);
 
                 $item[$column->getName()] = (string) $state;
             }
@@ -349,7 +359,7 @@ class FilamentExport
         return $items;
     }
 
-    public static function getColumnState(Table $table, Column $column, Model $record, int $index): ?string
+    public static function getColumnState(Table $table, Column $column, Model $record, int $index, array $formatStates): ?string
     {
         $column->rowLoop((object) [
             'index' => $index,
@@ -360,7 +370,32 @@ class FilamentExport
 
         $column->table($table);
 
-        $state = in_array(\Filament\Tables\Columns\Concerns\CanFormatState::class, class_uses($column)) ? $column->formatState($column->getState()) : $column->getState();
+        if (array_key_exists($column->getName(), $formatStates) && $formatStates[$column->getName()] instanceof \Closure) {
+            $closure = $formatStates[$column->getName()];
+
+            $dependencies = [];
+
+            foreach ((new \ReflectionFunction($closure))->getParameters() as $parameter) {
+                switch ($parameter->getName()) {
+                    case 'table':
+                        $dependencies[] = $table;
+                        break;
+                    case 'column':
+                        $dependencies[] = $column;
+                        break;
+                    case 'record':
+                        $dependencies[] = $record;
+                        break;
+                    case 'index':
+                        $dependencies[] = $index;
+                        break;
+                }
+            }
+
+            return $closure(...$dependencies);
+        }
+
+         $state = in_array(\Filament\Tables\Columns\Concerns\CanFormatState::class, class_uses($column)) ? $column->getFormattedState() : $column->getState();
 
         if (is_array($state)) {
             $state = implode(', ', $state);
