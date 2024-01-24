@@ -227,14 +227,14 @@ public function table(Table $table): Table
              ->headerActions([
                 FilamentExportHeaderAction::make('export')->label(__('Export'))
                     ->formatStates([
-                        'name'   => fn(Column $column):string => $column->getState(),  // returns raw value
-                        'name2'  => fn(string $state) :string => $state,  // returns raw value
-                        'caller' => fn(Model $record) :string => $record->caller . "\t", // returns value with appended character(s)
-                        'callee' => function(Model $record) { // more complex example
-                            $state = $record->callee;
-                            if($state == 123456789) {
+                        'first_name'  => fn(Column $column):string => $column->getState(),  // returns raw value
+                        'last_name'   => fn(string $state) :string => $state,  // returns raw value
+                        'fullname'    => fn(Model $record) :string => $record->fullname . "\t", // returns value with appended character(s)
+                        'middle_name' => function(Model $record) { // more complex example
+                            $state = $record->middle_name;
+                            if($middle_name == 'bob') {
                                 // do some extra code/calculations
-                                $state = 'something else';
+                                $state = 'not bob';
                             }
                             return $state;
                         }
