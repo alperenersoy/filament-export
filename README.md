@@ -216,6 +216,34 @@ Then use them in the templates as regular blade variables:
 {{ $myVariable }}
 ```
 
+## Customising Column States
+By default the output for the export is a copy of the output from the table view.  In some instances, you might wish to change this (e.g. remove HTML formatting or change date formatting to be more compatible with your spreadsheet application).  
+
+```php
+public function table(Table $table): Table
+{
+    return $table
+         ...
+             ->headerActions([
+                FilamentExportHeaderAction::make('export')->label(__('Export'))
+                    ->formatStates([
+                        'first_name'  => fn(Column $column):string => $column->getState(),  // returns raw value
+                        'last_name'   => fn(string $state) :string => $state,  // returns raw value
+                        'fullname'    => fn(Model $record) :string => $record->fullname . "\t", // returns value with appended character(s)
+                        'middle_name' => function(Model $record) { // more complex example
+                            $state = $record->middle_name;
+                            if($middle_name == 'bob') {
+                                // do some extra code/calculations
+                                $state = 'not bob';
+                            }
+                            return $state;
+                        }
+                    ])
+                ,
+            ]);
+}
+```
+
 ## Using Snappy
 
 By default, this package uses [dompdf](https://github.com/barryvdh/laravel-dompdf) as pdf generator.
