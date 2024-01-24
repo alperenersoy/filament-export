@@ -130,7 +130,7 @@ class FilamentExport
         }
 
         return response()->streamDownload(function () {
-            $headers = $this->getAllColumns()->map(fn ($column) => $column->getLabel())->toArray();
+            $headers = $this->getAllColumns()->map(fn ($column) => strip_tags($column->getLabel()))->toArray();
 
             $stream = SimpleExcelWriter::streamDownload("{$this->getFileName()}.{$this->getFormat()}", $this->getFormat(), delimiter: $this->getCsvDelimiter())
                 ->noHeaderRow()
