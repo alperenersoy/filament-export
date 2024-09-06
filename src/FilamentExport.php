@@ -211,7 +211,6 @@ class FilamentExport
         } else {
             $columns = $action->shouldShowHiddenColumns() ? $action->getTable()->getColumns() : $action->getTable()->getVisibleColumns();
         }
-        $columns = $action->shouldShowHiddenColumns() ? $action->getTable()->getColumns() : $action->getTable()->getVisibleColumns();
 
         $columns = collect($columns);
 
