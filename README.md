@@ -1,7 +1,5 @@
 # Filament Export
 
-[![Latest Stable Version](http://poser.pugx.org/alperenersoy/filament-export/v?style=for-the-badge)](https://packagist.org/packages/alperenersoy/filament-export) [![Total Downloads](http://poser.pugx.org/alperenersoy/filament-export/downloads?style=for-the-badge)](https://packagist.org/packages/alperenersoy/filament-export) [![License](http://poser.pugx.org/alperenersoy/filament-export/license?style=for-the-badge)](https://packagist.org/packages/alperenersoy/filament-export)
-
 Customizable export and print functionality for Filament Admin Panel.
 
 This package provides a bulk action and header action to export your filament tables easily.
