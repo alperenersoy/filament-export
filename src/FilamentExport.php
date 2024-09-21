@@ -32,6 +32,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Date;
+use Illuminate\Support\HtmlString;
 use Spatie\SimpleExcel\SimpleExcelWriter;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -130,7 +131,7 @@ class FilamentExport
         }
 
         return response()->streamDownload(function () {
-            $headers = $this->getAllColumns()->map(fn ($column) => $column->getLabel())->toArray();
+            $headers = $this->getAllColumns()->map(fn ($column) => ($column->getLabel() instanceof HtmlString ? strip_tags($column->getLabel()) : $column->getLabel()))->toArray();
 
             $stream = SimpleExcelWriter::streamDownload("{$this->getFileName()}.{$this->getFormat()}", $this->getFormat(), delimiter: $this->getCsvDelimiter());
 
