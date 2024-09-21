@@ -132,13 +132,14 @@ class FilamentExport
         return response()->streamDownload(function () {
             $headers = $this->getAllColumns()->map(fn ($column) => $column->getLabel())->toArray();
 
-            $stream = SimpleExcelWriter::streamDownload("{$this->getFileName()}.{$this->getFormat()}", $this->getFormat(), delimiter: $this->getCsvDelimiter())
-                ->noHeaderRow()
-                ->addRows($this->getRows()->prepend($headers));
+            $stream = SimpleExcelWriter::streamDownload("{$this->getFileName()}.{$this->getFormat()}", $this->getFormat(), delimiter: $this->getCsvDelimiter());
 
             if ($modifyExcel = $this->getModifyExcelWriter()) {
                 $stream = $modifyExcel($stream);
             }
+
+            $stream->addHeader($headers);
+            $stream->addRows($this->getRows());
 
             $stream->close();
         }, "{$this->getFileName()}.{$this->getFormat()}");
