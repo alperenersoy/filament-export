@@ -75,6 +75,12 @@ class FilamentExportHeaderAction extends \Filament\Tables\Actions\Action
         FilamentExport::setUpFilamentExportAction($this);
 
         $this
+            ->modalHeading(static function ($action) {
+                if ($action->shouldDownloadDirect()) {
+                    return false;
+                }
+                return $action;
+            })
             ->form(static function ($action, $livewire): array {
                 if ($action->shouldDownloadDirect()) {
                     return [];
