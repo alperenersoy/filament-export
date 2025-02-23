@@ -33,6 +33,13 @@ trait HasRecords
             $query->whereBelongsTo($livewire->ownerRecord);
         }
 
+        foreach ($livewire->getTable()->getFilters() as $filter) {
+            $filter->applyToBaseQuery(
+                $query,
+                $livewire->getTableFilterState($filter->getName()) ?? [],
+            );
+        }
+
         $query->where(function (Builder $query) use ($filterData, $livewire) {
             foreach ($livewire->getTable()->getFilters() ?? [] as $filter) {
                 $filter->apply(
