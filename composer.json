@@ -21,7 +21,7 @@
     "require": {
         "php": "^8.0",
         "filament/tables": "^3.0",
-        "barryvdh/laravel-dompdf": "^2.0",
+        "barryvdh/laravel-dompdf": "^2.0|>=v3.1.1",
         "spatie/simple-excel": ">=3.2.0"
     },
     "require-dev": {
