@@ -86,7 +86,15 @@ class FilamentExportHeaderAction extends \Filament\Tables\Actions\Action
                     return [];
                 }
 
-                $action->paginator($action->getTableQuery()->paginate($livewire->tableRecordsPerPage, ['*'], 'exportPage'));
+                $paginator = $action->getTableQuery()->paginate(static function (int $total) use ($livewire): int {
+                    if ($livewire->tableRecordsPerPage > 0) {
+                        return $livewire->tableRecordsPerPage;
+                    }
+
+                    return $total;
+                }, ['*'], 'exportPage');
+
+                $action->paginator($paginator);
 
                 return FilamentExport::getFormComponents($action);
             })
