@@ -11,7 +11,6 @@ trait HasRecords
 
     public function getTableQuery(): Builder
     {
-        /** @var \Filament\Resources\Pages\ListRecords $livewire */
         $livewire = $this->getLivewire();
 
         $model = $this->getTable()->getModel();
@@ -70,6 +69,8 @@ trait HasRecords
             $column->applyRelationshipAggregates($query);
         }
 
+        $this->applyGroupingToTableQuery($query);
+
         $this->applySortingToTableQuery($query);
 
         return $query;
@@ -77,26 +78,77 @@ trait HasRecords
 
     protected function applySortingToTableQuery(Builder $query): Builder
     {
-        /** @var \Filament\Resources\Pages\ListRecords $livewire */
         $livewire = $this->getLivewire();
 
-        $columnName = $livewire->tableSortColumn;
-
-        if (!$columnName) {
+        if ($livewire->getTable()->isGroupsOnly()) {
             return $query;
         }
 
-        $direction = $livewire->tableSortDirection === 'desc' ? 'desc' : 'asc';
+        if ($livewire->isTableReordering()) {
+            return $query->orderBy($livewire->getTable()->getReorderColumn());
+        }
 
-        if ($column = $livewire->getCachedTableColumns()[$columnName]) {
-            $column->applySort($query, $direction);
+        if (!$livewire->tableSortColumn) {
+            return $this->applyDefaultSortingToTableQuery($query);
+        }
+
+        $column = $livewire->getTable()->getSortableVisibleColumn($livewire->tableSortColumn);
+
+        if (!$column) {
+            return $this->applyDefaultSortingToTableQuery($query);
+        }
+
+        $sortDirection = $livewire->tableSortDirection === 'desc' ? 'desc' : 'asc';
+
+        $column->applySort($query, $sortDirection);
+
+        return $query;
+    }
+
+    protected function applyDefaultSortingToTableQuery(Builder $query): Builder
+    {
+        $livewire = $this->getLivewire();
+
+        $sortDirection = ($livewire->getTable()->getDefaultSortDirection() ?? $livewire->tableSortDirection) === 'desc' ? 'desc' : 'asc';
+        $defaultSort = $livewire->getTable()->getDefaultSort($query, $sortDirection);
+
+        if (
+            is_string($defaultSort) &&
+            ($sortColumn = $livewire->getTable()->getSortableVisibleColumn($defaultSort))
+        ) {
+            $sortColumn->applySort($query, $sortDirection);
 
             return $query;
         }
 
-        if ($columnName === $livewire->getDefaultSortColumn()) {
-            return $query->orderBy($columnName, $direction);
+        if (is_string($defaultSort)) {
+            return $query->orderBy($defaultSort, $sortDirection);
         }
+
+        if ($defaultSort instanceof Builder) {
+            return $defaultSort;
+        }
+
+        if (filled($query->toBase()->orders)) {
+            return $query;
+        }
+
+        return $query->orderBy($query->getModel()->getQualifiedKeyName());
+    }
+
+    protected function applyGroupingToTableQuery(Builder $query): Builder
+    {
+        $livewire = $this->getLivewire();
+
+        $group = $livewire->getTableGrouping();
+
+        if (!$group) {
+            return $query;
+        }
+
+        $group->applyEagerLoading($query);
+
+        $group->orderQuery($query, $livewire->getTableGroupingDirection() ?? 'asc');
 
         return $query;
     }
