@@ -401,7 +401,7 @@ class FilamentExport
         if (is_array($state)) {
             $state = implode(', ', $state);
         } elseif ($column instanceof ImageColumn) {
-            $state = $column->getImageUrl();
+            $state = $column->getImageUrl($state);
         } elseif ($column instanceof ViewColumn) {
             $state = trim(preg_replace('/\s+/', ' ', strip_tags($column->render()->render())));
         }
