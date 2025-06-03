@@ -2,6 +2,7 @@
 
 namespace AlperenErsoy\FilamentExport\Components;
 
+use AlperenErsoy\FilamentExport\Components\Concerns\HasLivewireTarget;
 use Filament\Actions\StaticAction;
 use Illuminate\Support\Collection;
 use Filament\Forms\Components\Component;
@@ -13,6 +14,7 @@ use AlperenErsoy\FilamentExport\Components\Concerns\HasUniqueActionId;
 class TableView extends Component
 {
     use HasName;
+    use HasLivewireTarget;
     use HasUniqueActionId;
 
     protected ?string $statePath = 'table_view';
@@ -143,6 +145,7 @@ class TableView extends Component
             ->button()
             ->label(__('filament-export::table_view.export_action_label'))
             ->submit('export')
+            ->livewireTarget($this->getLivewireTarget())
             ->icon(config('filament-export.export_icon'));
     }
 
@@ -155,6 +158,7 @@ class TableView extends Component
             ->label(__('filament-export::table_view.print_action_label'))
             ->action("\$dispatch('print-table-$uniqueActionId')")
             ->color('gray')
+            ->livewireTarget($this->getLivewireTarget())
             ->icon(config('filament-export.print_icon'));
     }
 

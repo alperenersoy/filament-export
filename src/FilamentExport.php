@@ -303,7 +303,8 @@ class FilamentExport
                 ->uniqueActionId($action->getUniqueActionId())
                 ->afterStateUpdated($updateTableView)
                 ->reactive()
-                ->refresh($action->shouldRefreshTableView()),
+                ->refresh($action->shouldRefreshTableView())
+                ->livewireTarget($action->getLivewireCallMountedActionName()),
         ];
     }
 
