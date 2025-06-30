@@ -40,6 +40,7 @@
         window.printHTML(`{!! $printContent !!}`, '{{ $statePath }}', '{{ $uniqueActionId }}');
     }
     "
+    x-on:keydown.window.escape.capture="isOpen = false"
     :heading="$getPreviewModalHeading()">
     <div class="preview-table-wrapper space-y-4">
         <table class="preview-table dark:bg-gray-800 dark:text-white dark:border-gray-700" x-init="$wire.$on('print-table-{{ $uniqueActionId }}', function() {
