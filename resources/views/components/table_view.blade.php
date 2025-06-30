@@ -4,7 +4,7 @@
     triggerInputEvent('{{ $getStatePath() }}', '{{ $shouldRefresh() ? 'refresh' : '' }}');
     isOpen = true;
 });
-$wire.on('close-preview-modal-{{ $getUniqueActionId() }}', () => { isOpen = false; });" :heading="$getPreviewModalHeading()">
+$wire.on('close-preview-modal-{{ $getUniqueActionId() }}', () => { isOpen = false; });" :heading="$getPreviewModalHeading()" x-on:keydown.window.escape.capture="isOpen = false">
     <div class="preview-table-wrapper space-y-4">
         <table class="preview-table dark:bg-gray-800 dark:text-white dark:border-gray-700" x-init="$wire.on('print-table-{{ $getUniqueActionId() }}', function() {
             triggerInputEvent('{{ $getStatePath() }}', 'print-{{ $getUniqueActionId() }}')
