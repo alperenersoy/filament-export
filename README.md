@@ -20,6 +20,12 @@ This package provides a bulk action and header action to export your filament ta
 composer require alperenersoy/filament-export
 ```
 
+Beta Support for Filament v3
+```bash
+composer require alperenersoy/filament-export:^3.0.3-beta
+```
+
+
 ### Configuring for Standalone Table Builder (Experimental)
 
 To use this package in a standalone table builder instead of Filament Admin Panel you need to follow these steps. Otherwise, some features such as print and preview may not work properly.
