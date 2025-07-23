@@ -148,12 +148,23 @@ class FilamentExport
 
     public function getPdf(): \Barryvdh\DomPDF\PDF | \Barryvdh\Snappy\PdfWrapper
     {
-        if ($this->shouldUseSnappy()) {
-            return \Barryvdh\Snappy\Facades\SnappyPdf::loadView($this->getPdfView(), $this->getViewData())
-                ->setPaper('A4', $this->getPageOrientation());
+        $view = view($this->getPdfView(), $this->getViewData())->render();
+
+        if (class_exists('ArPHP\I18N\Arabic')) {
+            $arabic = new \ArPHP\I18N\Arabic();
+            $p = $arabic->arIdentify($view);
+
+            for ($i = count($p) - 1; $i >= 0; $i -= 2) {
+                $utf8ar = $arabic->utf8Glyphs(substr($view, $p[$i - 1], $p[$i] - $p[$i - 1]));
+                $view = substr_replace($view, $utf8ar, $p[$i - 1], $p[$i] - $p[$i - 1]);
+            }
         }
 
-        return \Barryvdh\DomPDF\Facade\Pdf::loadView($this->getPdfView(), $this->getViewData())
+        $pdfHandler = $this->shouldUseSnappy()
+            ? \Barryvdh\Snappy\Facades\SnappyPdf::class
+            : \Barryvdh\DomPDF\Facade\Pdf::class;
+
+        return $pdfHandler::loadHTML($view)
             ->setPaper('A4', $this->getPageOrientation());
     }
 
