@@ -34,7 +34,7 @@ use AlperenErsoy\FilamentExport\FilamentExport;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
-class FilamentExportBulkAction extends \Filament\Tables\Actions\BulkAction
+class FilamentExportBulkAction extends \Filament\Actions\BulkAction
 {
     use CanDisableAdditionalColumns;
     use CanDisableFileName;
@@ -101,5 +101,12 @@ class FilamentExportBulkAction extends \Filament\Tables\Actions\BulkAction
 
                 return FilamentExport::callDownload($action, $records, $data);
             });
+    }
+
+    public function getRecords(): \Illuminate\Support\Collection
+    {
+        $livewire = $this->getLivewire();
+
+        return $livewire->getSelectedTableRecords();
     }
 }

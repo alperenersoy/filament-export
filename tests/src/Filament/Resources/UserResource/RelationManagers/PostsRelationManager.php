@@ -2,8 +2,11 @@
 
 namespace AlperenErsoy\FilamentExport\Tests\Filament\Resources\UserResource\RelationManagers;
 
-use Filament\Forms\Form;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Schemas\Schema;
 use Filament\Tables\Table;
 use Filament\Tables;
 
@@ -13,10 +16,10 @@ class PostsRelationManager extends RelationManager
 
     protected static ?string $recordTitleAttribute = 'title';
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 //
             ]);
     }
@@ -28,16 +31,16 @@ class PostsRelationManager extends RelationManager
             Tables\Columns\TextColumn::make('title'),
             Tables\Columns\TextColumn::make('user.name'),
         ])
-        ->actions([
-            Tables\Actions\ViewAction::make(),
-            Tables\Actions\EditAction::make(),
+        ->recordActions([
+            ViewAction::make(),
+            EditAction::make(),
         ])
         ->headerActions([
             \AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction::make('export'),
         ])
-        ->bulkActions([
+        ->toolbarActions([
             \AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction::make('export'),
-            Tables\Actions\DeleteBulkAction::make(),
+            DeleteBulkAction::make(),
         ]);
     }
 }

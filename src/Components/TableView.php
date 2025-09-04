@@ -3,15 +3,15 @@
 namespace AlperenErsoy\FilamentExport\Components;
 
 use AlperenErsoy\FilamentExport\Components\Concerns\HasLivewireTarget;
-use Filament\Actions\StaticAction;
+use Filament\Actions\Action;
 use Illuminate\Support\Collection;
-use Filament\Forms\Components\Component;
 use AlperenErsoy\FilamentExport\FilamentExport;
-use Filament\Forms\Components\Concerns\HasName;
 use Illuminate\Pagination\LengthAwarePaginator;
 use AlperenErsoy\FilamentExport\Components\Concerns\HasUniqueActionId;
+use Filament\Forms\Components\Field;
+use Filament\Schemas\Components\Concerns\HasName;
 
-class TableView extends Component
+class TableView extends Field
 {
     use HasName;
     use HasLivewireTarget;
@@ -32,10 +32,9 @@ class TableView extends Component
         $this->view('filament-export::components.table_view');
     }
 
-    public static function make(string $name): static
+    public static function make(?string $name = null): static
     {
-        $static = app(static::class);
-        $static->name($name);
+        $static = app(static::class, ['name' => $name]);
         $static->setUp();
 
         return $static;
@@ -109,7 +108,7 @@ class TableView extends Component
         return $this->getExport()->getExtraViewData();
     }
 
-    public function getAllColumns(): Collection
+    public function getAllTableColumns(): Collection
     {
         return $this->getExport()->getAllColumns();
     }
@@ -123,7 +122,7 @@ class TableView extends Component
         $paginator->getCollection()->transform(function ($row, $key) {
             $data = [];
 
-            foreach ($this->getAllColumns() as $column) {
+            foreach ($this->getAllTableColumns() as $column) {
                 if (is_array($row)) {
                     $data[$column->getName()] = data_get($row, $column->getName());
 
@@ -139,9 +138,9 @@ class TableView extends Component
         return $paginator;
     }
 
-    public function getExportAction(): StaticAction
+    public function getExportAction(): Action
     {
-        return StaticAction::make('export')
+        return Action::make('export')
             ->button()
             ->label(__('filament-export::table_view.export_action_label'))
             ->submit('export')
@@ -149,11 +148,11 @@ class TableView extends Component
             ->icon(config('filament-export.export_icon'));
     }
 
-    public function getPrintAction(): StaticAction
+    public function getPrintAction(): Action
     {
         $uniqueActionId = $this->getUniqueActionId();
 
-        return StaticAction::make('print')
+        return Action::make('print')
             ->button()
             ->label(__('filament-export::table_view.print_action_label'))
             ->action("\$dispatch('print-table-$uniqueActionId')")
@@ -162,9 +161,9 @@ class TableView extends Component
             ->icon(config('filament-export.print_icon'));
     }
 
-    public function getCancelAction(): StaticAction
+    public function getCancelAction(): Action
     {
-        return StaticAction::make('cancel')
+        return Action::make('cancel')
             ->button()
             ->label(__('filament-export::export_action.cancel_action_label'))
             ->close()

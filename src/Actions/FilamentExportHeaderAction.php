@@ -34,7 +34,7 @@ use AlperenErsoy\FilamentExport\Actions\Concerns\HasCsvDelimiter;
 use AlperenErsoy\FilamentExport\FilamentExport;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
-class FilamentExportHeaderAction extends \Filament\Tables\Actions\Action
+class FilamentExportHeaderAction extends \Filament\Actions\Action
 {
     use CanDisableAdditionalColumns;
     use CanDisableFileName;

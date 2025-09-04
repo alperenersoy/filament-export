@@ -4,9 +4,12 @@ namespace AlperenErsoy\FilamentExport\Tests\Filament\Resources;
 
 use AlperenErsoy\FilamentExport\Tests\Filament\Resources\PostResource\Pages;
 use AlperenErsoy\FilamentExport\Tests\Models\Post;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
 use Filament\Tables\Table;
 use Filament\Tables;
 
@@ -16,10 +19,10 @@ class PostResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'title';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Forms\Components\TextInput::make('title')->required(),
                 Forms\Components\MarkdownEditor::make('content'),
                 Forms\Components\Select::make('user_id')
@@ -39,16 +42,16 @@ class PostResource extends Resource
                 Tables\Columns\TextColumn::make('title'),
                 Tables\Columns\TextColumn::make('user.name'),
             ])
-            ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+            ->recordActions([
+                ViewAction::make(),
+                EditAction::make(),
             ])
             ->headerActions([
                 \AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction::make('export'),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 \AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction::make('export'),
-                Tables\Actions\DeleteBulkAction::make(),
+                DeleteBulkAction::make(),
             ]);
     }
 

@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use AlperenErsoy\FilamentExport\Tests\Database\Factories\UserFactory;
 
-class User extends Authenticatable implements FilamentUser
+class User extends Authenticatable implements FilamentUser, \Illuminate\Contracts\Auth\Authenticatable
 {
     use HasFactory;
 

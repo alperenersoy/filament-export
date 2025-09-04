@@ -23,7 +23,6 @@ use AlperenErsoy\FilamentExport\Concerns\HasPageOrientation;
 use AlperenErsoy\FilamentExport\Concerns\HasPaginator;
 use AlperenErsoy\FilamentExport\Concerns\HasTable;
 use Carbon\Carbon;
-use Filament\Support\Concerns\EvaluatesClosures;
 use Filament\Tables\Columns\Column;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\ViewColumn;
@@ -60,6 +59,8 @@ class FilamentExport
         'csv' => 'CSV',
         'pdf' => 'PDF',
     ];
+
+    public const TABLE_VIEW_NAME = 'table_view';
 
     public static function make(): static
     {
@@ -244,7 +245,7 @@ class FilamentExport
                 ->formatStates($action->getFormatStates());
 
 
-            if ($data['table_view'] == 'print-' . $action->getUniqueActionId()) {
+            if ($data[self::TABLE_VIEW_NAME] == 'print-' . $action->getUniqueActionId()) {
                 $export->data($action->getRecords());
                 $printHTML = view('filament-export::print', $export->getViewData())->render();
             } else {
@@ -298,7 +299,7 @@ class FilamentExport
                 ->valueLabel($action->getAdditionalColumnsDefaultValueFieldLabel())
                 ->addActionLabel($action->getAdditionalColumnsAddButtonLabel())
                 ->hidden($action->isAdditionalColumnsDisabled()),
-            TableView::make('table_view')
+            TableView::make(self::TABLE_VIEW_NAME)
                 ->export($initialExport)
                 ->uniqueActionId($action->getUniqueActionId())
                 ->afterStateUpdated($updateTableView)

@@ -88,28 +88,34 @@ trait HasRecords
             return $query->orderBy($livewire->getTable()->getReorderColumn());
         }
 
-        if (!$livewire->tableSortColumn) {
-            return $this->applyDefaultSortingToTableQuery($query);
+        [$tableSortColumn, $tableSortDirection] = [null, null];
+
+        if ($livewire->tableSort && str_contains($livewire->tableSort, ':')) {
+            [$tableSortColumn, $tableSortDirection] = explode(':', $livewire->tableSort, 2);
         }
 
-        $column = $livewire->getTable()->getSortableVisibleColumn($livewire->tableSortColumn);
+        if (!$tableSortColumn) {
+            return $this->applyDefaultSortingToTableQuery($query, $tableSortDirection);
+        }
+
+        $column = $livewire->getTable()->getSortableVisibleColumn($tableSortColumn);
 
         if (!$column) {
-            return $this->applyDefaultSortingToTableQuery($query);
+            return $this->applyDefaultSortingToTableQuery($query, $tableSortDirection);
         }
 
-        $sortDirection = $livewire->tableSortDirection === 'desc' ? 'desc' : 'asc';
+        $sortDirection = $tableSortDirection === 'desc' ? 'desc' : 'asc';
 
         $column->applySort($query, $sortDirection);
 
         return $query;
     }
 
-    protected function applyDefaultSortingToTableQuery(Builder $query): Builder
+    protected function applyDefaultSortingToTableQuery(Builder $query, ?string $tableSortDirection): Builder
     {
         $livewire = $this->getLivewire();
 
-        $sortDirection = ($livewire->getTable()->getDefaultSortDirection() ?? $livewire->tableSortDirection) === 'desc' ? 'desc' : 'asc';
+        $sortDirection = ($livewire->getTable()->getDefaultSortDirection() ?? $tableSortDirection) === 'desc' ? 'desc' : 'asc';
         $defaultSort = $livewire->getTable()->getDefaultSort($query, $sortDirection);
 
         if (
