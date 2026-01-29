@@ -284,6 +284,7 @@ class FilamentExport
                 ->options($columns)
                 ->columns(4)
                 ->default(array_keys($columns))
+                ->bulkToggleable()
                 ->hidden($action->isFilterColumnsDisabled()),
             \Filament\Forms\Components\KeyValue::make('additional_columns')
                 ->label($action->getAdditionalColumnsFieldLabel())
