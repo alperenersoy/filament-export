@@ -24,3 +24,7 @@ function printHTML(html, statePath, uniqueActionId, $set) {
 }
 
 window.printHTML = printHTML;
+
+window.addEventListener("filament-export-print", (event) => {
+    printHTML(event.detail.html);
+});

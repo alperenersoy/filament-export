@@ -32,6 +32,7 @@ use AlperenErsoy\FilamentExport\Actions\Concerns\HasTimeFormat;
 use AlperenErsoy\FilamentExport\Actions\Concerns\HasUniqueActionId;
 use AlperenErsoy\FilamentExport\Actions\Concerns\HasCsvDelimiter;
 use AlperenErsoy\FilamentExport\FilamentExport;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class FilamentExportHeaderAction extends \Filament\Actions\Action
@@ -79,14 +80,14 @@ class FilamentExportHeaderAction extends \Filament\Actions\Action
                 if ($action->shouldDownloadDirect()) {
                     return false;
                 }
-                return $action;
+                return __('filament-export::export_action.modal_heading');
             })
             ->form(static function ($action, $livewire): array {
                 if ($action->shouldDownloadDirect()) {
                     return [];
                 }
 
-                $action->paginator($action->getTableQuery()->paginate(
+                $action->paginator(fn (): LengthAwarePaginator => $action->getTableQuery()->paginate(
                     perPage: $livewire->tableRecordsPerPage === 'all' ? $action->getTableQuery()->count() : $livewire->tableRecordsPerPage,
                     pageName: 'exportPage'
                 ));

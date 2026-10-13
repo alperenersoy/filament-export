@@ -144,7 +144,7 @@ class TableView extends Field
             ->button()
             ->label(__('filament-export::table_view.export_action_label'))
             ->submit('export')
-            ->livewireTarget($this->getLivewireTarget())
+            ->livewireTarget($this->getLivewireTarget() . ', ' . $this->getStatePath())
             ->icon(config('filament-export.export_icon'));
     }
 
@@ -157,7 +157,7 @@ class TableView extends Field
             ->label(__('filament-export::table_view.print_action_label'))
             ->action("\$dispatch('print-table-$uniqueActionId')")
             ->color('gray')
-            ->livewireTarget($this->getLivewireTarget())
+            ->livewireTarget($this->getLivewireTarget() . ', ' . $this->getStatePath())
             ->icon(config('filament-export.print_icon'));
     }
 
@@ -168,6 +168,7 @@ class TableView extends Field
             ->label(__('filament-export::export_action.cancel_action_label'))
             ->close()
             ->color('secondary')
+            ->livewireTarget($this->getLivewireTarget() . ', ' . $this->getStatePath())
             ->icon(config('filament-export.cancel_icon'));
     }
 

@@ -23,6 +23,7 @@ use AlperenErsoy\FilamentExport\Concerns\HasPageOrientation;
 use AlperenErsoy\FilamentExport\Concerns\HasPaginator;
 use AlperenErsoy\FilamentExport\Concerns\HasTable;
 use Carbon\Carbon;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Tables\Columns\Column;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\ViewColumn;
@@ -240,7 +241,7 @@ class FilamentExport
                 ->disableTableColumns($action->isTableColumnsDisabled())
                 ->extraViewData($action->getExtraViewData())
                 ->withColumns($action->getWithColumns())
-                ->paginator($action->getPaginator())
+                ->paginator(fn (): ?LengthAwarePaginator => $action->getPaginator())
                 ->csvDelimiter($action->getCsvDelimiter())
                 ->formatStates($action->getFormatStates());
 
@@ -248,6 +249,8 @@ class FilamentExport
             if ($data[self::TABLE_VIEW_NAME] == 'print-' . $action->getUniqueActionId()) {
                 $export->data($action->getRecords());
                 $printHTML = view('filament-export::print', $export->getViewData())->render();
+
+                $livewire->dispatch('filament-export-print', html: $printHTML);
             } else {
                 $printHTML = '';
             }
@@ -266,7 +269,7 @@ class FilamentExport
             ->data(collect())
             ->extraViewData($action->getExtraViewData())
             ->withColumns($action->getWithColumns())
-            ->paginator($action->getPaginator())
+            ->paginator(fn (): ?LengthAwarePaginator => $action->getPaginator())
             ->csvDelimiter($action->getCsvDelimiter())
             ->formatStates($action->getFormatStates());
 
@@ -292,12 +295,16 @@ class FilamentExport
                 ->options($columns)
                 ->columns(4)
                 ->default(array_keys($columns))
+                ->live()
+                ->afterStateUpdated(fn (Set $set) => $set('table_view', uniqid(), shouldCallUpdatedHooks: true))
                 ->hidden($action->isFilterColumnsDisabled()),
             \Filament\Forms\Components\KeyValue::make('additional_columns')
                 ->label($action->getAdditionalColumnsFieldLabel())
                 ->keyLabel($action->getAdditionalColumnsTitleFieldLabel())
                 ->valueLabel($action->getAdditionalColumnsDefaultValueFieldLabel())
                 ->addActionLabel($action->getAdditionalColumnsAddButtonLabel())
+                ->live()
+                ->afterStateUpdated(fn (Set $set) => $set('table_view', uniqid(), shouldCallUpdatedHooks: true))
                 ->hidden($action->isAdditionalColumnsDisabled()),
             TableView::make(self::TABLE_VIEW_NAME)
                 ->export($initialExport)
@@ -398,7 +405,7 @@ class FilamentExport
             return $closure(...$dependencies);
         }
 
-        $state = in_array(\Filament\Tables\Columns\Concerns\CanFormatState::class, class_uses($column)) ? $column->formatState($column->getState()) : $column->getState();
+        $state = in_array(\Filament\Tables\Columns\Concerns\CanFormatState::class, class_uses_recursive($column)) ? $column->formatState($column->getState()) : $column->getState();
 
         if (is_array($state)) {
             $state = implode(', ', $state);
