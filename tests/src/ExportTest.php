@@ -38,36 +38,32 @@ it('can retrieve post', function () {
     expect(Post::latest()->first())->toBeInstanceOf(Post::class);
 });
 
-// TODO: Uncomment this test when fixed
-// it('can render post resource page', function () {
-//     $this->get(PostResource::getUrl('index'))->assertSuccessful();
-// });
+it('can render post resource page', function () {
+    $this->get(PostResource::getUrl('index'))->assertSuccessful();
+});
 
-// TODO: Uncomment this test when fixed
-// it('can list posts', function () {
-//     $posts = Post::factory()->count(10)->create();
+it('can list posts', function () {
+    $posts = Post::factory()->count(10)->create();
 
-//     livewire(ListPosts::class)
-//         ->assertCanSeeTableRecords($posts);
-// });
+    livewire(ListPosts::class)
+        ->assertCanSeeTableRecords($posts);
+});
 
-// TODO: Uncomment this test when fixed
-// it('can call header action', function () {
-//     Post::factory()->count(10)->create();
+it('can call header action', function () {
+    Post::factory()->count(10)->create();
 
-//     livewire(ListPosts::class)
-//         ->callAction('export')
-//         ->assertSuccessful();
-// });
+    livewire(ListPosts::class)
+        ->callTableAction('export')
+        ->assertSuccessful();
+});
 
-// TODO: Uncomment this test when fixed
-// it('can call bulk action', function () {
-//     $posts = Post::factory()->count(10)->create();
+it('can call bulk action', function () {
+    $posts = Post::factory()->count(10)->create();
 
-//     livewire(ListPosts::class)
-//         ->callAction('export', $posts)
-//         ->assertSuccessful();
-// });
+    livewire(ListPosts::class)
+        ->callTableBulkAction('export', $posts)
+        ->assertSuccessful();
+});
 
 foreach (FilamentExport::DEFAULT_FORMATS as $format => $label) {
     it("can header action call $format download", function () use ($format) {
@@ -115,62 +111,56 @@ foreach (FilamentExport::DEFAULT_FORMATS as $format => $label) {
     });
 }
 
-// TODO: Uncomment this test when fixed
-// it('can render user resource page', function () {
-//     $this->get(UserResource::getUrl('index'))->assertSuccessful();
-// });
+it('can render user resource page', function () {
+    $this->get(UserResource::getUrl('index'))->assertSuccessful();
+});
 
-// TODO: Uncomment this test when fixed
-// it('can list users', function () {
-//     $posts = Post::factory()->count(10)->create();
+it('can list users', function () {
+    $posts = Post::factory()->count(10)->create();
 
-//     livewire(ListUsers::class)
-//         ->assertCanSeeTableRecords($posts);
-// });
+    livewire(ListUsers::class)
+        ->assertCanSeeTableRecords($posts);
+});
 
-// TODO: Uncomment this test when fixed
-// it('can view user with posts relation manager', function () {
-//     $posts = Post::factory()->count(10)->create();
+it('can view user with posts relation manager', function () {
+    $posts = Post::factory()->count(10)->create();
 
-//     $this->get(PostResource::getUrl('view', [
-//         'record' => $posts->first()->id,
-//     ], panel: 'test-panel'))->assertSuccessful();
-// });
+    $this->get(UserResource::getUrl('view', [
+        'record' => $posts->first()->user_id,
+    ], panel: 'test-panel'))->assertSuccessful();
+});
 
-// TODO: Uncomment this test when fixed
-// it('can render relation manager', function () {
-//     Post::factory()->count(10)->create();
+it('can render relation manager', function () {
+    Post::factory()->count(10)->create();
 
-//     livewire(PostsRelationManager::class, [
-//         'ownerRecord' => User::latest()->first(),
-//         'pageClass' => EditUser::class,
-//     ])->assertSuccessful();
-// });
+    livewire(PostsRelationManager::class, [
+        'ownerRecord' => User::latest()->first(),
+        'pageClass' => EditUser::class,
+    ])->assertSuccessful();
+});
 
-// TODO: Uncomment this test when fixed
-// it('can call header action on relation manager', function () {
-//     Post::factory()->create();
+it('can call header action on relation manager', function () {
+    Post::factory()->create();
 
-//     $user = User::latest()->first();
+    $user = User::latest()->first();
 
-//     livewire(PostsRelationManager::class, [
-//         'ownerRecord' => $user,
-//         'pageClass' => EditUser::class,
-//     ])
-//         ->callAction('export')
-//         ->assertSuccessful();
-// });
+    livewire(PostsRelationManager::class, [
+        'ownerRecord' => $user,
+        'pageClass' => EditUser::class,
+    ])
+        ->callTableAction('export')
+        ->assertSuccessful();
+});
 
-// TODO: Uncomment this test when fixed
-// it('can call bulk action on relation manager', function () {
-//     Post::factory()->create();
+it('can call bulk action on relation manager', function () {
+    Post::factory()->create();
 
-//     $user = User::latest()->first();
+    $user = User::latest()->first();
 
-//     livewire(PostsRelationManager::class, [
-//         'ownerRecord' => $user,
-//         'pageClass' => EditUser::class,
-//     ])
-//         ->callAction('export', $user->posts)
-//         ->assertSuccessful();
-// });
+    livewire(PostsRelationManager::class, [
+        'ownerRecord' => $user,
+        'pageClass' => EditUser::class,
+    ])
+        ->callTableBulkAction('export', $user->posts)
+        ->assertSuccessful();
+});

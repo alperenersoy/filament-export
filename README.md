@@ -1,6 +1,6 @@
 # Filament Export
 
-Customizable export and print functionality for Filament Admin Panel v4. Version 4 of this package is currently in beta. Please report any issues you find.
+Customizable export and print functionality for Filament Admin Panel v4. Please report any issues you find.
 
 This package provides a bulk action and header action to export your filament tables easily.
 
