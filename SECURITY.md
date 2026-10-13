@@ -6,8 +6,8 @@ Only the latest release of this package receives security fixes.
 
 | Version | Supported |
 |---------|-----------|
-| 4.x     | ✅        |
-| < 4.0   | ❌        |
+| 5.x     | ✅        |
+| < 5.0   | ❌        |
 
 ## Reporting a Vulnerability
 
